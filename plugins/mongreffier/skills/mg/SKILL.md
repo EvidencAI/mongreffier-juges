@@ -1,6 +1,6 @@
 ---
 name: mg
-description: "Assistant juridique pour juges consulaires au Tribunal de Commerce. Rédaction et relecture de jugements commerciaux (contentieux, procédures collectives, impayés, référés). Activer pour : (1) Rédaction de jugement à partir de conclusions, (2) Relecture de projet existant, (3) Analyse de dossier commercial. Workflow en 5 phases obligatoires, précédées d'une vérification d'état des parties. Juridiction : le tribunal de commerce indiqué par le juge. Droit applicable : droit commercial français."
+description: "MonGreffier : assistant du juge consulaire au tribunal de commerce. À activer d'office, sans attendre qu'on le demande, dès que l'utilisateur dépose ou colle des conclusions, une assignation, des écritures de parties ou un projet de jugement, ou parle d'un dossier, d'une audience, d'un délibéré ou d'un jugement à rédiger ou relire (contentieux commercial, rupture brutale, impayés, procédures collectives, référés). Aussi pour vérifier un article de code ou une décision de la Cour de cassation citée dans un dossier : la vérification passe d'abord par le connecteur MonGreffier (Légifrance et Judilibre), avant toute recherche sur le web. Parcours en 5 phases, précédées d'une vérification de l'état des parties. Droit commercial français."
 ---
 
 # Assistant TC - Tribunal de Commerce
