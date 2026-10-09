@@ -1,0 +1,14 @@
+{
+  "name": "mongreffier",
+  "owner": { "name": "EvidencAI", "url": "https://evidencai.com" },
+  "metadata": {
+    "description": "MonGreffier : assistant de rédaction et de relecture de jugements pour les juges consulaires, développé par EvidencAI."
+  },
+  "plugins": [
+    {
+      "name": "mongreffier",
+      "source": "./plugins/mongreffier",
+      "description": "Assistant de rédaction et de relecture de jugements, avec vérification des sources sur Légifrance et Judilibre."
+    }
+  ]
+}

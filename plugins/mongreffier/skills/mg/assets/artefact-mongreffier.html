@@ -1,0 +1,1340 @@
+<title>MonGreffier</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:wght@500;700&display=swap">
+<style>
+:root {
+  color-scheme: light;
+  --fond: #F7F1E3;
+  --surface: #FFFDF7;
+  --surface-2: #EFE7D3;
+  --texte: #1a1a2e;
+  --texte-2: #4a4a63;
+  --accent-texte: #A94B31;
+  --accent-aplat: #B8553A;
+  --accent-aplat-survol: #A94B31;
+  --accent-sur-aplat: #ffffff;
+  --accent-decor: #E07A5F;
+  --bordure: #D9CFB8;
+  --bordure-champ: #7d7763;
+  --erreur: #9B1C1C;
+  --ok: #1E6B3A;
+  --attention: #8A4B00;
+  --rouge: #9B1C1C;
+  --focus: #1a1a2e;
+  --police-titre: "Playfair Display", Georgia, serif;
+  --police-texte: "DM Sans", system-ui, sans-serif;
+  --police-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --fond: #1a1a2e;
+    --surface: #222240;
+    --surface-2: #2b2b4d;
+    --texte: #f0f0f0;
+    --texte-2: #c9cad8;
+    --accent-texte: #E07A5F;
+    --accent-aplat: #E07A5F;
+    --accent-aplat-survol: #E8927A;
+    --accent-sur-aplat: #1a1a2e;
+    --accent-decor: #E07A5F;
+    --bordure: #3a3a5c;
+    --bordure-champ: #7b7ba0;
+    --erreur: #ff9b8a;
+    --ok: #6fcf97;
+    --attention: #f2b05e;
+    --rouge: #ff8a8a;
+    --focus: #f0f0f0;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --fond: #1a1a2e;
+  --surface: #222240;
+  --surface-2: #2b2b4d;
+  --texte: #f0f0f0;
+  --texte-2: #c9cad8;
+  --accent-texte: #E07A5F;
+  --accent-aplat: #E07A5F;
+  --accent-aplat-survol: #E8927A;
+  --accent-sur-aplat: #1a1a2e;
+  --accent-decor: #E07A5F;
+  --bordure: #3a3a5c;
+  --bordure-champ: #7b7ba0;
+  --erreur: #ff9b8a;
+  --ok: #6fcf97;
+  --attention: #f2b05e;
+  --rouge: #ff8a8a;
+  --focus: #f0f0f0;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--fond);
+  color: var(--texte);
+  font-family: var(--police-texte);
+  font-size: 17px;
+  line-height: 1.7;
+  -webkit-text-size-adjust: 100%;
+}
+#mg { max-width: 880px; margin: 0 auto; padding: 0 16px; min-width: 0; }
+#mg * { min-width: 0; }
+@media (min-width: 768px) { #mg { padding: 0 24px; } }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+a { color: var(--accent-texte); }
+h1, h2, h3, h4 { font-family: var(--police-titre); line-height: 1.25; margin: 0; }
+h5 { font-family: var(--police-texte); font-weight: 700; font-size: 1.05rem; margin: 1.2em 0 .4em; }
+.entete { padding: 24px 0 16px; }
+.entete h1 { font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 700; }
+.dossier { margin: 4px 0 0; display: flex; flex-wrap: wrap; gap: 4px 16px; align-items: baseline; }
+.dossier .intitule { font-weight: 600; overflow-wrap: anywhere; }
+.dossier .rg { font-family: var(--police-mono); font-size: 13px; color: var(--texte-2); }
+.bandeau { margin: 0 0 16px; padding: 12px 16px; background: var(--surface-2); border-left: 3px solid var(--accent-decor); font-weight: 600; }
+.barre { display: flex; overflow-x: auto; scrollbar-width: none; scroll-snap-type: x proximity; background: var(--surface-2); border-bottom: 1px solid var(--bordure); }
+.barre::-webkit-scrollbar { display: none; }
+.onglet { flex: 1 0 132px; min-height: 56px; scroll-snap-align: center; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 2px; padding: 6px 14px; background: transparent; color: var(--texte); border: 0; border-bottom: 3px solid transparent; font-family: var(--police-texte); text-align: left; cursor: pointer; }
+@media (min-width: 768px) { .onglet { flex: 1 0 112px; } }
+.onglet .titre { font-weight: 600; font-size: 15px; line-height: 1.25; }
+.onglet .etat { display: inline-flex; align-items: center; gap: 5px; font-size: 13px; line-height: 1.2; }
+.onglet[aria-selected="true"], .onglet[aria-current="true"] { background: var(--surface); border-bottom-color: var(--accent-decor); }
+.onglet[aria-selected="true"] .titre, .onglet[aria-current="true"] .titre { font-weight: 700; }
+.etat.a-saisir { color: var(--accent-texte); }
+.etat.fait { color: var(--ok); }
+.etat svg, .pastille svg, .erreur-champ svg, .badge svg { width: 16px; height: 16px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.panneau { padding: 24px 0 8px; }
+.panneau > h2 { font-size: clamp(1.4rem, 2.6vw, 1.8rem); font-weight: 700; margin-bottom: 12px; }
+.vers-saisie { display: inline-flex; align-items: center; min-height: 44px; margin-bottom: 8px; background: none; border: 0; padding: 4px 0; color: var(--accent-texte); text-decoration: underline; font: inherit; font-size: 15px; cursor: pointer; }
+.etiquette { font-family: var(--police-mono); font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: var(--texte-2); margin: 8px 0; }
+.md { max-width: 72ch; overflow-wrap: anywhere; }
+.md h3 { font-size: 1.35rem; margin: 1.4em 0 .5em; }
+.md h4 { font-size: 1.15rem; margin: 1.3em 0 .4em; }
+.md p { margin: .7em 0; }
+.md ul, .md ol { padding-left: 1.4em; }
+.md li { margin: 6px 0; }
+.md blockquote { margin: 1em 0; padding: 4px 16px; border-left: 3px solid var(--accent-decor); background: var(--surface); }
+.md code { font-family: var(--police-mono); font-size: 15px; background: var(--surface-2); padding: 1px 5px; border-radius: 4px; }
+.md pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--surface-2); padding: 12px; border-radius: 8px; }
+.md pre code { background: none; padding: 0; }
+.md hr { border: 0; border-top: 1px solid var(--bordure); margin: 1.5em 0; }
+pre.brut { white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--police-texte); font-size: 16px; margin: 8px 0; }
+.note { font-size: 15px; color: var(--texte-2); }
+.tableau { overflow-x: auto; margin: 1em 0; border: 1px solid var(--bordure); border-radius: 8px; max-width: 100%; }
+.tableau table { border-collapse: collapse; min-width: 560px; width: 100%; font-size: 15px; line-height: 1.5; }
+.tableau th, .tableau td { padding: 10px 12px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--bordure); }
+.tableau { overflow-wrap: normal; }
+.tableau th, .tableau td { min-width: auto; }
+.tableau th:first-child, .tableau td:first-child { white-space: nowrap; }
+.tableau th { background: var(--surface-2); }
+.tableau caption { text-align: left; padding: 10px 12px; font-weight: 600; }
+.pastille { display: inline-flex; align-items: center; gap: 6px; padding: 1px 10px; border: 1px solid currentColor; border-radius: 20px; font-family: var(--police-mono); font-size: 13px; line-height: 1.6; white-space: nowrap; background: transparent; }
+.pastille.vert { color: var(--ok); }
+.pastille.orange { color: var(--attention); }
+.pastille.rouge { color: var(--rouge); }
+.pastille.neutre { color: var(--texte-2); }
+.pastille svg { fill: currentColor; stroke: none; width: 12px; height: 12px; }
+.pastille.neutre svg { fill: none; stroke: currentColor; stroke-width: 2.2; }
+.separateur { width: 60px; height: 3px; background: var(--accent-decor); border: 0; margin: 32px 0 24px; }
+.saisie { background: var(--surface); border: 1px solid var(--bordure); border-radius: 12px; padding: 16px; margin-bottom: 24px; }
+@media (min-width: 768px) { .saisie { padding: 24px; } }
+.saisie > h3 { font-size: 1.35rem; margin-bottom: 8px; }
+.saisie p { margin: .5em 0; }
+.aide { font-size: 15px; color: var(--texte-2); margin: 2px 0 6px; }
+.champ { margin: 16px 0; }
+.champ > label, fieldset > legend { display: block; font-weight: 600; padding: 0; }
+fieldset { border: 0; margin: 16px 0; padding: 0; min-width: 0; }
+input[type="text"], input[type="date"], textarea { display: block; width: 100%; font: inherit; font-size: 16px; line-height: 1.5; color: var(--texte); background: var(--fond); border: 1px solid var(--bordure-champ); border-radius: 8px; padding: 10px 12px; min-height: 48px; }
+input[type="date"] { -webkit-appearance: none; appearance: none; min-width: 0; max-width: 100%; }
+textarea { resize: vertical; }
+[aria-invalid="true"] { border: 2px solid var(--erreur); }
+.erreur-champ { display: flex; gap: 6px; align-items: flex-start; margin-top: 6px; color: var(--erreur); font-size: 15px; line-height: 1.4; }
+.erreur-champ[hidden] { display: none; }
+.resume { margin: 12px 0; padding: 12px 16px; border-left: 3px solid var(--erreur); background: color-mix(in srgb, var(--erreur) 8%, transparent); }
+.resume ul { margin: 6px 0 0; padding-left: 1.2em; }
+.resume a { color: var(--erreur); }
+.deux-col { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 12px; align-items: start; }
+.deux-col > * { min-width: 0; }
+.choix { display: flex; align-items: flex-start; gap: 10px; min-height: 48px; padding: 8px 4px; cursor: pointer; }
+.choix input { width: 22px; height: 22px; margin: 2px 0 0; flex: none; accent-color: var(--accent-aplat); }
+.choix input[type="radio"] { appearance: none; -webkit-appearance: none; border: 2px solid var(--bordure-champ); border-radius: 50%; background: var(--fond); }
+.choix input[type="radio"]:checked { border-color: var(--accent-aplat); background: radial-gradient(circle, var(--accent-aplat) 0 45%, transparent 50%); }
+.choix .corps { flex: 1; overflow-wrap: anywhere; }
+.choix .repere { font-family: var(--police-mono); font-size: 13px; color: var(--texte-2); display: block; }
+.carte { border: 1px solid var(--bordure); border-radius: 12px; padding: 16px; margin: 16px 0; background: var(--fond); }
+.carte > legend { font-weight: 600; padding: 0 0 8px; float: left; width: 100%; overflow-wrap: anywhere; }
+.carte > legend + * { clear: both; }
+.carte .id { font-family: var(--police-mono); font-size: 14px; }
+.btns { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
+@media (min-width: 640px) { .btns { flex-direction: row; flex-wrap: wrap; align-items: center; } }
+.btn { min-height: 48px; padding: 10px 20px; border-radius: 8px; font: inherit; font-weight: 600; font-size: 16px; cursor: pointer; background: transparent; color: var(--texte); border: 2px solid var(--bordure-champ); width: 100%; }
+@media (min-width: 640px) { .btn { width: auto; } }
+@media (max-width: 480px) { .btn { max-width: none; } }
+.btn.primaire { background: var(--accent-aplat); color: var(--accent-sur-aplat); border-color: var(--accent-aplat); }
+.btn.primaire:hover { background: var(--accent-aplat-survol); border-color: var(--accent-aplat-survol); }
+.btn.tertiaire { border-color: transparent; color: var(--accent-texte); text-decoration: underline; width: auto; max-width: 100%; white-space: normal; text-align: center; }
+.btn[disabled] { opacity: .65; cursor: progress; }
+.btn.petit { min-height: 48px; }
+.statut { margin-top: 14px; min-height: 1.4em; overflow-wrap: anywhere; }
+.compteur { font-family: var(--police-mono); font-size: 13px; color: var(--texte-2); margin: 10px 0 0; }
+.compteur.alerte { color: var(--erreur); }
+.compteur-zone { font-family: var(--police-mono); font-size: 13px; color: var(--texte-2); margin: 4px 0 0; }
+.compteur-zone.alerte { color: var(--erreur); }
+.reperes { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; margin: 0 0 8px; }
+.reperes .repere { font-family: var(--police-mono); font-size: 13px; color: var(--texte-2); }
+.carte p { overflow-wrap: anywhere; margin: .5em 0; }
+.envoye { font-weight: 600; color: var(--ok); }
+.badge { display: inline-flex; align-items: center; gap: 6px; color: var(--ok); font-size: 15px; font-weight: 600; margin-top: 6px; }
+.lots { display: flex; flex-direction: column; gap: 12px; margin-top: 12px; align-items: flex-start; }
+.barre-bas { margin-top: 16px; border-top: 1px solid var(--bordure); border-bottom: 0; }
+.barre-bas .onglet[aria-current="true"] { border-bottom-color: transparent; border-top: 3px solid var(--accent-decor); padding-top: 3px; }
+.pied { text-align: center; font-size: 14px; color: var(--texte-2); padding: 24px 0 32px; }
+.pied p { margin: 0; }
+.pied .accroche { margin-top: 4px; font-size: 13px; }
+.copie-repli { margin-top: 10px; min-height: 140px; font-family: var(--police-mono); font-size: 14px; }
+.illisible { margin: 24px 0; padding: 16px; border-left: 3px solid var(--erreur); background: var(--surface); font-weight: 600; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; scroll-behavior: auto !important; } }
+</style>
+<div id="mg" lang="fr">
+  <header class="entete">
+    <h1>MonGreffier</h1>
+    <p class="dossier" id="mg-dossier"></p>
+  </header>
+  <div id="mg-bandeau"></div>
+  <div class="barre" id="mg-barre" role="tablist" aria-label="Étapes du dossier"></div>
+  <main class="panneau" id="mg-panneau" role="tabpanel"></main>
+  <nav class="barre barre-bas" id="mg-barre-bas" aria-label="Étapes du dossier (bas de page)"></nav>
+  <footer class="pied"><p>Développé par <a href="https://evidencai.com" target="_blank" rel="noopener">EvidencAI<span class="sr"> (s’ouvre dans un nouvel onglet)</span></a></p><p class="accroche">Nous fabriquons des logiciels IA, les nôtres et les vôtres.</p></footer>
+</div>
+<script type="application/json" id="mg-donnees">
+{
+  "version": 1,
+  "demo": true,
+  "dossier": {"id": "2026-01-01-0000", "rg": "2025/00123", "intitule": "[Demanderesse] c/ [Défenderesse]"},
+  "onglet_actif": "fiche",
+  "onglets": [
+    {"id": "fiche", "titre": "Fiche du dossier", "statut": "a_saisir", "contenu_md": "", "saisie": {"type": "fiche", "valeurs": {}}},
+    {"id": "etape0", "titre": "État des parties", "statut": "fait", "contenu_md": "## État des parties\n\n| Partie | Qualité | Représentation | Position |\n|---|---|---|---|\n| [Demanderesse] | Demanderesse | Avocat | Comparante |\n| [Défenderesse] | Défenderesse | Avocat | Comparante |\n\nLes deux parties ont conclu. Les pièces communiquées sont numérotées de 1 à 12 par la demanderesse et de 1 à 5 par la défenderesse.\n\n> Ces données sont des exemples : elles sont remplacées par celles du dossier."},
+    {"id": "cadrage", "titre": "Cadrage", "statut": "en_cours", "contenu_md": "## Fiche de cadrage\n\n### Office du juge\n\nLe juge tranche le litige conformément aux règles de droit qui lui sont applicables (art. 12 du code de procédure civile).\n\n### Demandes identifiées\n\n- La demanderesse sollicite le paiement d’une somme de 12 000 euros au titre d’une facture impayée.\n- La défenderesse conteste la créance et demande reconventionnellement des dommages et intérêts.\n\n### Pièces clés\n\n1. Contrat de prestation (pièce n° 1).\n2. Facture contestée (pièce n° 4).", "saisie": {"type": "validation_cadrage", "points": [
+      {"id": "C1", "intitule": "État des parties (Étape 0)"},
+      {"id": "C2", "intitule": "Office du juge"},
+      {"id": "C3", "intitule": "Limites de l’IA"},
+      {"id": "C4", "intitule": "Identification des parties"},
+      {"id": "C5", "intitule": "Régularité de l’assignation et qualification de la décision"},
+      {"id": "C6", "intitule": "Fins de non-recevoir"},
+      {"id": "C7", "intitule": "Demandes identifiées"},
+      {"id": "C8", "intitule": "Ordre d’examen proposé"},
+      {"id": "C9", "intitule": "Articles et jurisprudences cités"},
+      {"id": "C10", "intitule": "Pièces clés et points à contrôler"}
+    ]}},
+    {"id": "decision", "titre": "Points de décision", "statut": "a_saisir", "contenu_md": "## POINT 1 : Exigibilité de la facture\n\n**Thèse de la demanderesse :** la prestation a été livrée sans réserve.\n\n**Thèse de la défenderesse :** la prestation est incomplète.\n\n## POINT 2 : Montant de l’indemnisation\n\nTrois méthodes de calcul sont possibles ; le juge apprécie souverainement.\n\n## POINT 3 : Frais irrépétibles\n\nApplication de l’article 700 du code de procédure civile.", "saisie": {"type": "points_decision", "points": [
+      {"id": "P1", "intitule": "La facture est-elle exigible ?", "options": [{"code": "A", "libelle": "Oui, la prestation est exécutée"}, {"code": "B", "libelle": "Non, la prestation est incomplète"}], "indicateur": "vert", "prop_ia": "A"},
+      {"id": "P2", "intitule": "Quel montant d’indemnisation ?", "options": [{"code": "A", "libelle": "Montant demandé"}, {"code": "B", "libelle": "Montant réduit de moitié"}, {"code": "C", "libelle": "Montant forfaitaire"}, {"code": "D", "libelle": "Aucune indemnisation"}], "indicateur": "orange", "prop_ia": "B"},
+      {"id": "P3", "intitule": "Faut-il allouer des frais irrépétibles ?", "options": [{"code": "A", "libelle": "Oui, à la demanderesse"}, {"code": "B", "libelle": "Non"}], "indicateur": "rouge", "prop_ia": "ABSTENTION"}
+    ]}},
+    {"id": "redaction", "titre": "Projet de jugement", "statut": "a_saisir", "contenu_md": "## Projet de jugement\n\n### Faits\n\nPar contrat du 10 janvier 2025, les parties ont convenu d’une prestation de services.\n\n### Procédure\n\nLa demanderesse a assigné la défenderesse par acte du 3 mars 2025.\n\n### Dispositif\n\nPAR CES MOTIFS, le tribunal condamne la défenderesse au paiement de la somme de 12 000 euros.", "saisie": {"type": "corrections_jugement"}},
+    {"id": "robustesse", "titre": "Robustesse", "statut": "a_saisir", "contenu_md": "## Robustesse de la solution\n\n| Point | Indicateur | Commentaire |\n|---|---|---|\n| P1 | 🟢 | Solution stable en jurisprudence. |\n| P2 | 🟠 | Les juridictions divergent sur la méthode de calcul. |\n| P3 | 🔴 | Pur pouvoir d’appréciation du juge. |\n", "saisie": {"type": "selection_robustesse", "recommandations": [
+      {"id": "R1", "gravite": "a_surveiller", "origine": "ombre", "intitule": "Réponse à l’argument sur la livraison partielle", "detail": "Le projet n’écarte pas expressément l’argument tiré de la livraison partielle."},
+      {"id": "R2", "gravite": "critique", "origine": "ombre", "intitule": "Motivation du quantum insuffisante", "detail": "Le montant retenu n’est pas rattaché aux pièces."},
+      {"id": "R3", "gravite": "mineur", "origine": "ombre", "intitule": "Rappel de la date de l’assignation", "detail": "La date figure dans la procédure mais pas dans les motifs."},
+      {"id": "R4", "gravite": "a_surveiller", "origine": "dissident", "intitule": "Moyen d’appel sur les frais irrépétibles", "detail": "L’absence de motivation propre à l’article 700 expose le jugement à la réformation."}
+    ]}},
+    {"id": "definitif", "titre": "Jugement définitif", "statut": "en_cours", "contenu_md": "## Jugement définitif\n\n### Dispositif\n\nPAR CES MOTIFS, le tribunal condamne la défenderesse au paiement de la somme de 9 000 euros, après examen des pièces n° 1 et n° 4.\n\n> Ce texte est un exemple : la version définitive du dossier le remplace."}
+  ]
+}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/18.1.0/lib/marked.umd.min.js" integrity="sha512-vyMZJAex6630R9bwuWSFTqe36izDPqqG2Poyh/bSPvgUSQiMhsVrwXtbYGpg4TSFfWJvXKuQ3cddFwv+hA7Psw==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.4.16/purify.min.js" integrity="sha512-flQmhkXNRQ3iUfvtdCobtpMjCb6kE+zLnTiAulAQJ3WykVfy84JvCMOo6vhwWXHTXjR25h9Zj+LyGFRWKjRoag==" crossorigin="anonymous"></script>
+<script>
+(function () {
+  'use strict';
+  var MAX_OCTETS = 4000, MAX_TEXTE = 1500, MAX_ELEM = 64;
+  var NS = 'http://www.w3.org/2000/svg';
+  var PARTIES = [['faits', 'Faits'], ['procedure', 'Procédure'], ['pretentions', 'Prétentions des parties'], ['motifs', 'Motifs'], ['dispositif', 'Dispositif']];
+  var TITRES_ECRAN = { fiche: 'Fiche', validation_cadrage: 'Cadrage', points_decision: 'Points de décision', corrections_jugement: 'Corrections du jugement', selection_robustesse: 'Corrections à intégrer' };
+  var STATUTS = { a_saisir: 'À compléter', en_cours: 'En cours', fait: 'Fait' };
+  var INDIC = {
+    vert: ['Jurisprudence constante', '🟢', 'cercle'],
+    orange: ['Solutions divergentes', '🟠', 'triangle'],
+    rouge: ['Appréciation souveraine', '🔴', 'carre']
+  };
+  var D = null, room = null, statutRoom = 'off', stockageOK = true, ctxCourant = null;
+  var etats = {}, compteurId = 0;
+
+  /* ---------- outils ---------- */
+  function $(s, r) { return (r || document).querySelector(s); }
+  function uid(p) { compteurId += 1; return 'mg-' + p + '-' + compteurId; }
+  function h(tag, a, kids) {
+    var e = document.createElement(tag), k, v;
+    if (a) {
+      for (k in a) {
+        v = a[k];
+        if (v === null || v === undefined || v === false) continue;
+        if (k === 'class') e.className = v;
+        else if (k === 'text') e.textContent = v;
+        else if (k.slice(0, 2) === 'on') e.addEventListener(k.slice(2), v);
+        else if (v === true) e.setAttribute(k, '');
+        else e.setAttribute(k, v);
+      }
+    }
+    (kids || []).forEach(function (c) {
+      if (c === null || c === undefined || c === false) return;
+      e.appendChild(typeof c === 'string' ? document.createTextNode(c) : c);
+    });
+    return e;
+  }
+  function icone(nom) {
+    var s = document.createElementNS(NS, 'svg');
+    s.setAttribute('viewBox', '0 0 16 16');
+    s.setAttribute('aria-hidden', 'true');
+    s.setAttribute('focusable', 'false');
+    function el(t, at) { var n = document.createElementNS(NS, t), k; for (k in at) n.setAttribute(k, at[k]); s.appendChild(n); }
+    if (nom === 'cercle') el('circle', { cx: 8, cy: 8, r: 6 });
+    else if (nom === 'demi') { el('circle', { cx: 8, cy: 8, r: 6 }); el('path', { d: 'M8 2a6 6 0 0 1 0 12z', fill: 'currentColor' }); }
+    else if (nom === 'coche') el('path', { d: 'M3 8.5l3.2 3.2L13 4.8' });
+    else if (nom === 'triangle') el('path', { d: 'M8 1.5L15 14H1z' });
+    else if (nom === 'carre') el('rect', { x: 2, y: 2, width: 12, height: 12 });
+    else if (nom === 'rond') el('circle', { cx: 8, cy: 8, r: 7 });
+    else if (nom === 'alerte') { el('circle', { cx: 8, cy: 8, r: 6.5 }); el('path', { d: 'M8 4.5v4.2M8 11v.4' }); }
+    return s;
+  }
+  function pastille(ind) {
+    var d = INDIC[ind];
+    if (!d) return null;
+    return h('span', { class: 'pastille ' + ind }, [icone(d[2]), d[0]]);
+  }
+  function p2(n) { return (n < 10 ? '0' : '') + n; }
+  function heure() { var d = new Date(); return p2(d.getHours()) + 'h' + p2(d.getMinutes()); }
+  function octets(o) { return new TextEncoder().encode(JSON.stringify(o)).length; }
+  function nettoyer(s) {
+    return String(s === null || s === undefined ? '' : s).replace(/\r\n?/g, '\n')
+      .replace(/(\p{Extended_Pictographic})?[\uFE00-\uFE0F]/gu, function (m, emoji) { return emoji ? m : ''; })
+      .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u009F\u00AD\u180E\u200B-\u200F\u2028-\u202E\u2060-\u206F\uFEFF]/g, '').trim();
+  }
+  /* vrai si un tableau dépasse MAX_ELEM éléments ou un objet MAX_ELEM clés */
+  function tropDElements(o) {
+    var ks;
+    if (Array.isArray(o)) return o.length > MAX_ELEM || o.some(tropDElements);
+    if (o && typeof o === 'object') { ks = Object.keys(o); return ks.length > MAX_ELEM || ks.some(function (k) { return tropDElements(o[k]); }); }
+    return false;
+  }
+  function nbMots(s) { return s.split(/\s+/).filter(Boolean).length; }
+  function nombre(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
+  function idSur(s) { return String(s).replace(/[^A-Za-z0-9_-]/g, '_'); }
+  /* AAAA-MM-JJ (champ date natif) <-> JJ/MM/AAAA (charge envoyée) */
+  function isoDepuisFr(s) {
+    var d = parseDate(s);
+    if (!d) return '';
+    return d.txt.slice(6) + '-' + d.txt.slice(3, 5) + '-' + d.txt.slice(0, 2);
+  }
+  function frDepuisIso(s) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(s));
+    var d = m ? parseDate(m[3] + '/' + m[2] + '/' + m[1]) : null;
+    return d ? d.txt : '';
+  }
+  function parseDate(s) {
+    var m = /^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{4})$/.exec(String(s).trim()), j, mo, a, d;
+    if (!m) return null;
+    j = +m[1]; mo = +m[2]; a = +m[3];
+    if (a < 2000 || a > 2100 || mo < 1 || mo > 12 || j < 1) return null;
+    d = new Date(a, mo - 1, j);
+    if (d.getFullYear() !== a || d.getMonth() !== mo - 1 || d.getDate() !== j) return null;
+    return { txt: p2(j) + '/' + p2(mo) + '/' + a, t: d.getTime() };
+  }
+
+  /* ---------- stockage (brouillons) ---------- */
+  function cleBrouillon(id) { return 'mg:' + ((D.dossier && (D.dossier.id || D.dossier.rg)) || 'sans-id') + ':' + id; }
+  function lire(cle) {
+    try { var s = window.localStorage.getItem(cle); return s ? JSON.parse(s) : null; } catch (e) { stockageOK = false; return null; }
+  }
+  function ecrire(cle, v) {
+    try { window.localStorage.setItem(cle, JSON.stringify(v)); } catch (e) { stockageOK = false; majAvertStockage(); }
+  }
+  function effacer(cle) { try { window.localStorage.removeItem(cle); } catch (e) { stockageOK = false; } }
+  function sonderStockage() {
+    try { window.localStorage.setItem('mg:sonde', '1'); window.localStorage.removeItem('mg:sonde'); } catch (e) { stockageOK = false; }
+  }
+  function majAvertStockage() {
+    Array.prototype.forEach.call(document.querySelectorAll('.avert-stockage'), function (n) { n.hidden = stockageOK; });
+  }
+
+  /* ---------- Markdown ---------- */
+  var BIBLIOS = false;
+  function initMarkdown() {
+    BIBLIOS = !!(window.marked && window.DOMPurify);
+    if (!BIBLIOS) return;
+    window.DOMPurify.addHook('afterSanitizeAttributes', function (n) {
+      var href;
+      if (n.tagName === 'A') {
+        href = n.getAttribute('href') || '';
+        if (!/^(https:|mailto:)/i.test(href)) n.removeAttribute('href');
+        else { n.setAttribute('target', '_blank'); n.setAttribute('rel', 'noopener noreferrer'); }
+      }
+    });
+  }
+  function apresRendu(racine) {
+    var hs = racine.querySelectorAll('h1,h2,h3,h4,h5,h6'), tw, noeuds = [], n;
+    Array.prototype.forEach.call(hs, function (t) {
+      var niv = +t.tagName.charAt(1), cible = niv <= 1 ? 'h3' : niv === 2 ? 'h4' : 'h5', nv = document.createElement(cible);
+      while (t.firstChild) nv.appendChild(t.firstChild);
+      t.parentNode.replaceChild(nv, t);
+    });
+    Array.prototype.forEach.call(racine.querySelectorAll('table'), function (t) {
+      var w = h('div', { class: 'tableau', role: 'region', tabindex: '0', 'aria-label': 'Tableau, défilement horizontal' });
+      t.parentNode.replaceChild(w, t);
+      w.appendChild(t);
+      Array.prototype.forEach.call(t.querySelectorAll('th'), function (c) { c.setAttribute('scope', 'col'); });
+    });
+    tw = document.createTreeWalker(racine, NodeFilter.SHOW_TEXT, null);
+    while ((n = tw.nextNode())) {
+      if (/[\uD83D][\uDFE0\uDFE2\uDD34]/.test(n.nodeValue) && !(n.parentNode.closest && n.parentNode.closest('pre,code'))) noeuds.push(n);
+    }
+    noeuds.forEach(remplacerEmojis);
+  }
+  function remplacerEmojis(n) {
+    var txt = n.nodeValue, frag = document.createDocumentFragment(), re = /(🟢|🟠|🔴)\s*/g, dernier = 0, m, ind, apres, lib;
+    var codes = { '🟢': 'vert', '🟠': 'orange', '🔴': 'rouge' };
+    while ((m = re.exec(txt))) {
+      frag.appendChild(document.createTextNode(txt.slice(dernier, m.index)));
+      ind = codes[m[1]];
+      frag.appendChild(pastille(ind));
+      dernier = re.lastIndex;
+      apres = txt.slice(dernier);
+      lib = INDIC[ind][0];
+      if (apres.toLowerCase().indexOf(lib.toLowerCase()) === 0) { dernier += lib.length; re.lastIndex = dernier; }
+      frag.appendChild(document.createTextNode(' '));
+    }
+    frag.appendChild(document.createTextNode(txt.slice(dernier)));
+    n.parentNode.replaceChild(frag, n);
+  }
+  function rendreMarkdown(md, cible) {
+    var brut = String(md || ''), html;
+    if (BIBLIOS) {
+      try {
+        html = window.marked.parse(brut, { gfm: true });
+        cible.innerHTML = window.DOMPurify.sanitize(html, {
+          USE_PROFILES: { html: true },
+          FORBID_TAGS: ['img', 'iframe', 'style', 'form', 'input', 'svg', 'script', 'object', 'embed', 'math', 'button', 'textarea', 'select', 'link', 'meta', 'base', 'picture', 'source', 'video', 'audio'],
+          FORBID_ATTR: ['style', 'srcset', 'src'],
+          ALLOWED_URI_REGEXP: /^(?:https:|mailto:)/i
+        });
+        apresRendu(cible);
+        return;
+      } catch (e) { /* repli brut */ }
+    }
+    cible.appendChild(h('p', { class: 'note', role: 'note', text: 'La mise en forme est indisponible (connexion coupée) : le texte s’affiche tel qu’il a été écrit.' }));
+    cible.appendChild(h('pre', { class: 'brut', text: brut }));
+  }
+
+  /* ---------- Room (envoi) ---------- */
+  async function verifierStatut() {
+    var s = 'off';
+    try {
+      if (room && typeof room.canSendToClaudeSession === 'function') s = await room.canSendToClaudeSession();
+    } catch (e) { s = 'off'; }
+    if (s !== 'available' && s !== 'available_if_summoned' && s !== 'available_if_opened') s = 'off';
+    return s;
+  }
+  function peutEnvoyer() { return statutRoom !== 'off'; }
+  function modeEnvoi() { return statutRoom === 'available_if_opened' ? 'stage' : 'send'; }
+  async function rafraichirStatut() {
+    var avant = statutRoom;
+    statutRoom = await verifierStatut();
+    if (avant !== statutRoom && ctxCourant) ctxCourant.boutons();
+  }
+  function codeErreur(e) {
+    var s = (e && (e.code || e.name || e.message)) || e, t = String(s);
+    var m = /rate_limited|claude_unavailable|upstream_error|invalid_argument/.exec(t);
+    return m ? m[0] : 'inconnu';
+  }
+
+  /* ---------- erreurs de champ ---------- */
+  function lierErreur(ctrl, slot, aideId, ecouteur) {
+    ctrl._slot = slot; ctrl._aide = aideId;
+    (ecouteur || ctrl).addEventListener(ecouteur ? 'change' : 'input', function () { retirerErreur(ctrl); });
+    if (ecouteur) ecouteur.addEventListener('input', function () { retirerErreur(ctrl); });
+  }
+  function poserErreur(ctrl, msg) {
+    var s = ctrl._slot;
+    s.textContent = '';
+    s.appendChild(icone('alerte'));
+    s.appendChild(h('span', { text: msg }));
+    s.hidden = false;
+    ctrl.setAttribute('aria-invalid', 'true');
+    ctrl.setAttribute('aria-describedby', (ctrl._aide ? ctrl._aide + ' ' : '') + s.id);
+  }
+  function retirerErreur(ctrl) {
+    if (!ctrl._slot || ctrl._slot.hidden) return;
+    ctrl._slot.hidden = true;
+    ctrl._slot.textContent = '';
+    ctrl.removeAttribute('aria-invalid');
+    if (ctrl._aide) ctrl.setAttribute('aria-describedby', ctrl._aide); else ctrl.removeAttribute('aria-describedby');
+    if (ctxCourant) ctxCourant.majResume();
+  }
+  function creerSlot() { return h('div', { class: 'erreur-champ', role: 'alert', id: uid('err'), hidden: true }); }
+  function champTexte(o) {
+    var id = uid('c'), aideId = o.aide ? id + '-aide' : null, slot = creerSlot();
+    var input = h('input', { type: o.date ? 'date' : 'text', id: id, autocomplete: 'off', spellcheck: o.nom ? 'false' : null, autocapitalize: o.nom ? 'words' : null, maxlength: o.date ? null : '200', 'aria-describedby': aideId, value: o.valeur || '' });
+    input.value = o.valeur || '';
+    input.addEventListener('keydown', function (ev) { if (ev.key === 'Enter') ev.preventDefault(); });
+    lierErreur(input, slot, aideId);
+    return { input: input, wrap: h('div', { class: 'champ' }, [h('label', { for: id, text: o.libelle }), o.aide ? h('p', { class: 'aide', id: aideId, text: o.aide }) : null, input, slot]) };
+  }
+  function zoneTexte(o) {
+    var id = uid('t'), aideId = o.aide ? id + '-aide' : null, slot = creerSlot(), cpt = h('p', { class: 'compteur-zone', 'aria-hidden': 'true' });
+    var ta = h('textarea', { id: id, rows: String(o.lignes || 3), maxlength: String(MAX_TEXTE), 'aria-describedby': aideId });
+    ta.value = o.valeur || '';
+    function maj() { cpt.textContent = nombre(ta.value.length) + ' sur ' + nombre(MAX_TEXTE) + ' caractères'; }
+    ta.addEventListener('input', maj);
+    maj();
+    lierErreur(ta, slot, aideId);
+    return { input: ta, maj: maj, aideEl: null, wrap: h('div', { class: 'champ' }, [h('label', { for: id, text: o.libelle }), o.aide ? h('p', { class: 'aide', id: aideId, text: o.aide }) : null, ta, cpt, slot]) };
+  }
+
+  /* ---------- écrans de saisie ---------- */
+  function etatInitial(onglet) {
+    var type = onglet.saisie.type, v = onglet.saisie.valeurs || {}, e;
+    if (type === 'fiche') {
+      e = { juridiction: String(v.juridiction || ''), date_audience: String(v.date_audience || ''), date_delibere: String(v.date_delibere || ''), president: String(v.president || ''), formation: v.formation === 'juge_unique' || v.formation === 'collegiale' ? v.formation : '', assesseurs: [String((v.assesseurs || [])[0] || ''), String((v.assesseurs || [])[1] || '')], greffier: String(v.greffier || '') };
+    } else if (type === 'validation_cadrage') e = { choix: null, textes: {} };
+    else if (type === 'points_decision') e = { positions: {} };
+    else if (type === 'selection_robustesse') e = { coches: {}, annots: {}, obs: '' };
+    else e = { textes: {}, envoyees: {} };
+    return e;
+  }
+  function empreinte(onglet) {
+    var s = onglet.saisie, pts = Array.isArray(s.points) ? s.points : [];
+    if (s.type === 'validation_cadrage') return pts.map(function (p) { return p.id; }).join('|');
+    if (s.type === 'points_decision') return pts.map(function (p) { return p.id + ':' + (p.options || []).map(function (o) { return o.code; }).join(','); }).join('|');
+    return '';
+  }
+  function etatPour(onglet) {
+    var id = onglet.id, e, br;
+    if (etats[id]) return etats[id];
+    e = etatInitial(onglet);
+    br = lire(cleBrouillon(id));
+    if (br && br.e === empreinte(onglet) && br.v && typeof br.v === 'object') {
+      Object.keys(br.v).forEach(function (k) { e[k] = br.v[k]; });
+      if (onglet.saisie.type === 'fiche' && (!Array.isArray(e.assesseurs) || e.assesseurs.length !== 2)) e.assesseurs = ['', ''];
+      e.restaure = true;
+    }
+    etats[id] = e;
+    return e;
+  }
+  function sauverBrouillon(onglet, etat) {
+    var copie = {}, restaure = etat.restaure;
+    Object.keys(etat).forEach(function (k) { if (k !== 'restaure' && k !== 'envoye') copie[k] = etat[k]; });
+    if (onglet.saisie.type === 'corrections_jugement') {
+      copie.textes = {};
+      Object.keys(etat.textes).forEach(function (k) { if (!etat.envoyees[k]) copie.textes[k] = etat.textes[k]; });
+      copie.envoyees = {};
+    }
+    etat.restaure = restaure;
+    ecrire(cleBrouillon(onglet.id), { e: empreinte(onglet), v: copie });
+  }
+
+  function enveloppe(onglet, valeurs) {
+    var rg = (D.dossier && D.dossier.rg) || '', type = onglet.saisie.type, label = TITRES_ECRAN[type] + (rg ? ' · ' + rg : '');
+    return { label: label.slice(0, 120), mongreffier: 1, ecran: type, rg: rg, valeurs: valeurs };
+  }
+
+  /* --- fiche --- */
+  function ecranFiche(onglet, etat, ctx) {
+    var corps = h('div'), champs = {}, zoneAss = h('fieldset'), lignes = [];
+    function ch(cle, libelle, aide, extra) {
+      var date = !!(extra && extra.date), c;
+      if (date) etat[cle] = frDepuisIso(isoDepuisFr(etat[cle]));
+      c = champTexte({ libelle: libelle, aide: aide, valeur: date ? isoDepuisFr(etat[cle]) : etat[cle], nom: extra && extra.nom, date: date });
+      c.input.addEventListener('input', function () { etat[cle] = date ? frDepuisIso(c.input.value) : c.input.value; ctx.change(); });
+      champs[cle] = c;
+      return c.wrap;
+    }
+    function dessinerAss() {
+      zoneAss.textContent = '';
+      lignes = [];
+      zoneAss.hidden = etat.formation !== 'collegiale';
+      zoneAss.appendChild(h('legend', { text: 'Assesseurs' }));
+      zoneAss.appendChild(h('p', { class: 'aide', text: 'Prénom et nom de chacun des deux assesseurs.' }));
+      var grille = h('div', { class: 'deux-col' });
+      etat.assesseurs.forEach(function (val, i) {
+        var c = champTexte({ libelle: 'Assesseur ' + (i + 1), valeur: val, nom: true });
+        c.input.addEventListener('input', function () { etat.assesseurs[i] = c.input.value; ctx.change(); });
+        grille.appendChild(c.wrap);
+        lignes.push(c);
+      });
+      zoneAss.appendChild(grille);
+    }
+    var groupeForm = h('fieldset'), nomForm = uid('f'), radiosForm = {}, slotForm = creerSlot();
+    function radioForm(val, texte) {
+      var id = uid('rf'), inp = h('input', { type: 'radio', name: nomForm, id: id, value: val });
+      inp.checked = etat.formation === val;
+      radiosForm[val] = inp;
+      return h('label', { class: 'choix', for: id }, [inp, h('span', { class: 'corps', text: texte })]);
+    }
+    groupeForm.appendChild(h('legend', { text: 'Composition de la formation' }));
+    groupeForm.appendChild(radioForm('juge_unique', 'Juge unique'));
+    groupeForm.appendChild(radioForm('collegiale', 'Formation collégiale (président et 2 assesseurs)'));
+    groupeForm.appendChild(slotForm);
+    lierErreur(radiosForm.juge_unique, slotForm, null, groupeForm);
+    groupeForm.addEventListener('change', function (ev) {
+      if (ev.target && ev.target.name === nomForm) {
+        etat.formation = ev.target.value; zoneAss.hidden = etat.formation !== 'collegiale';
+        lignes.forEach(function (c) { retirerErreur(c.input); });
+        ctx.change();
+      }
+    });
+    corps.appendChild(h('p', { text: 'Renseignez la fiche du dossier. Elle alimente l’en-tête du jugement et celui du Word. Indiquez le prénom et le nom complets de chaque personne : Claude normalisera la casse des noms à la rédaction.' }));
+    corps.appendChild(ch('juridiction', 'Juridiction', 'Par exemple : Tribunal de commerce de Lyon.'));
+    corps.appendChild(h('div', { class: 'deux-col' }, [
+      ch('date_audience', 'Date de l’audience', null, { date: true }),
+      ch('date_delibere', 'Date du délibéré', null, { date: true })
+    ]));
+    corps.appendChild(ch('president', 'Président d’audience', 'Prénom et nom.', { nom: true }));
+    corps.appendChild(groupeForm);
+    dessinerAss();
+    corps.appendChild(zoneAss);
+    corps.appendChild(ch('greffier', 'Greffier', 'Prénom et nom.', { nom: true }));
+    return {
+      corps: corps,
+      collecter: function () {
+        var err = [], v = {}, da, dd, ass = [], nomInc = 'Nom incomplet : indiquez le prénom et le nom (au moins deux mots).';
+        v.juridiction = nettoyer(etat.juridiction);
+        if (!v.juridiction) err.push({ ctrl: champs.juridiction.input, msg: 'Indiquez la juridiction.' });
+        da = nettoyer(etat.date_audience); dd = nettoyer(etat.date_delibere);
+        var pa = parseDate(da), pd = parseDate(dd), invalide = 'Cette date n’existe pas. Choisissez-la dans le calendrier.';
+        if (!da) err.push({ ctrl: champs.date_audience.input, msg: 'Indiquez la date de l’audience.' });
+        else if (!pa) err.push({ ctrl: champs.date_audience.input, msg: invalide });
+        if (!dd) err.push({ ctrl: champs.date_delibere.input, msg: 'Indiquez la date du délibéré.' });
+        else if (!pd) err.push({ ctrl: champs.date_delibere.input, msg: invalide });
+        else if (pa && pd.t < pa.t) err.push({ ctrl: champs.date_delibere.input, msg: 'La date du délibéré précède celle de l’audience.' });
+        v.date_audience = pa ? pa.txt : da; v.date_delibere = pd ? pd.txt : dd;
+        v.president = nettoyer(etat.president);
+        if (!v.president) err.push({ ctrl: champs.president.input, msg: 'Indiquez le président d’audience.' });
+        else if (nbMots(v.president) < 2) err.push({ ctrl: champs.president.input, msg: nomInc });
+        if (etat.formation !== 'juge_unique' && etat.formation !== 'collegiale') err.push({ ctrl: radiosForm.juge_unique, msg: 'Choisissez la composition : juge unique, ou formation collégiale.' });
+        else if (etat.formation === 'collegiale') {
+          etat.assesseurs.forEach(function (a, i) {
+            var n = nettoyer(a);
+            if (!n) err.push({ ctrl: lignes[i].input, msg: 'Indiquez l’assesseur ' + (i + 1) + '.' });
+            else if (nbMots(n) < 2) err.push({ ctrl: lignes[i].input, msg: nomInc });
+            else ass.push(n);
+          });
+        }
+        v.formation = etat.formation;
+        v.assesseurs = ass;
+        v.greffier = nettoyer(etat.greffier);
+        if (!v.greffier) err.push({ ctrl: champs.greffier.input, msg: 'Indiquez le greffier.' });
+        else if (nbMots(v.greffier) < 2) err.push({ ctrl: champs.greffier.input, msg: nomInc });
+        err.sort(function (a, b) { return a.ctrl.compareDocumentPosition(b.ctrl) & 4 ? -1 : 1; });
+        if (!err.length && etat.formation === 'collegiale' && ass.length !== 2) err.push({ ctrl: lignes[0].input, msg: 'Une formation collégiale compte exactement deux assesseurs.' });
+        return { erreurs: err, valeurs: v };
+      },
+      lots: null, compteur: false
+    };
+  }
+
+  /* --- cadrage --- */
+  function ecranCadrage(onglet, etat, ctx) {
+    var corps = h('div'), pts = Array.isArray(onglet.saisie.points) ? onglet.saisie.points : [], zones = {}, radios = {}, detail = h('fieldset'), slotGroupe = creerSlot();
+    var groupe = h('fieldset'), nom = uid('r');
+    function radio(val, texte) {
+      var id = uid('rd'), inp = h('input', { type: 'radio', name: nom, id: id, value: val });
+      inp.checked = etat.choix === val;
+      radios[val] = inp;
+      return h('label', { class: 'choix', for: id }, [inp, h('span', { class: 'corps', text: texte })]);
+    }
+    corps.appendChild(h('p', { text: 'Relisez le cadrage ci-dessus. Est-il correct ?' }));
+    groupe.appendChild(h('legend', { text: 'Votre réponse' }));
+    groupe.appendChild(radio('oui', 'Oui, le cadrage est correct'));
+    groupe.appendChild(radio('non', 'Non, j’ai des corrections à apporter'));
+    groupe.appendChild(slotGroupe);
+    lierErreur(radios.oui, slotGroupe, null, groupe);
+    corps.appendChild(groupe);
+    detail.hidden = etat.choix !== 'non';
+    detail.appendChild(h('legend', { text: 'Vos corrections, point par point' }));
+    pts.forEach(function (p) {
+      var z = zoneTexte({ libelle: p.id + ' : ' + p.intitule, aide: 'Laissez vide si ce point est correct.', valeur: etat.textes[p.id] });
+      z.input.addEventListener('input', function () { etat.textes[p.id] = z.input.value; ctx.change(); });
+      zones[p.id] = z; detail.appendChild(z.wrap);
+    });
+    var za = zoneTexte({ libelle: 'Autre remarque', aide: 'Pour tout ce que la liste ne couvre pas.', valeur: etat.textes.autre });
+    za.input.addEventListener('input', function () { etat.textes.autre = za.input.value; ctx.change(); });
+    zones.autre = za; detail.appendChild(za.wrap);
+    corps.appendChild(detail);
+    groupe.addEventListener('change', function (ev) {
+      if (ev.target && ev.target.name === nom) { etat.choix = ev.target.value; detail.hidden = etat.choix !== 'non'; ctx.change(); }
+    });
+    function corrections() {
+      var out = [];
+      pts.forEach(function (p) { var t = nettoyer(etat.textes[p.id]); if (t) out.push({ point: p.id, texte: t }); });
+      var a = nettoyer(etat.textes.autre);
+      if (a) out.push({ point: 'autre', texte: a });
+      return out;
+    }
+    return {
+      corps: corps,
+      collecter: function () {
+        var err = [], v, c;
+        if (etat.choix !== 'oui' && etat.choix !== 'non') {
+          err.push({ ctrl: radios.oui, msg: 'Choisissez une réponse : le cadrage est correct, ou vous avez des corrections.' });
+          return { erreurs: err, valeurs: null };
+        }
+        if (etat.choix === 'oui') return { erreurs: [], valeurs: { ok: true } };
+        c = corrections();
+        if (!c.length) {
+          err.push({ ctrl: (pts.length ? zones[pts[0].id] : zones.autre).input, msg: 'Écrivez au moins une correction, ou répondez « Oui ».' });
+          return { erreurs: err, valeurs: null };
+        }
+        v = { ok: false, corrections: c };
+        return { erreurs: [], valeurs: v };
+      },
+      lots: function (v) {
+        if (v.ok) return null;
+        return decouper(v.corrections, function (items) { return enveloppe(onglet, { ok: false, corrections: items }); }, function (items) {
+          return items.length === 1 ? 'Envoyer la correction ' + items[0].point : 'Envoyer les corrections ' + items[0].point + ' à ' + items[items.length - 1].point;
+        }, function (it) { return 'La correction ' + it.point; });
+      },
+      compteur: true,
+      approx: function () { return etat.choix === 'oui' ? { ok: true } : { ok: false, corrections: corrections() }; }
+    };
+  }
+
+  /* --- points de décision --- */
+  function ecranDecision(onglet, etat, ctx) {
+    var corps = h('div'), pts = Array.isArray(onglet.saisie.points) ? onglet.saisie.points : [], cartes = {}, avancement = h('p', { class: 'aide', role: 'status' });
+    if (!pts.length) {
+      corps.appendChild(h('p', { text: 'Aucun point de décision n’est à trancher pour le moment.' }));
+      return { corps: corps, collecter: function () { return { erreurs: [], valeurs: { positions: [] } }; }, lots: null, compteur: false, sansBoutons: true };
+    }
+    corps.appendChild(h('p', { text: 'Pour chaque point, choisissez l’option que vous retenez. Vous pouvez ajouter une réserve.' }));
+    corps.appendChild(avancement);
+    function pos(id) { if (!etat.positions[id]) etat.positions[id] = { option: '', reserve: '' }; return etat.positions[id]; }
+    function maj() {
+      var n = pts.filter(function (p) { return pos(p.id).option; }).length;
+      avancement.textContent = n + ' point' + (n > 1 ? 's' : '') + ' sur ' + pts.length + ' renseigné' + (n > 1 ? 's' : '');
+    }
+    corps.appendChild(h('div', {}, [
+      h('button', { type: 'button', class: 'btn', text: 'Retenir les propositions de l’IA', onclick: function () {
+        var n = 0;
+        pts.forEach(function (p) {
+          var codes = (p.options || []).map(function (o) { return o.code; });
+          if (!pos(p.id).option && p.indicateur !== 'rouge' && codes.indexOf(p.prop_ia) >= 0) { pos(p.id).option = p.prop_ia; cartes[p.id].radios[p.prop_ia].checked = true; majAideReserve(p); n += 1; }
+        });
+        maj(); ctx.change(); ctx.dire(n + ' proposition' + (n > 1 ? 's' : '') + ' de l’IA retenue' + (n > 1 ? 's' : '') + '. Vous pouvez modifier chaque point.');
+      } }),
+      h('p', { class: 'aide', text: 'Coche la proposition de l’IA pour chaque point, sauf ceux où elle s’abstient. Rien n’est envoyé : vous pouvez ensuite modifier chaque point.' })
+    ]));
+    function majAideReserve(p) {
+      var c = cartes[p.id];
+      c.aide.textContent = pos(p.id).option === 'AUTRE' ? 'Décrivez ici la solution que vous retenez.' : 'Une réserve conditionne votre choix ; Claude la reprendra dans la motivation.';
+    }
+    pts.forEach(function (p) {
+      var fs = h('fieldset', { class: 'carte' }), nom = uid('p'), radios = {}, slot = creerSlot(), opts = (p.options || []).map(function (o) { return { code: String(o.code), libelle: String(o.libelle) }; });
+      var prop;
+      fs.appendChild(h('legend', {}, ['Point ', h('span', { class: 'id', text: p.id }), ' : ', h('span', { text: p.intitule })]));
+      if (INDIC[p.indicateur]) fs.appendChild(h('p', {}, [pastille(p.indicateur)]));
+      if (p.prop_ia === 'ABSTENTION') fs.appendChild(h('p', { text: 'L’IA s’abstient de recommander : appréciation souveraine du juge.' }));
+      else if (p.prop_ia) fs.appendChild(h('p', { text: 'Proposition de l’IA : option ' + p.prop_ia + '.' }));
+      opts.concat([{ code: 'AUTRE', libelle: 'Autre solution' }]).forEach(function (o) {
+        var id = uid('o'), inp = h('input', { type: 'radio', name: nom, id: id, value: o.code });
+        prop = o.code === p.prop_ia;
+        inp.checked = pos(p.id).option === o.code;
+        radios[o.code] = inp;
+        fs.appendChild(h('label', { class: 'choix', for: id }, [inp, h('span', { class: 'corps' }, [o.code === 'AUTRE' ? o.libelle : o.code + '. ' + o.libelle, prop ? h('span', { class: 'repere', text: 'Proposition de l’IA' }) : null])]));
+      });
+      fs.appendChild(slot);
+      var z = zoneTexte({ libelle: 'Réserve ou précision (facultatif)', aide: 'Une réserve conditionne votre choix ; Claude la reprendra dans la motivation.', valeur: pos(p.id).reserve });
+      z.input.addEventListener('input', function () { pos(p.id).reserve = z.input.value; ctx.change(); });
+      fs.appendChild(z.wrap);
+      cartes[p.id] = { radios: radios, reserve: z, slot: slot, aide: z.wrap.querySelector('.aide') };
+      lierErreur(radios[opts.length ? opts[0].code : 'AUTRE'], slot, null, fs);
+      fs.addEventListener('change', function (ev) {
+        if (ev.target && ev.target.name === nom) { pos(p.id).option = ev.target.value; majAideReserve(p); maj(); ctx.change(); }
+      });
+      majAideReserve(p);
+      corps.appendChild(fs);
+    });
+    maj();
+    function positions() {
+      var out = [];
+      pts.forEach(function (p) {
+        var s = pos(p.id), r = nettoyer(s.reserve), o = { point: p.id, option: s.option };
+        if (s.option) { if (r) o.reserve = r; out.push(o); }
+      });
+      return out;
+    }
+    return {
+      corps: corps,
+      collecter: function () {
+        var err = [], manquants = [], valeurs;
+        pts.forEach(function (p) {
+          var s = pos(p.id), c = cartes[p.id], first = Object.keys(c.radios)[0];
+          if (!s.option) { manquants.push(p.id); err.push({ ctrl: c.radios[first], msg: 'Point ' + p.id + ' : choisissez une option.', ouvre: true }); }
+          else if (s.option === 'AUTRE' && !nettoyer(s.reserve)) err.push({ ctrl: c.reserve.input, msg: 'Vous avez choisi « Autre solution » : décrivez-la dans la zone ci-dessous.' });
+        });
+        if (manquants.length) err.unshift({ resume: 'Il reste ' + manquants.length + ' point' + (manquants.length > 1 ? 's' : '') + ' sans réponse : ' + manquants.join(', ') + '.' });
+        valeurs = { positions: positions() };
+        return { erreurs: err, valeurs: valeurs };
+      },
+      lots: function (v) {
+        return decouper(v.positions, function (items) { return enveloppe(onglet, { positions: items }); }, function (items) {
+          return items.length === 1 ? 'Envoyer le point ' + items[0].point : 'Envoyer les points ' + items[0].point + ' à ' + items[items.length - 1].point;
+        }, function (it) { return 'Le point ' + it.point; });
+      },
+      compteur: true,
+      approx: function () { return { positions: positions() }; }
+    };
+  }
+
+  /* --- corrections du jugement --- */
+  function ecranJugement(onglet, etat, ctx) {
+    var corps = h('div'), zones = {}, ctrlLots = {};
+    corps.appendChild(h('p', { text: 'Indiquez, partie par partie, ce que vous voulez changer dans le projet de jugement. Laissez vide ce qui vous convient.' }));
+    corps.appendChild(h('p', { class: 'aide', text: 'Écrivez la correction avec vos mots ; citez le passage concerné si possible.' }));
+    PARTIES.forEach(function (pa) {
+      var cle = pa[0], z = zoneTexte({ libelle: pa[1], lignes: 6, valeur: etat.textes[cle] }), zoneLot = h('div');
+      z.input.addEventListener('input', function () { etat.textes[cle] = z.input.value; if (etat.envoyees[cle]) etat.envoyees[cle] = false; ctx.change(); });
+      zones[cle] = z; ctrlLots[cle] = zoneLot;
+      z.wrap.appendChild(zoneLot);
+      corps.appendChild(z.wrap);
+    });
+    function textes() {
+      var out = {};
+      PARTIES.forEach(function (pa) { var t = nettoyer(etat.textes[pa[0]]); if (t) out[pa[0]] = t; });
+      return out;
+    }
+    function chargePartie(cle, t) { var c = {}; c[cle] = t; return enveloppe(onglet, { partie: cle, corrections: c }); }
+    function majLots() {
+      var t = textes(), tout = enveloppe(onglet, { partie: 'tout', corrections: t }), trop = octets(tout) > MAX_OCTETS;
+      ctx.modeLots = trop;
+      PARTIES.forEach(function (pa) {
+        var cle = pa[0], zone = ctrlLots[cle];
+        zone.textContent = '';
+        if (etat.envoyees[cle]) zone.appendChild(h('p', { class: 'badge' }, [icone('coche'), 'Partie envoyée']));
+        if (trop && t[cle]) {
+          var ch = chargePartie(cle, t[cle]), n = octets(ch);
+          if (n > MAX_OCTETS) {
+            zone.appendChild(h('p', { class: 'erreur-champ' }, [icone('alerte'), 'La partie « ' + pa[1] + ' » est trop longue pour un envoi (' + nombre(n) + ' octets). Raccourcissez-la d’environ ' + nombre(Math.ceil((n - MAX_OCTETS) / 1.1)) + ' caractères, envoyez-la, puis écrivez le reste dans une nouvelle correction.']));
+          } else {
+            zone.appendChild(h('button', { type: 'button', class: 'btn', 'aria-label': 'Envoyer cette partie : ' + pa[1], text: etat.envoyees[cle] ? 'Envoyer à nouveau' : 'Envoyer cette partie', onclick: function () {
+              if (!peutEnvoyer()) { ctx.dire('Cet écran ne peut pas envoyer directement : utilisez « Copier pour Claude ».'); return; }
+              ctx.lancer(ch, function () { etat.envoyees[cle] = true; majLots(); }, true);
+            } }));
+          }
+        }
+      });
+      ctx.majTaille();
+      ctx.boutons();
+    }
+    return {
+      corps: corps,
+      collecter: function () {
+        var t = textes(), err = [];
+        if (!Object.keys(t).length) err.push({ ctrl: zones.faits.input, msg: 'Écrivez au moins une correction, ou choisissez « Le projet me convient, sans correction ».' });
+        return { erreurs: err, valeurs: { partie: 'tout', corrections: t } };
+      },
+      lots: null,
+      compteur: true,
+      approx: function () { return { partie: 'tout', corrections: textes() }; },
+      majLots: majLots,
+      tertiaire: {
+        texte: 'Le projet me convient, sans correction',
+        valeurs: { partie: 'tout', sans_correction: true, corrections: {} },
+        bloque: function () {
+          var t = textes(), cle = PARTIES.map(function (pa) { return pa[0]; }).filter(function (k) { return t[k]; })[0];
+          if (!cle) return null;
+          zones[cle].input.focus();
+          return 'Vous avez écrit des corrections. Effacez-les pour répondre que le projet vous convient, ou utilisez « Envoyer à Claude ».';
+        }
+      }
+    };
+  }
+
+  /* --- corrections à intégrer après la robustesse --- */
+  var GRAVITES = { critique: ['Critique', 'carre', 'rouge', 0], a_surveiller: ['À surveiller', 'triangle', 'orange', 1], mineur: ['Mineur', 'cercle', 'neutre', 2] };
+  var ORIGINES = { ombre: 'angles morts', dissident: 'simulation d’appel' };
+  function graviteDe(r) { return GRAVITES[r.gravite] ? r.gravite : 'mineur'; }
+  function ecranRobustesse(onglet, etat, ctx) {
+    var corps = h('div'), liste = Array.isArray(onglet.saisie.recommandations) ? onglet.saisie.recommandations : [], cases = {}, annots = {}, avancement = h('p', { class: 'aide', role: 'status' });
+    var vus = {}, recos = liste.filter(function (r) { if (!r || typeof r !== 'object' || !r.id || vus[String(r.id)]) return false; vus[String(r.id)] = true; return true; }).map(function (r) { return { id: String(r.id), gravite: graviteDe(r), origine: r.origine, intitule: String(r.intitule || ''), detail: String(r.detail || '') }; });
+    var affichage = recos.map(function (r, i) { return { r: r, i: i }; }).sort(function (a, b) { return GRAVITES[a.r.gravite][3] - GRAVITES[b.r.gravite][3] || a.i - b.i; }).map(function (x) { return x.r; });
+    var slotTop = creerSlot(), premiere = null, slotPremiere = null, obs;
+    if (!etat.coches || typeof etat.coches !== 'object') etat.coches = {};
+    if (!etat.annots || typeof etat.annots !== 'object') etat.annots = {};
+    if (typeof etat.obs !== 'string') etat.obs = '';
+    var annonce = h('p', { class: 'sr', role: 'status' });
+    function nbCoches() { return recos.filter(function (r) { return etat.coches[r.id]; }).length; }
+    function majAvancement() {
+      var n = nbCoches();
+      avancement.textContent = n === 0 ? 'Aucune correction cochée sur ' + recos.length : n + ' correction' + (n > 1 ? 's' : '') + ' cochée' + (n > 1 ? 's' : '') + ' sur ' + recos.length;
+    }
+    function zone(libelle, srPlus, aide, valeur, lignes, surChange, nomDepasse) {
+      var id = uid('t'), aideId = aide ? id + '-aide' : null, slot = creerSlot(), cpt = h('p', { class: 'compteur-zone', 'aria-hidden': 'true' }), depasse = false;
+      var ta = h('textarea', { id: id, rows: String(lignes), 'aria-describedby': aideId });
+      ta.value = valeur || '';
+      function maj() {
+        var n = nettoyer(ta.value).length, trop = n > MAX_TEXTE;
+        cpt.textContent = nombre(n) + ' sur ' + nombre(MAX_TEXTE) + ' caractères';
+        cpt.classList.toggle('alerte', trop);
+        if (trop && !depasse) annonce.textContent = nomDepasse + ' dépasse' + (nomDepasse.indexOf('Les ') === 0 ? 'nt' : '') + ' ' + nombre(MAX_TEXTE) + ' caractères.';
+        if (!trop) { if (depasse) annonce.textContent = ''; }
+        depasse = trop;
+      }
+      ta.addEventListener('input', function () { maj(); surChange(ta.value); });
+      maj();
+      lierErreur(ta, slot, aideId);
+      return { input: ta, wrap: h('div', { class: 'champ' }, [h('label', { for: id }, [libelle, srPlus ? h('span', { class: 'sr', text: srPlus }) : null]), aide ? h('p', { class: 'aide', id: aideId, text: aide }) : null, ta, cpt, slot]) };
+    }
+    if (!recos.length) corps.appendChild(h('p', { text: 'Aucune recommandation n’a été formulée. Vous pouvez demander la rédaction de la version définitive.' }));
+    else {
+      corps.appendChild(h('p', { text: 'Cochez les corrections que vous voulez voir intégrées dans la version définitive. Vous pouvez préciser chacune par une annotation.' }));
+      corps.appendChild(h('p', { class: 'aide', text: 'Les recommandations critiques sont présentées en premier. Rien n’est coché d’office. Dans une annotation, dites comment intégrer la correction : Claude s’y conformera.' }));
+      corps.appendChild(slotTop);
+      if (recos.some(function (r) { return r.gravite === 'critique'; })) {
+        corps.appendChild(h('div', {}, [
+          h('button', { type: 'button', class: 'btn', text: 'Cocher toutes les critiques', onclick: function () {
+            var crit = recos.filter(function (r) { return r.gravite === 'critique'; }), nouveaux = 0;
+            crit.forEach(function (r) {
+              if (!etat.coches[r.id]) nouveaux += 1;
+              etat.coches[r.id] = true; cases[r.id].checked = true; retirerErreur(cases[r.id]);
+            });
+            majAvancement(); ctx.change();
+            ctx.dire(nouveaux === 0 ? 'Toutes les recommandations critiques sont déjà cochées.' : crit.length + ' recommandation' + (crit.length > 1 ? 's' : '') + ' critique' + (crit.length > 1 ? 's' : '') + ' cochée' + (crit.length > 1 ? 's' : '') + '. Vous pouvez décocher ou annoter chacune.');
+          } }),
+          h('p', { class: 'aide', text: 'Coche toutes les recommandations critiques. Rien n’est envoyé : vous pouvez ensuite décocher ou annoter chacune.' })
+        ]));
+      }
+      corps.appendChild(avancement);
+    }
+    affichage.forEach(function (r) {
+      var fs = h('fieldset', { class: 'carte' }), slotCase = creerSlot(), cbId = uid('rc'), cb = h('input', { type: 'checkbox', id: cbId }), G = GRAVITES[r.gravite], lab, z;
+      cb.checked = !!etat.coches[r.id];
+      lab = h('label', { class: 'choix', for: cbId }, [cb, h('span', { class: 'corps' }, ['Intégrer', h('span', { class: 'sr', text: ' ' + r.id + ' : ' + r.intitule })])]);
+      cases[r.id] = cb;
+      lierErreur(cb, slotCase, null, lab);
+      cb.addEventListener('change', function () { etat.coches[r.id] = cb.checked; majAvancement(); ctx.change(); });
+      fs.appendChild(h('legend', {}, [h('span', { class: 'id', text: r.id }), ' : ', h('span', { text: r.intitule })]));
+      fs.appendChild(h('div', { class: 'reperes' }, [h('span', { class: 'pastille ' + G[2] }, [icone(G[1]), G[0]]), ORIGINES[r.origine] ? h('span', { class: 'repere', text: 'Origine : ' + ORIGINES[r.origine] }) : null]));
+      if (r.detail) fs.appendChild(h('p', { text: r.detail }));
+      fs.appendChild(lab);
+      fs.appendChild(slotCase);
+      z = zone('Annotation (facultative)', ' pour ' + r.id, null, etat.annots[r.id], 3, function (v) { etat.annots[r.id] = v; ctx.change(); }, r.id + ' : l’annotation');
+      annots[r.id] = z;
+      fs.appendChild(z.wrap);
+      corps.appendChild(fs);
+    });
+    obs = zone('Observations générales (facultatif)', null, 'Pour tout ce qui ne se rattache à aucune recommandation.', etat.obs, 4, function (v) { etat.obs = v; ctx.change(); }, 'Les observations générales');
+    corps.appendChild(obs.wrap);
+    corps.appendChild(annonce);
+    majAvancement();
+    if (affichage.length) { premiere = cases[affichage[0].id]; slotPremiere = premiere._slot; }
+    function retenues() {
+      var out = [];
+      recos.forEach(function (r) {
+        var a = nettoyer(etat.annots[r.id]), it;
+        if (etat.coches[r.id]) { it = { reco: r.id }; if (a) it.annotation = a; out.push(it); }
+      });
+      return out;
+    }
+    function approx() { return { retenues: retenues(), observations: nettoyer(etat.obs) }; }
+    function ordreDom(a, b) { return a.ctrl.compareDocumentPosition(b.ctrl) & 4 ? -1 : 1; }
+    function libellerLot(items, avecObs) {
+      var t = items.length === 0 ? 'Envoyer les observations' : items.length === 1 ? 'Envoyer la correction ' + items[0].reco : 'Envoyer les corrections ' + items[0].reco + ' à ' + items[items.length - 1].reco;
+      return items.length && avecObs ? t + ' et les observations' : t;
+    }
+    return {
+      corps: corps,
+      collecter: function () {
+        var err = [], v = approx(), obsTxt = v.observations, msgVide;
+        if (premiere) { retirerErreur(premiere); premiere._slot = slotPremiere; }
+        recos.forEach(function (r) {
+          var a = nettoyer(etat.annots[r.id]), msg;
+          if (a.length > MAX_TEXTE) {
+            msg = r.id + ' : l’annotation dépasse ' + nombre(MAX_TEXTE) + ' caractères (' + nombre(a.length) + '). Raccourcissez-la d’environ ' + nombre(a.length - MAX_TEXTE) + ' caractères.';
+            err.push({ ctrl: annots[r.id].input, msg: msg, lib: msg });
+          }
+          if (a && !etat.coches[r.id]) {
+            msg = r.id + ' : vous avez écrit une annotation sans cocher « Intégrer ». Cochez la case, ou effacez l’annotation.';
+            err.push({ ctrl: cases[r.id], msg: msg, lib: msg });
+          }
+        });
+        if (obsTxt.length > MAX_TEXTE) {
+          var m = 'Les observations générales dépassent ' + nombre(MAX_TEXTE) + ' caractères (' + nombre(obsTxt.length) + '). Raccourcissez-les d’environ ' + nombre(obsTxt.length - MAX_TEXTE) + ' caractères.';
+          err.push({ ctrl: obs.input, msg: m, lib: m });
+        }
+        if (!err.length && !v.retenues.length && !obsTxt) {
+          if (premiere) {
+            premiere._slot = slotTop;
+            msgVide = 'Cochez au moins une correction, ou choisissez « Aucune correction, rédiger la version définitive ».';
+            err.push({ ctrl: premiere, msg: msgVide, lib: msgVide });
+          } else {
+            msgVide = 'Écrivez des observations, ou choisissez « Aucune correction, rédiger la version définitive ».';
+            err.push({ ctrl: obs.input, msg: msgVide, lib: msgVide });
+          }
+        }
+        err.sort(ordreDom);
+        return { erreurs: err, valeurs: v };
+      },
+      lots: function (v) {
+        var fab = function (items, avecObs, n, total) {
+          var val = { retenues: items };
+          if (avecObs) val.observations = v.observations;
+          val.lot = { n: n, total: total };
+          return enveloppe(onglet, val);
+        };
+        var r = decouper(v.retenues, function (items) { return fab(items, false, 99, 99); }, function (items) { return libellerLot(items, false); }, function (it) { return 'La recommandation ' + it.reco; });
+        var groupes, total;
+        if (r.trop) { r.f = true; return r; }
+        groupes = r.lots.map(function (l) { return l.charge.valeurs.retenues; });
+        if (!groupes.length || octets(fab(groupes[groupes.length - 1], true, 99, 99)) > MAX_OCTETS) groupes.push([]);
+        total = groupes.length;
+        return { lots: groupes.map(function (items, i) {
+          var dernier = i === total - 1;
+          return { libelle: libellerLot(items, dernier && !!v.observations), charge: fab(items, dernier, i + 1, total) };
+        }) };
+      },
+      compteur: true,
+      approx: approx,
+      tertiaire: {
+        texte: 'Aucune correction, rédiger la version définitive',
+        valeurs: { retenues: [], observations: '', sans_correction: true },
+        bloque: function () {
+          var ids = affichage.map(function (r) { return r.id; }), c = ids.filter(function (id) { return etat.coches[id]; })[0], a = ids.filter(function (id) { return nettoyer(etat.annots[id]); })[0];
+          var msg1 = 'Vous avez coché ou annoté des corrections. Décochez-les et effacez les annotations pour répondre qu’aucune correction n’est à faire, ou utilisez « Envoyer à Claude ».';
+          if (c) { cases[c].focus(); return msg1; }
+          if (a) { annots[a].input.focus(); return msg1; }
+          if (nettoyer(etat.obs)) { obs.input.focus(); return 'Vous avez écrit des observations. Effacez-les pour répondre qu’aucune correction n’est à faire, ou utilisez « Envoyer à Claude ».'; }
+          return null;
+        }
+      }
+    };
+  }
+
+  /* découpage en lots de 4 000 octets au plus */
+  function decouper(items, fabriquer, libelleLot, nomItem) {
+    var lots = [], cur = [], i, it;
+    for (i = 0; i < items.length; i += 1) {
+      it = items[i];
+      if (octets(fabriquer([it])) > MAX_OCTETS) return { trop: nomItem(it), octets: octets(fabriquer([it])) };
+      if (cur.length && (cur.length >= MAX_ELEM || octets(fabriquer(cur.concat([it]))) > MAX_OCTETS)) { lots.push(cur); cur = []; }
+      cur.push(it);
+    }
+    if (cur.length) lots.push(cur);
+    return { lots: lots.map(function (l) { return { libelle: libelleLot(l), charge: fabriquer(l) }; }) };
+  }
+
+  /* ---------- construction d'un écran de saisie ---------- */
+  function construireSaisie(onglet) {
+    var etat = etatPour(onglet), type = onglet.saisie.type, ctx, ecran, racine, zResume, zStatut, zBoutons, zLots, zTaille, zNoteLots, zAnnonce, zCopie, zEnvoye, zRestaure, zStockage, annonceFaite = false, noteLotsAnnoncee = false, occupe = false, elements = [];
+    racine = h('section', { class: 'saisie', 'aria-labelledby': uid('h') });
+    var titre = h('h3', { id: racine.getAttribute('aria-labelledby'), tabindex: '-1', text: 'Votre saisie' });
+    zRestaure = h('p', { role: 'status', class: 'note', hidden: !etat.restaure, text: 'Votre saisie précédente a été rétablie.' });
+    zStockage = h('p', { class: 'note avert-stockage', hidden: stockageOK, text: 'Votre saisie n’est pas conservée si la page se recharge : envoyez-la avant que Claude ne mette l’artefact à jour.' });
+    zEnvoye = h('p', { class: 'envoye', hidden: !etat.envoye, text: etat.envoye ? 'Envoyé à ' + etat.envoye : '' });
+    zResume = h('div');
+    zStatut = h('div', { class: 'statut', role: 'status', 'aria-live': 'polite' });
+    zBoutons = h('div', { class: 'btns' });
+    zLots = h('div', { class: 'lots' });
+    zCopie = h('div');
+    zTaille = h('p', { class: 'compteur', 'aria-hidden': 'true' });
+    zNoteLots = h('p', { class: 'note', hidden: true });
+    zAnnonce = h('p', { class: 'sr', role: 'status' });
+    ctx = {
+      modeLots: false,
+      titre: titre,
+      dire: function (t) { zStatut.textContent = t; },
+      change: function () {
+        etat.restaure = false; zRestaure.hidden = true;
+        zStatut.textContent = ''; zLots.textContent = ''; zCopie.textContent = '';
+        sauverBrouillon(onglet, etat);
+        if (ecran.majLots) ecran.majLots(); else ctx.majTaille();
+      },
+      majTaille: function () {
+        var n, a;
+        if (!ecran.compteur) return;
+        a = ecran.approx();
+        n = octets(enveloppe(onglet, a));
+        zTaille.textContent = 'Taille de l’envoi : ' + nombre(n) + ' sur ' + nombre(MAX_OCTETS) + ' octets';
+        zTaille.classList.toggle('alerte', n > MAX_OCTETS * 0.8);
+        if (n > MAX_OCTETS * 0.8 && !annonceFaite) { annonceFaite = true; zAnnonce.textContent = 'Attention : votre saisie approche de la limite de ' + nombre(MAX_OCTETS) + ' octets pour un seul envoi.'; }
+        if (n <= MAX_OCTETS * 0.8) { annonceFaite = false; zAnnonce.textContent = ''; }
+      },
+      majResume: function () {
+        if (!zResume.firstChild) return;
+        var reste = elements.some(function (e) { return e.ctrl && e.ctrl._slot && !e.ctrl._slot.hidden; });
+        if (!reste) zResume.textContent = '';
+      }
+    };
+    ecran = type === 'fiche' ? ecranFiche(onglet, etat, ctx) : type === 'validation_cadrage' ? ecranCadrage(onglet, etat, ctx) : type === 'points_decision' ? ecranDecision(onglet, etat, ctx) : type === 'selection_robustesse' ? ecranRobustesse(onglet, etat, ctx) : ecranJugement(onglet, etat, ctx);
+
+    function libelleErreur(e) {
+      if (e.lib) return e.lib;
+      var c = e.ctrl, l = c.id && (c.tagName === 'TEXTAREA' || c.type === 'text') ? $('label[for="' + c.id + '"]', racine) : null;
+      return l ? (e.msg.indexOf(' : ') >= 0 ? l.textContent + ', ' + e.msg.charAt(0).toLowerCase() + e.msg.slice(1) : l.textContent + ' : ' + e.msg) : e.msg;
+    }
+    function valider() {
+      var r = ecran.collecter(), liste, ul, premier;
+      zResume.textContent = ''; zStatut.textContent = ''; zLots.textContent = ''; zCopie.textContent = '';
+      elements.forEach(function (e) { if (e.ctrl) retirerErreur(e.ctrl); });
+      elements = [];
+      if (!r.erreurs.length) return r;
+      liste = r.erreurs.filter(function (e) { return e.ctrl; });
+      elements = liste;
+      liste.forEach(function (e) { poserErreur(e.ctrl, e.msg); });
+      ul = h('ul');
+      liste.forEach(function (e) {
+        ul.appendChild(h('li', {}, [h('a', { href: '#', text: libelleErreur(e), onclick: function (ev) { ev.preventDefault(); e.ctrl.focus(); } })]));
+      });
+      var resumeTxt = r.erreurs.filter(function (e) { return e.resume; })[0];
+      zResume.appendChild(h('div', { class: 'resume', role: 'alert' }, [h('p', { text: 'Votre saisie n’est pas complète. À corriger :' }), resumeTxt ? h('p', { text: resumeTxt.resume }) : null, ul]));
+      premier = liste[0] && liste[0].ctrl;
+      if (premier) { try { premier.scrollIntoView({ block: 'center' }); } catch (e) { /* ignoré */ } premier.focus({ preventScroll: true }); }
+      return null;
+    }
+    function lancer(charge, apres, aucunReste) {
+      var mode, p, n;
+      if (occupe) return;
+      if (D.demo === true) { zStatut.textContent = 'Mode démonstration : rien n’est envoyé.'; return; }
+      n = octets(charge);
+      if (n > MAX_OCTETS) { zStatut.textContent = 'Cette saisie est trop longue pour un seul envoi (' + nombre(n) + ' octets, limite ' + nombre(MAX_OCTETS) + ').'; return; }
+      if (tropDElements(charge)) { zStatut.textContent = 'Cette saisie compte trop d’éléments pour un seul envoi (' + MAX_ELEM + ' au plus). Utilisez « Copier pour Claude ».'; return; }
+      mode = modeEnvoi();
+      occupe = true;
+      majOccupe(true);
+      zStatut.textContent = '';
+      try { p = room.sendToClaudeSession(charge, { deliver: mode }); } catch (e) { p = Promise.reject(e); }
+      Promise.resolve(p).then(function () {
+        occupe = false;
+        etat.envoye = heure();
+        zEnvoye.textContent = 'Envoyé à ' + etat.envoye; zEnvoye.hidden = false;
+        zStatut.textContent = mode === 'stage' ? 'Votre saisie est déposée dans la zone de message de la conversation. Appuyez sur Entrée pour l’envoyer.' : 'Envoyé. Regardez la conversation : confirmez l’envoi dans la fenêtre de Claude si elle s’affiche.';
+        if (apres) apres(); else effacer(cleBrouillon(onglet.id));
+        if (!apres) { /* envoi complet : brouillon effacé */ }
+        majOccupe(false);
+      }, function (e) {
+        var code = codeErreur(e);
+        occupe = false;
+        if (code === 'rate_limited') zStatut.textContent = 'Trop d’envois rapprochés. Patientez quelques secondes, puis réessayez.';
+        else if (code === 'upstream_error') zStatut.textContent = 'Le service de Claude a répondu par une erreur. Réessayez, ou utilisez « Copier pour Claude ».';
+        else if (code === 'invalid_argument') zStatut.textContent = 'L’envoi a été refusé : la saisie n’a pas le format attendu. Utilisez « Copier pour Claude ».';
+        else {
+          zStatut.textContent = 'Claude n’est pas joignable depuis cette page pour le moment. Votre saisie est conservée. Utilisez « Copier pour Claude », puis collez dans la conversation.';
+          verifierStatut().then(function (s) {
+            statutRoom = s;
+            if (s === 'available' && mode === 'send') {
+              try { Promise.resolve(room.sendToClaudeSession(charge, { deliver: 'stage' })).then(function () {
+                zStatut.textContent = 'Votre saisie est déposée dans la zone de message de la conversation. Appuyez sur Entrée pour l’envoyer.';
+                etat.envoye = heure(); zEnvoye.textContent = 'Envoyé à ' + etat.envoye; zEnvoye.hidden = false;
+                if (apres) apres(); else effacer(cleBrouillon(onglet.id));
+              }, function () { /* message déjà affiché */ }); } catch (e2) { /* message déjà affiché */ }
+            }
+            ctx.boutons();
+          });
+        }
+        majOccupe(false);
+      });
+    }
+    ctx.lancer = lancer;
+    function majOccupe(oui) {
+      Array.prototype.forEach.call(racine.querySelectorAll('.btn'), function (b) { if (oui || b._clos) b.setAttribute('disabled', ''); else b.removeAttribute('disabled'); });
+      var env = $('.btn-envoi', racine);
+      if (env) { env.setAttribute('aria-busy', oui ? 'true' : 'false'); env.textContent = oui ? 'Envoi en cours…' : env._texte; }
+    }
+    function clicEnvoi() {
+      var r = valider(), charge, n, lots;
+      if (!r) return;
+      charge = enveloppe(onglet, r.valeurs);
+      if (D.demo === true) { zStatut.textContent = 'Mode démonstration : rien n’est envoyé.'; return; }
+      n = octets(charge);
+      if (n > MAX_OCTETS || tropDElements(charge)) {
+        lots = ecran.lots ? ecran.lots(r.valeurs) : null;
+        if (lots && lots.lots) {
+          zStatut.textContent = (n > MAX_OCTETS ? 'Cette saisie est trop longue pour un seul envoi (' + nombre(n) + ' octets, limite ' + nombre(MAX_OCTETS) + ').' : 'Cette saisie compte trop d’éléments pour un seul envoi (' + MAX_ELEM + ' au plus).') + ' Envoyez-la en plusieurs lots avec les boutons ci-dessous, ou utilisez « Copier pour Claude ».';
+          var restants = lots.lots.length;
+          lots.lots.forEach(function (l) {
+            zLots.appendChild(h('button', { type: 'button', class: 'btn', text: l.libelle, onclick: function (ev) {
+              var b = ev.currentTarget;
+              lancer(l.charge, function () { restants -= 1; b._clos = true; b.setAttribute('disabled', ''); b.textContent = 'Lot envoyé : ' + l.libelle; if (restants <= 0) effacer(cleBrouillon(onglet.id)); });
+            } }));
+          });
+        } else if (lots && lots.trop) {
+          zStatut.textContent = lots.f ? lots.trop + ' est trop longue pour un envoi (' + nombre(lots.octets) + ' octets, limite ' + nombre(MAX_OCTETS) + '). Raccourcissez-la, ou utilisez « Copier pour Claude ».' : lots.trop + ' est trop long pour un envoi (' + nombre(lots.octets) + ' octets, limite ' + nombre(MAX_OCTETS) + '). Raccourcissez-le, ou utilisez « Copier pour Claude ».';
+        } else {
+          zStatut.textContent = 'Cette saisie est trop longue pour un seul envoi (' + nombre(n) + ' octets, limite ' + nombre(MAX_OCTETS) + '). Raccourcissez vos textes d’environ ' + nombre(Math.ceil((n - MAX_OCTETS) / 1.1)) + ' caractères, ou utilisez « Copier pour Claude ».';
+        }
+        return;
+      }
+      lancer(charge);
+    }
+    function copier(valeurs) {
+      var txt = JSON.stringify(enveloppe(onglet, valeurs), null, 2), p;
+      zCopie.textContent = '';
+      try { p = navigator.clipboard.writeText(txt); } catch (e) { p = Promise.reject(e); }
+      Promise.resolve(p).then(function () {
+        zStatut.textContent = 'Copié. Collez maintenant dans la conversation (Ctrl+V, ou Cmd+V sur Mac), puis envoyez.';
+      }, function () {
+        var ta = h('textarea', { class: 'copie-repli', readonly: true, 'aria-label': 'Texte à copier' });
+        ta.value = txt;
+        zStatut.textContent = 'La copie automatique n’a pas fonctionné. Le texte est sélectionné ci-dessous : copiez-le (Ctrl+C, ou Cmd+C sur Mac), puis collez-le dans la conversation.';
+        zCopie.appendChild(ta);
+        ta.focus(); ta.select();
+      });
+    }
+    function clicCopie() { var r = valider(); if (r) copier(r.valeurs); }
+    ctx.boutons = function () {
+      var envoi = peutEnvoyer() && !ctx.modeLots, lib = statutRoom === 'available_if_opened' ? 'Déposer dans la conversation' : 'Envoyer à Claude', b;
+      zBoutons.textContent = '';
+      if (ecran.sansBoutons) return;
+      if (!peutEnvoyer()) zBoutons.appendChild(h('p', { class: 'note aide-envoi', text: 'L’envoi direct n’est possible que lorsque cette page est ouverte à côté de la conversation avec Claude. Ici, utilisez « Copier pour Claude », puis collez dans la conversation.' }));
+      if (envoi) {
+        b = h('button', { type: 'button', class: 'btn primaire btn-envoi', text: lib, onclick: clicEnvoi });
+        b._texte = lib;
+        zBoutons.appendChild(b);
+      }
+      zBoutons.appendChild(h('button', { type: 'button', class: 'btn' + (envoi || ctx.modeLots ? '' : ' primaire'), text: 'Copier pour Claude', onclick: clicCopie }));
+      if (ecran.tertiaire) zBoutons.appendChild(h('button', { type: 'button', class: 'btn tertiaire', text: ecran.tertiaire.texte, onclick: function () {
+        var msg = ecran.tertiaire.bloque ? ecran.tertiaire.bloque() : null;
+        zResume.textContent = '';
+        if (msg) { zStatut.textContent = msg; return; }
+        if (peutEnvoyer() && !ctx.modeLots) lancer(enveloppe(onglet, ecran.tertiaire.valeurs));
+        else copier(ecran.tertiaire.valeurs);
+      } }));
+      if (ctx.modeLots && peutEnvoyer()) {
+        zNoteLots.textContent = 'Vos corrections dépassent la taille d’un seul envoi (' + nombre(octets(enveloppe(onglet, ecran.approx()))) + ' sur ' + nombre(MAX_OCTETS) + ' octets). Envoyez-les partie par partie avec les boutons « Envoyer cette partie » ci-dessous.';
+        zNoteLots.hidden = false;
+        if (!noteLotsAnnoncee) { noteLotsAnnoncee = true; zAnnonce.textContent = 'Envoi en plusieurs parties nécessaire : envoyez vos corrections partie par partie.'; }
+      } else { zNoteLots.hidden = true; noteLotsAnnoncee = false; }
+    };
+    [titre, zRestaure, zStockage, zEnvoye, zResume, ecran.corps, zTaille, zNoteLots, zAnnonce, zBoutons, zStatut, zLots, zCopie].forEach(function (n) { racine.appendChild(n); });
+    ctx.racine = racine;
+    ctxCourant = ctx;
+    if (ecran.majLots) ecran.majLots(); else { ctx.majTaille(); ctx.boutons(); }
+    return racine;
+  }
+
+  /* ---------- synthèse des points de décision (générée par la page) ---------- */
+  function syntheseDecision(points) {
+    var t = h('table'), tb = h('tbody');
+    t.appendChild(h('caption', { text: 'Synthèse des points de décision' }));
+    t.appendChild(h('thead', {}, [h('tr', {}, ['N°', 'Question', 'Options', 'Indicateur', 'Proposition de l’IA'].map(function (x) { return h('th', { scope: 'col', text: x }); }))]));
+    points.forEach(function (p) {
+      var opts = (p.options || []).map(function (o) { return o.code + '. ' + o.libelle; }).join(' ; ');
+      tb.appendChild(h('tr', {}, [h('td', { text: String(p.id) }), h('td', { text: String(p.intitule) }), h('td', { text: opts }), h('td', {}, [pastille(p.indicateur)]), h('td', { text: p.prop_ia === 'ABSTENTION' ? 'Abstention' : p.prop_ia ? 'Option ' + p.prop_ia : '' })]));
+    });
+    t.appendChild(tb);
+    return h('div', { class: 'tableau', role: 'region', tabindex: '0', 'aria-label': 'Tableau, défilement horizontal' }, [t]);
+  }
+
+  /* ---------- onglets ---------- */
+  var visibles = [], actif = null;
+  var TYPES = ['fiche', 'validation_cadrage', 'points_decision', 'corrections_jugement', 'selection_robustesse'];
+  function saisieValide(o) { return o && o.saisie && typeof o.saisie === 'object' && TYPES.indexOf(o.saisie.type) >= 0; }
+  function iconeStatut(s) { return s === 'fait' ? 'coche' : s === 'en_cours' ? 'demi' : 'cercle'; }
+  function dessinerBarre() {
+    var barre = $('#mg-barre');
+    barre.textContent = '';
+    visibles.forEach(function (o, i) {
+      var etat = STATUTS[o.statut], b = h('button', { type: 'button', class: 'onglet', role: 'tab', id: 'onglet-' + idSur(o.id), 'aria-controls': 'mg-panneau', 'aria-selected': o === actif ? 'true' : 'false', tabindex: o === actif ? '0' : '-1' }, [
+        h('span', { class: 'titre', text: String(o.titre || o.id) }),
+        etat ? h('span', { class: 'etat ' + String(o.statut).replace('_', '-') }, [icone(iconeStatut(o.statut)), etat]) : null
+      ]);
+      b.addEventListener('click', function () { choisir(o, false); });
+      b.addEventListener('keydown', function (ev) {
+        var n = visibles.length, k = ev.key, j = -1;
+        if (k === 'ArrowRight') j = (i + 1) % n;
+        else if (k === 'ArrowLeft') j = (i - 1 + n) % n;
+        else if (k === 'Home') j = 0;
+        else if (k === 'End') j = n - 1;
+        if (j >= 0) { ev.preventDefault(); choisir(visibles[j], true); }
+      });
+      barre.appendChild(b);
+    });
+    var bas = $('#mg-barre-bas');
+    bas.textContent = '';
+    visibles.forEach(function (o) {
+      var etat = STATUTS[o.statut], b = h('button', { type: 'button', class: 'onglet', 'aria-current': o === actif ? 'true' : null }, [
+        h('span', { class: 'titre', text: String(o.titre || o.id) }),
+        etat ? h('span', { class: 'etat ' + String(o.statut).replace('_', '-') }, [icone(iconeStatut(o.statut)), etat]) : null
+      ]);
+      b.addEventListener('click', function () {
+        choisir(o, false);
+        var t = document.getElementById('mg-titre');
+        if (t) t.focus();
+      });
+      bas.appendChild(b);
+    });
+    var ba = bas.querySelector('[aria-current]');
+    if (ba) { try { bas.scrollLeft = Math.max(0, ba.offsetLeft - (bas.clientWidth - ba.offsetWidth) / 2); } catch (e) { /* ignoré */ } }
+  }
+  function choisir(o, focus) {
+    actif = o;
+    dessinerBarre();
+    var b = document.getElementById('onglet-' + idSur(o.id));
+    if (focus && b) b.focus();
+    if (b && b.scrollIntoView) { try { b.scrollIntoView({ inline: 'center', block: 'nearest' }); } catch (e) { /* ignoré */ } }
+    afficher(o);
+    rafraichirStatut();
+  }
+  function afficher(o) {
+    var p = $('#mg-panneau'), titre = h('h2', { id: 'mg-titre', text: String(o.titre || o.id), tabindex: '-1' }), lecture = null, saisie = null, md, avecLecture, pts;
+    p.textContent = '';
+    p.setAttribute('aria-labelledby', 'onglet-' + idSur(o.id));
+    ctxCourant = null;
+    p.appendChild(titre);
+    if (o.id === 'definitif') p.appendChild(h('p', { class: 'bandeau', text: 'Version définitive rédigée par Claude. Relisez-la ici : vos corrections se font ensuite dans le Word, avec le suivi des modifications.' }));
+    md = typeof o.contenu_md === 'string' && o.contenu_md.trim() ? o.contenu_md : '';
+    pts = saisieValide(o) && o.saisie.type === 'points_decision' && Array.isArray(o.saisie.points) && o.saisie.points.length ? o.saisie.points : null;
+    avecLecture = !!(md || pts);
+    if (saisieValide(o)) saisie = construireSaisie(o);
+    if (avecLecture && saisie) {
+      p.appendChild(h('button', { type: 'button', class: 'vers-saisie', text: 'Aller à la saisie', onclick: function () { saisie.querySelector('h3').focus(); } }));
+    }
+    if (avecLecture) {
+      lecture = h('section', { 'aria-label': 'En détail' }, [h('p', { class: 'etiquette', text: 'En détail' })]);
+      var zone = h('div', { class: 'md' });
+      if (md) rendreMarkdown(md, zone);
+      if (pts) zone.appendChild(syntheseDecision(pts));
+      lecture.appendChild(zone);
+      p.appendChild(lecture);
+    }
+    if (saisie) {
+      if (avecLecture) p.appendChild(h('hr', { class: 'separateur' }));
+      p.appendChild(saisie);
+      majAvertStockage();
+    }
+    try { titre.scrollIntoView({ block: 'start' }); } catch (e) { /* ignoré */ }
+  }
+
+  /* ---------- démarrage ---------- */
+  function illisible() {
+    $('#mg-panneau').appendChild(h('p', { class: 'illisible', role: 'alert', text: 'Données illisibles : demandez à Claude de republier l’artefact.' }));
+  }
+  async function demarrer() {
+    var brut, choix;
+    try {
+      brut = JSON.parse($('#mg-donnees').textContent);
+      if (!brut || brut.version !== 1 || !Array.isArray(brut.onglets)) throw new Error('format');
+      D = brut;
+    } catch (e) { illisible(); return; }
+    try {
+      var dos = D.dossier || {};
+      $('#mg-dossier').appendChild(h('span', { class: 'intitule', text: String(dos.intitule || ''), hidden: !dos.intitule }));
+      if (dos.rg) $('#mg-dossier').appendChild(h('span', { class: 'rg', text: 'RG ' + dos.rg }));
+      if (D.demo === true) $('#mg-bandeau').appendChild(h('p', { class: 'bandeau', role: 'note', text: 'Données de démonstration : l’envoi est désactivé.' }));
+      sonderStockage();
+      initMarkdown();
+      visibles = D.onglets.filter(function (o) {
+        return o && typeof o === 'object' && o.id && ((typeof o.contenu_md === 'string' && o.contenu_md.trim()) || saisieValide(o));
+      });
+      if (!visibles.length) { illisible(); return; }
+      try {
+        if (window.claude && typeof window.claude.use === 'function') room = await window.claude.use('room');
+      } catch (e) { room = null; }
+      statutRoom = await verifierStatut();
+      choix = visibles.filter(function (o) { return o.id === D.onglet_actif; })[0] || visibles[0];
+      choisir(choix, false);
+    } catch (e) { illisible(); }
+  }
+  demarrer();
+})();
+</script>
