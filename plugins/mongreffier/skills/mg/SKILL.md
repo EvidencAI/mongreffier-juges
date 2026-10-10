@@ -92,7 +92,7 @@ Pour CHAQUE partie, appeler l'outil `etat_parties` du connecteur MonGreffier ave
 - « Aucune annonce de procédure collective au BODACC » : l'Étape 0 est faite pour cette partie.
 - « Non vérifié » (panne, délai, SIREN invalide) : ce n'est JAMAIS « aucune procédure ». Le dire au juge et passer au repli.
 
-**Outil `etat_parties` absent** (connecteur absent, désactivé ou pas encore à jour) : exécuter les requêtes de repli ci-dessous par le shell si l'environnement en offre un, et dire au juge que l'état des parties a été lu par le repli. **Ni connecteur ni shell** : écrire au juge « État des parties non vérifié : consultez vous-même le BODACC (bodacc.fr) pour chaque partie avant l'audience. » et ne jamais conclure à l'absence de procédure.
+**Outil `etat_parties` absent** (connecteur absent, désactivé ou pas encore à jour) : exécuter les requêtes de repli ci-dessous par le shell si l'environnement en offre un, et dire au juge que l'état des parties a été lu par le repli, en l'invitant à connecter le connecteur (Vos plugins, MonGreffier, onglet Connecteurs, bouton Connecter, puis adresse mail et code reçu). **Ni connecteur ni shell** : écrire au juge « État des parties non vérifié : consultez vous-même le BODACC (bodacc.fr) pour chaque partie avant l'audience. » et ne jamais conclure à l'absence de procédure.
 
 ## Repli : requêtes à exécuter, par SIREN, pour CHAQUE partie
 
@@ -303,7 +303,7 @@ Une référence « non vérifié » n'est pas une référence « introuvable » 
 
 Si le champ `version_a_date_utile` vaut « aucune » (le connecteur rend alors la version courante), ou si l'article rendu est abrogé : consulter `references/renumerotations.md` avant de conclure, puis signaler au juge que le texte rendu n'est peut-être pas celui applicable à la date utile.
 
-**Connecteur absent ou en panne** : écrire au juge « Vérification des sources indisponible : je bascule sur les sources ouvertes, à contrôler par vous. », puis passer au point 2 sans attendre. Le juge peut aussi vérifier que le connecteur du plugin MonGreffier est activé dans ses connecteurs.
+**Connecteur absent ou en panne** : deux cas distincts. (a) Outils du connecteur absents de la conversation : écrire au juge « Le connecteur MonGreffier n'est pas connecté. Dans Claude : Vos plugins, MonGreffier, onglet Connecteurs, bouton Connecter, puis saisissez votre adresse mail et le code reçu. En attendant, je bascule sur les sources ouvertes, à contrôler par vous. », puis passer au point 2 sans attendre. (b) Outils présents mais en erreur (panne) : écrire au juge « Vérification des sources indisponible : je bascule sur les sources ouvertes, à contrôler par vous. », puis passer au point 2 sans attendre. Le juge peut aussi vérifier que le connecteur du plugin MonGreffier est activé dans ses connecteurs.
 
 **2. Repli : sources ouvertes, sans clé (toutes testées et fonctionnelles)**
 
