@@ -1,6 +1,7 @@
 {
   "name": "mongreffier",
-  "version": "1.2.0",
+  "displayName": "MonGreffier",
+  "version": "1.2.1",
   "description": "Assistant de rédaction et de relecture de jugements pour les juges consulaires, avec vérification des sources sur Légifrance et Judilibre.",
   "author": { "name": "EvidencAI", "url": "https://evidencai.com" },
   "homepage": "https://evidencai.com"

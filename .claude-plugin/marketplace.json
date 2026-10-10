@@ -7,6 +7,7 @@
   "plugins": [
     {
       "name": "mongreffier",
+      "displayName": "MonGreffier",
       "source": "./plugins/mongreffier",
       "description": "Assistant de rédaction et de relecture de jugements, avec vérification des sources sur Légifrance et Judilibre."
     }
