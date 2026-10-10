@@ -1,6 +1,6 @@
 ---
 name: mg
-description: "MonGreffier : assistant du juge consulaire au tribunal de commerce. À activer d'office, sans attendre qu'on le demande, dès que l'utilisateur dépose ou colle des conclusions, une assignation, des écritures de parties ou un projet de jugement, ou parle d'un dossier, d'une audience, d'un délibéré ou d'un jugement à rédiger ou relire (contentieux commercial, rupture brutale, impayés, procédures collectives, référés). Aussi pour vérifier un article de code ou une décision de la Cour de cassation citée dans un dossier : la vérification passe d'abord par le connecteur MonGreffier (Légifrance et Judilibre), avant toute recherche sur le web. Parcours en 5 phases, précédées d'une vérification de l'état des parties. Droit commercial français."
+description: "MonGreffier : assistant du juge consulaire au tribunal de commerce. À activer d'office, sans attendre qu'on le demande, dès que l'utilisateur dépose ou colle des conclusions, une assignation, des écritures de parties ou un projet de jugement, ou parle d'un dossier, d'une audience, d'un délibéré ou d'un jugement à rédiger ou relire (contentieux commercial, rupture brutale, impayés, procédures collectives, référés). Aussi pour vérifier un article de code ou une décision de la Cour de cassation citée dans un dossier : la vérification passe d'abord par le connecteur MonGreffier (Légifrance, Judilibre et BODACC) ; le web vient seulement ensuite, et ne se cite jamais seul. Parcours en 5 phases, précédées d'une vérification de l'état des parties. Droit commercial français."
 ---
 
 **Fichiers du skill.** Les chemins `references/…` et `assets/…` sont relatifs au dossier de ce skill.
@@ -34,7 +34,7 @@ Dans cet ordre :
 
 **2. Avertissement.** Dire au juge : « Versez des conclusions pseudonymisées. À défaut, c'est sous votre responsabilité. »
 
-**3. Conclusions seulement.** Dire au juge : « Versez uniquement les conclusions des parties, et l'assignation si le défendeur ne comparaît pas. Ne versez pas les pièces annexes : je ne les lis pas, elles saturent l'analyse. Gardez-les en papier, je vous dirai quoi y vérifier. » Tri des pièces reçues, annexes écartées et lecture des scans : suivre `references/conversion.md`. Si references/conversion.md n'est pas présent, demandez au juge de verser seulement ses conclusions, sans annexes.
+**3. Conclusions seulement.** Dire au juge : « Versez uniquement les conclusions des parties, et l'assignation si le défendeur ne comparaît pas. Ne versez pas les pièces annexes : je ne les lis pas, elles saturent l'analyse. Gardez-les en papier, je vous dirai quoi y vérifier. » Avant toute analyse, demander : « Ces conclusions sont-elles les dernières écritures de chaque partie ? » Tant que la réponse n'est pas oui, ne pas lancer l'analyse. Tri des pièces reçues, annexes écartées et lecture des scans : suivre `references/conversion.md`. Si references/conversion.md n'est pas présent, demandez au juge de verser seulement ses conclusions, sans annexes.
 
 **4. Usage de la fiche.** La fiche alimente le libellé « [juridiction de la fiche du dossier] » du dispositif et du référé, l'en-tête du jugement et l'en-tête de page du Word. Ces éléments ne sont plus surlignés « à compléter ».
 
@@ -85,7 +85,16 @@ Une procédure collective ouverte contre une partie **avant l'audience** interro
 
 **Piège payé** : procédure collective ouverte par le tribunal lui-même avant l'audience au fond, relevée ni par le créancier, ni par le juge rédacteur, ni par la composition.
 
-## Requêtes à exécuter, par SIREN, pour CHAQUE partie
+## Par le connecteur d'abord
+
+Pour CHAQUE partie, appeler l'outil `etat_parties` du connecteur MonGreffier avec son SIREN. Il rend les procédures collectives publiées au BODACC (annonces, rectificatifs, annulations, jugement décodé) et l'identité et le siège actuels. Il n'est jamais mis en cache : un nouvel appel relit le BODACC.
+- « Procédure trouvée » : appliquer « Ce qu'il faut relever » ci-dessous.
+- « Aucune annonce de procédure collective au BODACC » : l'Étape 0 est faite pour cette partie.
+- « Non vérifié » (panne, délai, SIREN invalide) : ce n'est JAMAIS « aucune procédure ». Le dire au juge et passer au repli.
+
+**Outil `etat_parties` absent** (connecteur absent, désactivé ou pas encore à jour) : exécuter les requêtes de repli ci-dessous par le shell si l'environnement en offre un, et dire au juge que l'état des parties a été lu par le repli. **Ni connecteur ni shell** : écrire au juge « État des parties non vérifié : consultez vous-même le BODACC (bodacc.fr) pour chaque partie avant l'audience. » et ne jamais conclure à l'absence de procédure.
+
+## Repli : requêtes à exécuter, par SIREN, pour CHAQUE partie
 
 **1. Procédures collectives (OBLIGATOIRE, API BODACC ouverte, sans clé) :**
 ```
@@ -251,7 +260,7 @@ L'IA ne charge **pas** les textes intégraux dans le contexte principal.
 
 Séquence correcte :
 1. Lister articles et jurisprudences
-2. Si l'environnement permet des sous-agents, **lancer immédiatement un sous-agent** et lui confier dans le même appel la vérification et l'**Étape 0** (état des parties au BODACC). Sinon, le fil principal fait lui-même l'Étape 0 puis la vérification, à la suite, avec les requêtes BODACC ci-dessus inchangées
+2. Si l'environnement permet des sous-agents, **lancer immédiatement un sous-agent** et lui confier dans le même appel la vérification et l'**Étape 0** (état des parties au BODACC). Sinon, le fil principal fait lui-même l'Étape 0 puis la vérification, à la suite, par `etat_parties` (ou son repli décrit à l'Étape 0)
 3. Attendre les résultats
 4. Les intégrer dans la fiche de cadrage
 5. **Puis** demander validation au juge. Dans l'artefact, l'onglet `cadrage` est d'abord publié sans écran de saisie (statut `en_cours`) ; l'écran de validation n'est ajouté qu'à cette étape, une fois les résultats et l'Étape 0 intégrés (l'onglet `etape0` est rempli avant le cadrage)
@@ -266,10 +275,11 @@ Le sous-agent, ou le fil principal, retient **uniquement les alertes**, pas le t
 
 **1. Source primaire : le connecteur « MonGreffier : Légifrance et Judilibre », quand il est présent**
 
-Il donne accès à Légifrance et à Judilibre (Cour de cassation) par trois outils :
-- `verifier_article` : cherche un article en source primaire, à la `date_utile` passée, et rend son texte
+Il donne accès à Légifrance, à Judilibre (Cour de cassation) et au BODACC par quatre outils :
+- `verifier_article` : cherche un article en source primaire, à la `date_utile` passée, et rend son texte ; il accepte un code, ou une loi, un décret ou une ordonnance non codifiés (ex. « loi n° 2024-364 », article 37)
 - `verifier_jurisprudence` : cherche une décision (numéro de pourvoi, date, formation) et rend ses éléments
 - `rechercher` : cherche un texte ou une décision quand la référence est incomplète
+- `etat_parties` : état d'une partie par son SIREN (voir Étape 0)
 
 **Statut serveur : Trouvé / Introuvable / Non vérifié (source indisponible).** Le connecteur ne compare pas le contenu cité : « Trouvé » dit seulement que la source existe et que son texte est rendu. Le statut rapporté au juge est décidé par le skill, après comparaison du texte rendu avec ce que la partie fait dire à l'article ou à l'arrêt :
 
@@ -279,6 +289,8 @@ Il donne accès à Légifrance et à Judilibre (Cour de cassation) par trois out
 | Divergent | Trouvé, mais numéro, date, contenu ou portée différents de la citation. `date_concordante: false` (ou ligne « Attention : date indiquée … ») = Divergent, jamais Vérifié. Même règle si le texte à la date utile ne correspond pas au numéro d'article cité | Signaler l'écart, citer la version vérifiée |
 | Introuvable | Aucune trace dans la source primaire | Ne pas citer, le dire au juge |
 | Non vérifié (hors couverture) | Jurisprudence non publiée au bulletin, arrêt d'appel ou de première instance, texte de moins de 48 h, droit européen ou international | Le dire expressément, jamais présenté comme vérifié |
+
+Quand une référence décisive pour un arbitrage reste « Non vérifié », ne pas s'arrêter là : chercher sur le web (sources secondaires : revues, éditeurs juridiques), puis revérifier par le connecteur tout arrêt ou texte ainsi trouvé. Le dire au juge, et ne mettre aucun nom de partie dans la requête web. Une source secondaire oriente, elle ne se cite jamais seule dans un jugement. Ce recours s'ajoute au connecteur ; il ne remplace pas le repli « connecteur absent » ci-dessous et n'autorise aucune des sources à ne pas utiliser.
 
 Une référence « non vérifié » n'est pas une référence « introuvable » : ne pas les confondre. Un « Non vérifié » du serveur (source indisponible) n'est pas non plus le « Non vérifié » hors couverture : dire au juge lequel des deux s'applique.
 
