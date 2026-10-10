@@ -39,6 +39,8 @@ Puis poursuivre.
 | Simple fichier, et l'environnement permet des sous-agents | Un sous-agent par PDF, sur le modèle Sonnet si le choix existe, 4 en parallèle au plus, tranches de 20 pages. Lui donner le chemin du fichier, la section 5 et la règle d'arrêt de la section 2 (s'arrêter à la première page qui n'est plus des conclusions et rendre « pages X à Y : annexes, non lues »). Il rend le seul Markdown, jamais d'image ni de résumé. S'il ne trouve pas le fichier : ligne suivante |
 | Simple fichier, sans sous-agent | Le fil principal lit par tranches de 20 pages et garde par tranche une note brève (parties, demandes chiffrées, moyens, dates, pièces citées), qui conserve chaque `[?]` |
 
+Sans sous-agent, ou si un sous-agent ne trouve pas le fichier : repli unique décrit dans SKILL.md, « Économie du contexte ».
+
 Un PDF texte se lit normalement : la section 5 ne vaut que pour les pages scannées.
 
 ## 5. Transcrire une page scannée

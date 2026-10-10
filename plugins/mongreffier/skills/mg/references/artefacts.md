@@ -69,10 +69,10 @@ Le JSON doit être lisible, sinon la page affiche « Données illisibles : deman
 
 ```bash
 python3 -c "import re,json,sys; t=open(sys.argv[1],encoding='utf-8').read(); m=re.search(r'<script type=\"application/json\" id=\"mg-donnees\">(.*?)</script>', t, re.S); json.loads(m.group(1)); print('JSON ok')" mongreffier-<dossier.id>.html
-grep -c '"demo"' mongreffier-<dossier.id>.html
+grep -c '"demo"' mongreffier-<dossier.id>.html || true
 ```
 
-Le premier doit afficher `JSON ok`. Le second doit afficher `0`. Sinon, corrigez par Edit ciblé et recommencez, sans publier.
+Le premier doit afficher `JSON ok`. Le second doit afficher `0` : c'est le résultat attendu, et `grep -c` rend alors le code 1, ce qui n'est pas une erreur (d'où `|| true`). Un compte différent de 0 est l'erreur. Sinon, corrigez par Edit ciblé et recommencez, sans publier.
 
 ## 5. Publier
 

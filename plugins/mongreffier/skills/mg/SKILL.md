@@ -3,6 +3,10 @@ name: mg
 description: "MonGreffier : assistant du juge consulaire au tribunal de commerce. À activer d'office, sans attendre qu'on le demande, dès que l'utilisateur dépose ou colle des conclusions, une assignation, des écritures de parties ou un projet de jugement, ou parle d'un dossier, d'une audience, d'un délibéré ou d'un jugement à rédiger ou relire (contentieux commercial, rupture brutale, impayés, procédures collectives, référés). Aussi pour vérifier un article de code ou une décision de la Cour de cassation citée dans un dossier : la vérification passe d'abord par le connecteur MonGreffier (Légifrance et Judilibre), avant toute recherche sur le web. Parcours en 5 phases, précédées d'une vérification de l'état des parties. Droit commercial français."
 ---
 
+**Fichiers du skill.** Les chemins `references/…` et `assets/…` sont relatifs au dossier de ce skill.
+Si un de ces fichiers n'est pas au chemin annoncé (l'environnement peut annoncer un dossier de skill inexistant, par exemple `/mnt/skills/plugins/mongreffier:mg/`), le CHERCHER par son nom avant de conclure qu'il manque, par exemple `find / -name artefact-mongreffier.html -path '*mongreffier*' 2>/dev/null | head`. Ne jamais déclarer un fichier du skill absent sans cette recherche.
+Ne jamais travailler sans le modèle d'artefact ou de jugement sans le dire au juge.
+
 # Assistant TC - Tribunal de Commerce
 
 Assistant juridique pour juges consulaires. Spécialisation : droit commercial français, contentieux des affaires, procédures collectives.
@@ -62,6 +66,14 @@ Dans les conclusions versées, `[?]` marque une lecture incertaine sur une page 
 Chaque étape se termine par un « En bref » court dans la conversation : décision, incertitudes, points à vérifier sur pièces. Le détail va dans l'artefact décrit dans `references/artefacts.md`. Chaque « En bref » finit par : « Détail : onglet <titre> de l'artefact MonGreffier ». Si l'artefact ne peut pas être publié, le détail va dans la conversation, après le En bref, sous l'intertitre En détail ; si le bouton d'envoi est masqué chez le juge, il copie la saisie (« Copier pour Claude ») et la colle dans la conversation. Modes référé, relecture, consultation et non-comparant : onglets libres de l'artefact, même phrase de renvoi (voir `references/artefacts.md`).
 
 Aucune mention commerciale (EvidencAI ou autre) ne figure jamais dans un projet de jugement ni dans le Word.
+
+## Économie du contexte
+
+Quand l'environnement le permet, le volume part en sous-agents ; un sous-agent ne rend jamais de texte intégral. Le fil principal garde le cadrage, les points de décision, la rédaction, les échanges avec le juge et `/dissident`.
+- Conversion des gros PDF : `references/conversion.md`. Vérification des références et Étape 0 : VÉRIFICATION AUTOMATIQUE. Le sous-agent de vérification rend un tableau référence / statut décidé / écart en une ligne. Statuts et règle de date non concordante : voir le tableau des statuts plus bas.
+- `rechercher` en sous-agent : 3 décisions au plus, avec numéro et une ligne chacune.
+- `/ombre` (Phase 4) : sous-agent frais, qui reçoit le projet, le cadrage ET les points de décision tranchés. Il rend tout le `contenu_md` de l'onglet `robustesse` décrit en Phase 4 et dans `references/artefacts.md` : score, références, filet exécution provisoire, R1… avec limites et origine `ombre`.
+- **Repli (phrase unique)** : si l'environnement n'offre pas de sous-agents, ou si un sous-agent n'a pas accès au connecteur, le fil principal fait le travail en ne gardant que le tableau de synthèse, et le dit une fois au juge ; un sous-agent sans connecteur ne bascule jamais seul sur le web sans le dire.
 
 ---
 
@@ -244,6 +256,8 @@ Séquence correcte :
 4. Les intégrer dans la fiche de cadrage
 5. **Puis** demander validation au juge. Dans l'artefact, l'onglet `cadrage` est d'abord publié sans écran de saisie (statut `en_cours`) ; l'écran de validation n'est ajouté qu'à cette étape, une fois les résultats et l'Étape 0 intégrés (l'onglet `etape0` est rempli avant le cadrage)
 
+Repli et format du tableau rendu par le sous-agent : voir « Économie du contexte » (RÈGLES TRANSVERSES).
+
 Le sous-agent, ou le fil principal, retient **uniquement les alertes**, pas le texte intégral des articles, et **distingue explicitement** ce qu'il a vérifié en source primaire de ce qu'il rapporte d'une source secondaire. Une référence non vérifiée ne va pas dans le jugement.
 
 ---
@@ -253,20 +267,29 @@ Le sous-agent, ou le fil principal, retient **uniquement les alertes**, pas le t
 **1. Source primaire : le connecteur « MonGreffier : Légifrance et Judilibre », quand il est présent**
 
 Il donne accès à Légifrance et à Judilibre (Cour de cassation) par trois outils :
-- `verifier_article` : confirme qu'un article existe, en vigueur à la date utile, et rend son texte
-- `verifier_jurisprudence` : confirme qu'une décision existe (numéro de pourvoi, date, formation) et rend ses éléments
+- `verifier_article` : cherche un article en source primaire, à la `date_utile` passée, et rend son texte
+- `verifier_jurisprudence` : cherche une décision (numéro de pourvoi, date, formation) et rend ses éléments
 - `rechercher` : cherche un texte ou une décision quand la référence est incomplète
 
-Statuts à rapporter au juge pour chaque référence :
+**Statut serveur : Trouvé / Introuvable / Non vérifié (source indisponible).** Le connecteur ne compare pas le contenu cité : « Trouvé » dit seulement que la source existe et que son texte est rendu. Le statut rapporté au juge est décidé par le skill, après comparaison du texte rendu avec ce que la partie fait dire à l'article ou à l'arrêt :
 
-| Statut | Sens | Conduite |
+| Statut au juge | Sens | Conduite |
 |---|---|---|
-| Vérifié | Trouvé en source primaire, conforme à ce que cite la partie | Utilisable |
-| Divergent | Trouvé, mais numéro, date, contenu ou portée différents de la citation | Signaler l'écart, citer la version vérifiée |
+| Vérifié | Trouvé en source primaire, texte rendu conforme à ce que cite la partie | Utilisable |
+| Divergent | Trouvé, mais numéro, date, contenu ou portée différents de la citation. `date_concordante: false` (ou ligne « Attention : date indiquée … ») = Divergent, jamais Vérifié. Même règle si le texte à la date utile ne correspond pas au numéro d'article cité | Signaler l'écart, citer la version vérifiée |
 | Introuvable | Aucune trace dans la source primaire | Ne pas citer, le dire au juge |
-| Non vérifié | Hors couverture : jurisprudence non publiée au bulletin, arrêt d'appel ou de première instance, texte de moins de 48 h, droit européen ou international | Le dire expressément, jamais présenté comme vérifié |
+| Non vérifié (hors couverture) | Jurisprudence non publiée au bulletin, arrêt d'appel ou de première instance, texte de moins de 48 h, droit européen ou international | Le dire expressément, jamais présenté comme vérifié |
 
-Une référence « non vérifié » n'est pas une référence « introuvable » : ne pas les confondre.
+Une référence « non vérifié » n'est pas une référence « introuvable » : ne pas les confondre. Un « Non vérifié » du serveur (source indisponible) n'est pas non plus le « Non vérifié » hors couverture : dire au juge lequel des deux s'applique.
+
+**Date utile.** Toujours passer `date_utile` à `verifier_article`. Elle se choisit ainsi :
+- rupture brutale d'une relation commerciale établie (L.442-6, I, 5° ancien ; L.442-1, II actuel), responsabilité délictuelle : date de la rupture, jamais la date du contrat ;
+- autre responsabilité délictuelle : date du fait dommageable ;
+- articles du Code civil issus de l'ordonnance 2016-131 (droit des contrats et des obligations contractuelles) pour un contrat conclu avant le 01/10/2016 : date du contrat (art. 9 de l'ordonnance 2016-131). Cette règle ne vaut que pour eux ;
+- sinon : date des faits ;
+- à défaut : date de l'assignation, et le dire au juge.
+
+Si le champ `version_a_date_utile` vaut « aucune » (le connecteur rend alors la version courante), ou si l'article rendu est abrogé : consulter `references/renumerotations.md` avant de conclure, puis signaler au juge que le texte rendu n'est peut-être pas celui applicable à la date utile.
 
 **Connecteur absent ou en panne** : écrire au juge « Vérification des sources indisponible : je bascule sur les sources ouvertes, à contrôler par vous. », puis passer au point 2 sans attendre. Le juge peut aussi vérifier que le connecteur du plugin MonGreffier est activé dans ses connecteurs.
 
