@@ -27,7 +27,7 @@ C'est la seule zone que vous modifiez : l'unique `<script type="application/json
   "dossier": {"id": "2026-10-09-1505", "rg": "", "intitule": ""},
   "onglet_actif": "fiche",
   "onglets": [
-    {"id": "fiche", "titre": "Fiche du dossier", "statut": "a_saisir", "contenu_md": "", "saisie": {"type": "fiche", "valeurs": {}}},
+    {"id": "fiche", "titre": "Fiche du dossier", "statut": "a_saisir", "contenu_md": "", "saisie": {"type": "fiche", "valeurs": {"juridiction": "Tribunal de commerce de ..."}}},
     {"id": "etape0", "titre": "État des parties", "statut": "en_cours", "contenu_md": "..."},
     {"id": "cadrage", "titre": "Cadrage", "statut": "en_cours", "contenu_md": "..."},
     {"id": "decision", "titre": "Points de décision", "contenu_md": "...", "saisie": {"type": "points_decision", "points": []}},
@@ -56,7 +56,7 @@ Règles du bloc :
 
 ### Les saisies par onglet
 
-- `fiche` : `{"type": "fiche", "valeurs": {}}`. Il n'y a pas de champ RG dans la fiche. Composition : le président seul (juge unique), ou le président et exactement 2 assesseurs (formation collégiale). Un seul assesseur est interdit.
+- `fiche` : `{"type": "fiche", "valeurs": {"juridiction": "<juridiction rendue par qui_suis_je>"}}`. Pré-remplissez toujours `valeurs.juridiction` avec la juridiction du juge connecté (le juge peut la modifier dans le champ) ; `valeurs: {}` seulement si `qui_suis_je` n'a rien rendu. Il n'y a pas de champ RG dans la fiche. Composition : le président seul (juge unique), ou le président et exactement 2 assesseurs (formation collégiale). Un seul assesseur est interdit.
 - `validation_cadrage` : `{"type": "validation_cadrage", "points": [{"id": "C1", "intitule": "..."}]}`. Une entrée par rubrique de la Fiche de cadrage, dans l'ordre de la phase 1 (`C1`, `C2`, …), plus un champ libre `autre` que la page ajoute elle-même.
 - `points_decision` : `{"type": "points_decision", "points": [{"id": "P1", "intitule": "...", "options": [{"code": "A", "libelle": "..."}, {"code": "B", "libelle": "..."}], "indicateur": "vert", "prop_ia": "A"}]}`. Chaque point porte 2 à 4 options (codes `A` à `D`). `prop_ia` est un code d'option, ou `ABSTENTION` pour un point rouge. La page propose « Retenir les propositions de l'IA » : elle coche `prop_ia` sur les points non rouges et laisse les rouges vides, le juge tranche.
 - `corrections_jugement` : `{"type": "corrections_jugement"}`, une zone par partie (faits, procédure, prétentions, motifs, dispositif).

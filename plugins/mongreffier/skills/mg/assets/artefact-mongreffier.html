@@ -518,7 +518,8 @@ textarea { resize: vertical; }
     e = etatInitial(onglet);
     br = lire(cleBrouillon(id));
     if (br && br.e === empreinte(onglet) && br.v && typeof br.v === 'object') {
-      Object.keys(br.v).forEach(function (k) { e[k] = br.v[k]; });
+      // Un brouillon vide n'efface pas une valeur pré-remplie par Claude (juridiction du juge connecté).
+      Object.keys(br.v).forEach(function (k) { if (!(br.v[k] === '' && typeof e[k] === 'string' && e[k] !== '')) e[k] = br.v[k]; });
       if (onglet.saisie.type === 'fiche' && (!Array.isArray(e.assesseurs) || e.assesseurs.length !== 2)) e.assesseurs = ['', ''];
       e.restaure = true;
     }
