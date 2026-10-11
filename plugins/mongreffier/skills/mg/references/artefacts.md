@@ -41,6 +41,7 @@ C'est la seule zone que vous modifiez : l'unique `<script type="application/json
 Règles du bloc :
 
 - **Données de démonstration.** Le modèle livré contient des données neutres et `"demo": true`. Remplacez-les entièrement et supprimez la clé `"demo"`. Tant qu'elle est présente, la page affiche un bandeau « Données de démonstration » et désactive l'envoi.
+- **Sections repliables (obligatoire)** : structurez TOUT `contenu_md` en sections titrées `## …`, au moins deux par onglet (par exemple, état des parties : `## Synthèse` puis `## Détail par partie` ; robustesse : `## Score`, `## Références`, `## Recommandations` ; jugement définitif : une section par partie du jugement). La page replie chaque section en accordéon, la première ouverte, avec « Tout déplier » : le juge défile moins. Pas de titre `#` seul en tête, pas de texte long hors section. Exception : l'onglet `decision`, où chaque bloc reste `## POINT N : …`.
 - **Statuts** : `a_saisir` (affiché « À compléter »), `en_cours` (« En cours »), `fait` (« Fait »). Aucune autre valeur.
 - **`onglet_actif`** : l'`id` de l'étape en cours. Inconnu ou vide, la page ouvre le premier onglet affiché.
 - **`contenu_md`** : Markdown écrit d'après les conclusions des parties. Dans les chaînes JSON, `<` s'écrit `\u003c` (six caractères : barre oblique inverse, u, 0, 0, 3, c), pour qu'aucune balise `</script` ne ferme le bloc. Échappez aussi les guillemets droits (`\"`) et les retours à la ligne (`\n`).
