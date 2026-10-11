@@ -70,7 +70,7 @@ Dans les conclusions versées, `[?]` marque une lecture incertaine sur une page 
 
 ## Lecture à deux niveaux
 
-Chaque étape se termine par un « En bref » court dans la conversation : décision, incertitudes, points à vérifier sur pièces. Le détail va dans l'artefact décrit dans `references/artefacts.md`. Chaque « En bref » finit par : « Détail : onglet <titre> de l'artefact MonGreffier ». Si l'artefact ne peut pas être publié, le détail va dans la conversation, après le En bref, sous l'intertitre En détail ; si le bouton d'envoi est masqué chez le juge, il copie la saisie (« Copier pour Claude ») et la colle dans la conversation. Modes référé, relecture, consultation et non-comparant : onglets libres de l'artefact, même phrase de renvoi (voir `references/artefacts.md`).
+Chaque étape se termine par un « En bref » court dans la conversation : décision, incertitudes, points à vérifier sur pièces. Le détail va dans l'artefact décrit dans `references/artefacts.md`. Ce détail est toujours découpé en sections `## …` (au moins deux), que la page replie en accordéons. Chaque « En bref » finit par : « Détail : onglet <titre> de l'artefact MonGreffier ». Si l'artefact ne peut pas être publié, le détail va dans la conversation, après le En bref, sous l'intertitre En détail ; si le bouton d'envoi est masqué chez le juge, il copie la saisie (« Copier pour Claude ») et la colle dans la conversation. Modes référé, relecture, consultation et non-comparant : onglets libres de l'artefact, même phrase de renvoi (voir `references/artefacts.md`).
 
 Aucune mention commerciale (EvidencAI ou autre) ne figure jamais dans un projet de jugement ni dans le Word.
 
