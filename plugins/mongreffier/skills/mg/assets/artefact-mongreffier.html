@@ -191,6 +191,10 @@ textarea { resize: vertical; }
 .pied { text-align: center; font-size: 14px; color: var(--texte-2); padding: 24px 0 32px; }
 .pied p { margin: 0; }
 .pied .accroche { margin-top: 4px; font-size: 13px; }
+.pied .avertissement { max-width: 62ch; margin: 0 auto 16px; padding-top: 16px; border-top: 1px solid var(--bordure); font-size: 14px; line-height: 1.5; color: var(--texte-2); }
+.pied .avertissement strong { color: var(--texte); }
+.pied .avis { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 10px 20px; margin: 0 0 20px; border-radius: 8px; font-weight: 600; font-size: 16px; text-decoration: none; background: var(--accent-aplat); color: var(--accent-sur-aplat); border: 2px solid var(--accent-aplat); }
+.pied .avis:hover { background: var(--accent-aplat-survol); border-color: var(--accent-aplat-survol); }
 .copie-repli { margin-top: 10px; min-height: 140px; font-family: var(--police-mono); font-size: 14px; }
 .illisible { margin: 24px 0; padding: 16px; border-left: 3px solid var(--erreur); background: var(--surface); font-weight: 600; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; scroll-behavior: auto !important; } }
@@ -204,7 +208,7 @@ textarea { resize: vertical; }
   <div class="barre" id="mg-barre" role="tablist" aria-label="Étapes du dossier"></div>
   <main class="panneau" id="mg-panneau" role="tabpanel"></main>
   <nav class="barre barre-bas" id="mg-barre-bas" aria-label="Étapes du dossier (bas de page)"></nav>
-  <footer class="pied"><p>Développé par <a href="https://evidencai.com" target="_blank" rel="noopener">EvidencAI<span class="sr"> (s’ouvre dans un nouvel onglet)</span></a></p><p class="accroche">Nous fabriquons des logiciels IA, les nôtres et les vôtres.</p></footer>
+  <footer class="pied"><p class="avertissement"><strong>MonGreffier utilise l'IA&nbsp;: elle peut se tromper.</strong> Vérifiez toujours les analyses, les références et le projet de jugement avant de les utiliser. MonGreffier propose, vous décidez.</p><p><a class="avis" href="https://mongreffier.com/espace/avis" target="_blank" rel="noopener">Donner votre avis<span class="sr"> (s’ouvre dans un nouvel onglet)</span></a></p><p>Développé par <a href="https://evidencai.com" target="_blank" rel="noopener">EvidencAI<span class="sr"> (s’ouvre dans un nouvel onglet)</span></a></p><p class="accroche">Nous fabriquons des logiciels IA, les nôtres et les vôtres.</p></footer>
 </div>
 <script type="application/json" id="mg-donnees">
 {
