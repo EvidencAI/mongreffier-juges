@@ -220,18 +220,19 @@ table.synthese td, table.synthese th { vertical-align: middle; }
 }
 .replier, .copier-lien { display: inline-flex; align-items: center; min-height: 44px; background: none; border: 0; padding: 4px 0; color: var(--accent-texte); text-decoration: underline; font: inherit; text-align: left; cursor: pointer; }
 details.section > .replier { margin: 4px 0 8px; }
-@media print { .replier, details.section > .replier, .lecture-seule { display: none !important; } }
+@media print { .replier, details.section > .replier, .lecture-seule, .vers-haut, details.section > .vers-haut, .fin-panneau { display: none !important; } }
 .lecture-seule { margin: 0 0 16px; }
 .lecture-seule .vers-saisie { font-size: inherit; }
 .lecture-seule p { margin: 0 0 4px; }
 .actions-point { display: flex; flex-wrap: wrap; align-items: center; gap: 0 24px; }
 @media (max-width: 480px) { .actions-point { flex-direction: column; align-items: flex-start; gap: 0; margin-bottom: 8px; } }
 .copier-lien { flex: 0 0 100%; justify-content: center; text-align: center; }
-.importance { margin-left: 8px; font-weight: 400; vertical-align: middle; }
-.pastille.imp-capital { background: var(--accent-aplat); color: var(--accent-sur-aplat); border-color: var(--accent-aplat); }
-.pastille.imp-important { color: var(--texte); border: 2px solid var(--texte); }
-.pastille.imp-utile { color: var(--texte-2); border: 1px solid var(--texte-2); }
-.pastille .jauge { letter-spacing: 1px; }
+.vers-haut { display: inline-flex; align-items: center; min-height: 44px; background: none; border: 0; padding: 4px 0; color: var(--accent-texte); text-decoration: underline; font: inherit; cursor: pointer; justify-content: center; text-align: center; }
+@media (min-width: 640px) { .vers-haut { margin-left: auto; } }
+.fin-panneau { display: flex; justify-content: flex-end; margin-top: 20px; }
+@media (max-width: 639px) { .fin-panneau { justify-content: center; } }
+.importance { display: inline-flex; align-items: baseline; gap: 4px; margin-left: 8px; font-size: 13px; font-weight: 400; color: var(--texte-2); white-space: nowrap; background: none; border: 0; }
+.importance .jauge { letter-spacing: 1px; font-size: 11px; }
 textarea:disabled { opacity: .6; cursor: not-allowed; }
 .lien-point { background: none; border: 0; padding: 4px 0; min-height: 44px; color: var(--accent-texte); text-decoration: underline; font: inherit; text-align: left; cursor: pointer; }
 .passer { display: block; background: none; border: 0; padding: 8px 0; min-height: 44px; margin: 8px 0 12px; color: var(--accent-texte); text-decoration: underline; font: inherit; cursor: pointer; }
@@ -376,10 +377,11 @@ fieldset.choix-point { margin-top: 12px; }
   }
   function pastilleImportance(v) {
     var k = importanceDe(v), d = IMPORTANCES[k];
-    return h('span', { class: 'pastille importance imp-' + k }, [
+    // Indicateur discret (décision de Stéphane, 1.2.9) : petit texte gris, sans fond ni bordure, jamais l'allure d'une alerte.
+    return h('span', { class: 'importance imp-' + k }, [
       h('span', { class: 'sr', text: 'Importance : ' + d[0].toLowerCase() }),
-      h('span', { 'aria-hidden': 'true', text: d[0] }),
-      h('span', { class: 'jauge', 'aria-hidden': 'true', text: '●'.repeat(d[1]) + '○'.repeat(3 - d[1]) })
+      h('span', { class: 'jauge', 'aria-hidden': 'true', text: '●'.repeat(d[1]) + '○'.repeat(3 - d[1]) }),
+      h('span', { 'aria-hidden': 'true', text: d[0].toLowerCase() })
     ]);
   }
   /* Bouton du bas d'un accordéon : referme, garde le titre en vue, y met le focus. */
@@ -610,7 +612,7 @@ fieldset.choix-point { margin-top: 12px; }
   function etatInitial(onglet) {
     var type = onglet.saisie.type, v = onglet.saisie.valeurs || {}, e;
     if (type === 'fiche') {
-      e = { juridiction: String(v.juridiction || ''), date_audience: String(v.date_audience || ''), date_delibere: String(v.date_delibere || ''), president: String(v.president || ''), audience: v.audience === 'collegiale' || v.audience === 'juge_unique' ? v.audience : '', juge: v.juge_audience === 'president' || v.juge_audience === 'assesseur_1' || v.juge_audience === 'assesseur_2' ? v.juge_audience : '', assesseurs: [String((v.assesseurs || [])[0] || ''), String((v.assesseurs || [])[1] || '')], greffier: String(v.greffier || '') };
+      e = { juridiction: String(v.juridiction || ''), date_audience: String(v.date_audience || ''), date_delibere: String(v.date_delibere || ''), president: String(v.president || ''), audience: v.audience === 'collegiale' || v.audience === 'juge_unique' ? v.audience : '', juge: v.juge_audience === 'president' || v.juge_audience === 'assesseur_1' || v.juge_audience === 'assesseur_2' ? v.juge_audience : '', assesseurs: [String((v.assesseurs || [])[0] || ''), String((v.assesseurs || [])[1] || '')], greffier: String(v.greffier || ''), dernieres: v.dernieres_ecritures === true ? 'oui' : v.dernieres_ecritures === false ? 'non' : '' };
     } else if (type === 'corrections_jugement') e = { textes: {}, envoyees: {}, sansCorr: false };
     else if (type === 'validation_cadrage') e = { choix: null, textes: {}, verifs: {}, pasVerifie: {} };
     else if (type === 'points_decision') e = { positions: {} };
@@ -744,7 +746,19 @@ fieldset.choix-point { margin-top: 12px; }
       corps.appendChild(zoneAss);
     }
     corps.appendChild(ch('greffier', 'Greffier', 'Prénom et nom.', { nom: true }));
+    var groupeDer = h('fieldset'), nomDer = uid('d'), radiosDer = {}, slotDer = creerSlot();
+    groupeDer.appendChild(h('legend', { text: 'Dernières écritures' }));
+    groupeDer.appendChild(h('p', { class: 'aide', text: 'Les conclusions versées sont-elles les dernières écritures de chaque partie ? En cas de doute, répondez Non.' }));
+    groupeDer.appendChild(radioDe(nomDer, radiosDer, 'oui', 'Oui, ce sont les dernières écritures de chaque partie', etat.dernieres === 'oui'));
+    groupeDer.appendChild(radioDe(nomDer, radiosDer, 'non', 'Non, au moins une partie a déposé des écritures plus récentes', etat.dernieres === 'non'));
+    groupeDer.appendChild(slotDer);
+    lierErreur(radiosDer.oui, slotDer, null, groupeDer);
+    groupeDer.addEventListener('change', function (ev) {
+      if (ev.target && ev.target.name === nomDer) { etat.dernieres = ev.target.value; ctx.change(); }
+    });
+    corps.appendChild(groupeDer);
     return {
+      statutApres: function (v) { return v.dernieres_ecritures === false ? 'Envoyé. Claude vous demandera de verser les dernières écritures avant d’analyser.' : null; },
       corps: corps,
       collecter: function () {
         var err = [], v = {}, da, dd, ass = [], nomInc = 'Nom incomplet : indiquez le prénom et le nom (au moins deux mots).';
@@ -778,6 +792,11 @@ fieldset.choix-point { margin-top: 12px; }
         v.greffier = nettoyer(etat.greffier);
         if (!v.greffier) err.push({ ctrl: champs.greffier.input, msg: 'Indiquez le greffier.' });
         else if (nbMots(v.greffier) < 2) err.push({ ctrl: champs.greffier.input, msg: nomInc });
+        if (etat.dernieres !== 'oui' && etat.dernieres !== 'non') err.push({ ctrl: radiosDer.oui, msg: 'Indiquez si les conclusions versées sont les dernières écritures de chaque partie.' });
+        else {
+          v.dernieres_ecritures = etat.dernieres === 'oui';
+          if (!v.dernieres_ecritures) v.note = 'Le juge indique que les conclusions versées ne sont pas les dernières écritures. Ne lancez pas l’analyse : demandez-lui, dans la conversation, de verser les dernières écritures de chaque partie.';
+        }
         err.sort(function (a, b) { return a.ctrl.compareDocumentPosition(b.ctrl) & 4 ? -1 : 1; });
         if (!err.length && !refere && ass.length !== 2) err.push({ ctrl: lignes[0].input, msg: 'Une formation collégiale compte exactement deux assesseurs.' });
         return { erreurs: err, valeurs: v };
@@ -1287,9 +1306,19 @@ fieldset.choix-point { margin-top: 12px; }
     return { lots: lots.map(function (l) { return { libelle: libelleLot(l), charge: fabriquer(l) }; }) };
   }
 
+  /* Lien de secours « Aller en haut » : remonter() puis focus() du geste du juge (fait défiler le cadre parent). */
+  function lienHaut() {
+    return h('button', { type: 'button', class: 'btn-lien vers-haut', text: 'Aller en haut', onclick: function () {
+      var t;
+      remonter();
+      t = document.getElementById('mg-titre');
+      if (t) t.focus();
+    } });
+  }
+
   /* ---------- construction d'un écran de saisie ---------- */
   function construireSaisie(onglet) {
-    var etat = etatPour(onglet), type = onglet.saisie.type, ctx, ecran, racine, zResume, zStatut, zBoutons, zLots, zTaille, zNoteLots, zAnnonce, zCopie, zEnvoye, zRestaure, zStockage, annonceFaite = false, noteLotsAnnoncee = false, occupe = false, elements = [];
+    var etat = etatPour(onglet), type = onglet.saisie.type, ctx, ecran, racine, zResume, zStatut, zBoutons, zLots, zTaille, zNoteLots, zAnnonce, zCopie, zEnvoye, zRestaure, zStockage, annonceFaite = false, noteLotsAnnoncee = false, occupe = false, statutApres = null, elements = [];
     racine = h('section', { class: 'saisie', 'aria-labelledby': uid('h') });
     var titre = h('h3', { id: racine.getAttribute('aria-labelledby'), tabindex: '-1', text: type === 'points_decision' ? 'Vos choix' : 'Votre réponse à Claude' });
     zRestaure = h('p', { role: 'status', class: 'note', hidden: !etat.restaure, text: 'Votre réponse précédente a été rétablie.' });
@@ -1365,6 +1394,7 @@ fieldset.choix-point { margin-top: 12px; }
       if (n > MAX_OCTETS) { zStatut.textContent = 'Cette réponse est trop longue pour un seul envoi (' + pourcent(n) + ' % de la limite).'; return; }
       if (tropDElements(charge)) { zStatut.textContent = 'Cette réponse compte trop d’éléments pour un seul envoi (' + MAX_ELEM + ' au plus). Utilisez « Copier pour Claude ».'; return; }
       mode = modeEnvoi();
+      var msgApres = statutApres; statutApres = null;
       occupe = true;
       majOccupe(true);
       zStatut.textContent = '';
@@ -1373,7 +1403,7 @@ fieldset.choix-point { margin-top: 12px; }
         occupe = false;
         etat.envoye = heure();
         zEnvoye.textContent = 'Envoyé à ' + etat.envoye; zEnvoye.hidden = false;
-        zStatut.textContent = mode === 'stage' ? 'Votre réponse est déposée dans la zone de message de la conversation. Appuyez sur Entrée pour l’envoyer.' : 'Envoyé. Regardez la conversation : confirmez l’envoi dans la fenêtre de Claude si elle s’affiche.';
+        zStatut.textContent = mode === 'stage' ? 'Votre réponse est déposée dans la zone de message de la conversation. Appuyez sur Entrée pour l’envoyer.' + (msgApres ? ' ' + msgApres.replace(/^Envoyé\.\s*/, '') : '') : msgApres || 'Envoyé. Regardez la conversation : confirmez l’envoi dans la fenêtre de Claude si elle s’affiche.';
         if (apres) apres(); else effacer(cleBrouillon(onglet.id));
         if (!apres) { /* envoi complet : brouillon effacé */ }
         majOccupe(false);
@@ -1430,6 +1460,7 @@ fieldset.choix-point { margin-top: 12px; }
         }
         return;
       }
+      statutApres = ecran.statutApres ? ecran.statutApres(r.valeurs) : null;
       lancer(charge);
     }
     function copier(valeurs) {
@@ -1450,7 +1481,7 @@ fieldset.choix-point { margin-top: 12px; }
     ctx.boutons = function () {
       var envoi = peutEnvoyer() && !ctx.modeLots, lib = statutRoom === 'available_if_opened' ? 'Déposer dans la conversation' : 'Envoyer à Claude', b;
       zBoutons.textContent = '';
-      if (ecran.sansBoutons) return;
+      if (ecran.sansBoutons) { zBoutons.appendChild(lienHaut()); return; }
       if (!peutEnvoyer()) zBoutons.appendChild(h('p', { class: 'note aide-envoi', text: 'L’envoi direct n’est possible que lorsque cette page est ouverte à côté de la conversation avec Claude. Ici, utilisez « Copier pour Claude », puis collez dans la conversation.' }));
       if (envoi) {
         b = h('button', { type: 'button', class: 'btn primaire btn-envoi', text: lib, onclick: clicEnvoi });
@@ -1469,6 +1500,8 @@ fieldset.choix-point { margin-top: 12px; }
         if (peutEnvoyer() && !ctx.modeLots) lancer(enveloppe(onglet, ecran.tertiaire.valeurs));
         else copier(ecran.tertiaire.valeurs);
       } }));
+      // « Aller en haut » sur la ligne d'« Envoyer à Claude », à droite (demande de Stéphane, 1.2.9) ; le lien Copier passe dessous.
+      zBoutons.appendChild(lienHaut());
       if (lienCopie) zBoutons.appendChild(copie);
       if (ctx.modeLots && peutEnvoyer()) {
         zNoteLots.textContent = 'Vos corrections dépassent la taille d’un seul envoi (' + pourcent(octets(enveloppe(onglet, ecran.approx()))) + ' % de la limite). Envoyez-les partie par partie avec les boutons « Envoyer cette partie » ci-dessous.';
@@ -1598,6 +1631,8 @@ fieldset.choix-point { margin-top: 12px; }
       if (avecLecture) p.appendChild(h('hr', { class: 'separateur' }));
       p.appendChild(saisie);
       majAvertStockage();
+    } else {
+      p.appendChild(h('div', { class: 'fin-panneau' }, [lienHaut()]));
     }
     remonter();
   }
@@ -1608,7 +1643,9 @@ fieldset.choix-point { margin-top: 12px; }
     try { window.scrollTo(0, 0); } catch (e) { /* ignoré */ }
     try { document.documentElement.scrollTop = 0; document.body.scrollTop = 0; } catch (e) { /* ignoré */ }
     // Dans un cadre (claude.ai affiche l'artefact dans une iframe), c'est le parent qui défile :
-    // amener le haut de la page en vue fait défiler les cadres parents. Pas de focus() ici.
+    // amener le haut de la page en vue fait défiler les cadres parents. Pas de focus() ici pour la remontée
+    // automatique (il volerait le focus du juge) ; le lien « Aller en haut » et le bandeau du bas, eux, appellent
+    // focus() après remonter(), sur un geste du juge.
     try {
       t = document.querySelector('.entete') || document.getElementById('mg-dossier');
       if (t && t.scrollIntoView) t.scrollIntoView({ block: 'start' });
