@@ -25,3 +25,4 @@ Quand une nouvelle version est annoncée : Personnalisation, Plugins, bouton « 
 « Rechercher des mises à jour ».
 
 Développé par [EvidencAI](https://evidencai.com).
+
