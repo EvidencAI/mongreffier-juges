@@ -193,6 +193,34 @@ textarea { resize: vertical; }
 .pied .accroche { margin-top: 4px; font-size: 13px; }
 .pied .avertissement { max-width: 62ch; margin: 0 auto 16px; padding-top: 16px; border-top: 1px solid var(--bordure); font-size: 14px; line-height: 1.5; color: var(--texte-2); }
 .pied .avertissement strong { color: var(--texte); }
+details.section { border-top: 1px solid var(--bordure); padding: 4px 0; }
+details.section:last-of-type { border-bottom: 1px solid var(--bordure); }
+summary.section-titre { cursor: pointer; min-height: 48px; display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.05rem; color: var(--texte); list-style: none; }
+summary.section-titre::-webkit-details-marker { display: none; }
+summary.section-titre::before { content: '▸'; color: var(--accent-decor); transition: transform .15s; }
+details.section[open] > summary.section-titre::before { transform: rotate(90deg); }
+summary.section-titre:focus-visible { outline: 3px solid var(--focus, var(--accent-decor)); outline-offset: 2px; }
+.tout-deplier { display: block; margin: 0 0 8px auto; background: none; border: 0; padding: 8px 0; min-height: 44px; color: var(--accent-texte, var(--accent-decor)); text-decoration: underline; font: inherit; cursor: pointer; }
+@media print { details.section > *:not(summary) { display: block !important; } .tout-deplier { display: none; } }
+details.point > *:not(summary) { margin-left: 4px; }
+summary.section-titre .titre-point { flex: 1 1 auto; }
+summary.section-titre .etat-point { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 6px; font-weight: 600; font-size: .95rem; color: var(--attention); }
+summary.section-titre .etat-point.fait { color: var(--ok); }
+summary.section-titre .etat-point svg { width: 16px; height: 16px; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+table.synthese td, table.synthese th { vertical-align: middle; }
+.sans-correction { margin-top: 20px; }
+@media (max-width: 480px) {
+  summary.section-titre { flex-wrap: wrap; }
+  details.point > summary.section-titre::before { display: none; }
+  details.point .titre-point::before { content: '▸'; display: inline-block; margin-right: 8px; color: var(--accent-decor); transition: transform .15s; }
+  details.point[open] .titre-point::before { transform: rotate(90deg); }
+  summary.section-titre .etat-point { flex-basis: 100%; padding-left: 22px; }
+  table.synthese .col-indic { display: none; }
+}
+.lien-point { background: none; border: 0; padding: 4px 0; min-height: 44px; color: var(--accent-texte); text-decoration: underline; font: inherit; text-align: left; cursor: pointer; }
+.passer { display: block; background: none; border: 0; padding: 8px 0; min-height: 44px; margin: 8px 0 12px; color: var(--accent-texte); text-decoration: underline; font: inherit; cursor: pointer; }
+fieldset.verifications { margin-top: 24px; }
+fieldset.choix-point { margin-top: 12px; }
 .copie-repli { margin-top: 10px; min-height: 140px; font-family: var(--police-mono); font-size: 14px; }
 .illisible { margin: 24px 0; padding: 16px; border-left: 3px solid var(--erreur); background: var(--surface); font-weight: 600; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; scroll-behavior: auto !important; } }
@@ -206,7 +234,7 @@ textarea { resize: vertical; }
   <div class="barre" id="mg-barre" role="tablist" aria-label="Étapes du dossier"></div>
   <main class="panneau" id="mg-panneau" role="tabpanel"></main>
   <nav class="barre barre-bas" id="mg-barre-bas" aria-label="Étapes du dossier (bas de page)"></nav>
-  <footer class="pied"><p class="avertissement"><strong>MonGreffier utilise l'IA&nbsp;: elle peut se tromper.</strong> Vérifiez toujours les analyses, les références et le projet de jugement avant de les utiliser.<br>MonGreffier propose, vous décidez. <a class="avis" href="https://mongreffier.com/espace/avis" target="_blank" rel="noopener">Donner votre avis<span class="sr"> (s’ouvre dans un nouvel onglet)</span></a></p><p>Développé par <a href="https://evidencai.com" target="_blank" rel="noopener">EvidencAI<span class="sr"> (s’ouvre dans un nouvel onglet)</span></a></p><p class="accroche">Nous fabriquons des logiciels IA, les nôtres et les vôtres.</p></footer>
+  <footer class="pied"><p class="avertissement"><strong>MonGreffier utilise l'IA&nbsp;: elle peut se tromper.</strong> Vérifiez toujours les analyses, les références et le projet de jugement avant de les utiliser.<br>MonGreffier propose, vous décidez. Un avis&nbsp;? Dites-le simplement à Claude.</p><p>Développé par <a href="https://evidencai.com" target="_blank" rel="noopener">EvidencAI<span class="sr"> (s’ouvre dans un nouvel onglet)</span></a></p><p class="accroche">Nous fabriquons des logiciels IA, les nôtres et les vôtres.</p></footer>
 </div>
 <script type="application/json" id="mg-donnees">
 {
@@ -228,6 +256,9 @@ textarea { resize: vertical; }
       {"id": "C8", "intitule": "Ordre d’examen proposé"},
       {"id": "C9", "intitule": "Articles et jurisprudences cités"},
       {"id": "C10", "intitule": "Pièces clés et points à contrôler"}
+    ], "verifications": [
+      {"id": "V1", "intitule": "Montant de la facture n° 12 sur l’original (pièce 3 de la demanderesse)"},
+      {"id": "V2", "intitule": "Date de réception de la mise en demeure (pièce 7)"}
     ]}},
     {"id": "decision", "titre": "Points de décision", "statut": "a_saisir", "contenu_md": "## POINT 1 : Exigibilité de la facture\n\n**Thèse de la demanderesse :** la prestation a été livrée sans réserve.\n\n**Thèse de la défenderesse :** la prestation est incomplète.\n\n## POINT 2 : Montant de l’indemnisation\n\nTrois méthodes de calcul sont possibles ; le juge apprécie souverainement.\n\n## POINT 3 : Frais irrépétibles\n\nApplication de l’article 700 du code de procédure civile.", "saisie": {"type": "points_decision", "points": [
       {"id": "P1", "intitule": "La facture est-elle exigible ?", "options": [{"code": "A", "libelle": "Oui, la prestation est exécutée"}, {"code": "B", "libelle": "Non, la prestation est incomplète"}], "indicateur": "vert", "prop_ia": "A"},
@@ -374,7 +405,7 @@ textarea { resize: vertical; }
       }
     });
   }
-  function apresRendu(racine) {
+  function apresRendu(racine, sansRepli) {
     var hs = racine.querySelectorAll('h1,h2,h3,h4,h5,h6'), tw, noeuds = [], n;
     Array.prototype.forEach.call(hs, function (t) {
       var niv = +t.tagName.charAt(1), cible = niv <= 1 ? 'h3' : niv === 2 ? 'h4' : 'h5', nv = document.createElement(cible);
@@ -392,6 +423,40 @@ textarea { resize: vertical; }
       if (/[\uD83D][\uDFE0\uDFE2\uDD34]/.test(n.nodeValue) && !(n.parentNode.closest && n.parentNode.closest('pre,code'))) noeuds.push(n);
     }
     noeuds.forEach(remplacerEmojis);
+    if (!sansRepli) replierSections(racine);
+  }
+  /* Sections repliables : chaque « ## » (h4 après conversion, ou « ### » à défaut) du détail
+     devient un accordéon ; la première reste ouverte, un bouton déplie ou replie tout. */
+  function replierSections(racine) {
+    var niv = ['H4', 'H5'].filter(function (t) {
+      return Array.prototype.filter.call(racine.children, function (c) { return c.tagName === t; }).length >= 2;
+    })[0], rang, sections = [], courant = null, bouton;
+    if (!niv) return;
+    rang = +niv.charAt(1);
+    Array.prototype.slice.call(racine.children).forEach(function (c) {
+      var r = /^H[1-6]$/.test(c.tagName) ? +c.tagName.charAt(1) : 99;
+      if (c.tagName === niv) {
+        courant = h('details', { class: 'section' });
+        var s = h('summary', { class: 'section-titre' });
+        while (c.firstChild) s.appendChild(c.firstChild);
+        courant.appendChild(s);
+        racine.replaceChild(courant, c);
+        sections.push(courant);
+      } else if (courant && r > rang) {
+        courant.appendChild(c);
+      } else if (r <= rang) {
+        courant = null;
+      }
+    });
+    if (sections.length < 2) return;
+    sections[0].open = true;
+    bouton = h('button', { type: 'button', class: 'btn-lien tout-deplier', text: 'Tout déplier' });
+    bouton.addEventListener('click', function () {
+      var ouvrir = sections.some(function (d) { return !d.open; });
+      sections.forEach(function (d) { d.open = ouvrir; });
+      bouton.textContent = ouvrir ? 'Tout replier' : 'Tout déplier';
+    });
+    racine.insertBefore(bouton, sections[0]);
   }
   function remplacerEmojis(n) {
     var txt = n.nodeValue, frag = document.createDocumentFragment(), re = /(🟢|🟠|🔴)\s*/g, dernier = 0, m, ind, apres, lib;
@@ -409,7 +474,7 @@ textarea { resize: vertical; }
     frag.appendChild(document.createTextNode(txt.slice(dernier)));
     n.parentNode.replaceChild(frag, n);
   }
-  function rendreMarkdown(md, cible) {
+  function rendreMarkdown(md, cible, sansRepli) {
     var brut = String(md || ''), html;
     if (BIBLIOS) {
       try {
@@ -420,7 +485,7 @@ textarea { resize: vertical; }
           FORBID_ATTR: ['style', 'srcset', 'src'],
           ALLOWED_URI_REGEXP: /^(?:https:|mailto:)/i
         });
-        apresRendu(cible);
+        apresRendu(cible, sansRepli);
         return;
       } catch (e) { /* repli brut */ }
     }
@@ -498,15 +563,22 @@ textarea { resize: vertical; }
     var type = onglet.saisie.type, v = onglet.saisie.valeurs || {}, e;
     if (type === 'fiche') {
       e = { juridiction: String(v.juridiction || ''), date_audience: String(v.date_audience || ''), date_delibere: String(v.date_delibere || ''), president: String(v.president || ''), formation: v.formation === 'juge_unique' || v.formation === 'collegiale' ? v.formation : '', assesseurs: [String((v.assesseurs || [])[0] || ''), String((v.assesseurs || [])[1] || '')], greffier: String(v.greffier || '') };
-    } else if (type === 'validation_cadrage') e = { choix: null, textes: {} };
+    } else if (type === 'corrections_jugement') e = { textes: {}, envoyees: {}, sansCorr: false };
+    else if (type === 'validation_cadrage') e = { choix: null, textes: {}, verifs: {} };
     else if (type === 'points_decision') e = { positions: {} };
     else if (type === 'selection_robustesse') e = { coches: {}, annots: {}, obs: '' };
     else e = { textes: {}, envoyees: {} };
     return e;
   }
+  /** Vérifications sur pièces du cadrage (V1, V2…) : seulement les entrées valides. */
+  function verificationsDe(s) {
+    return (Array.isArray(s.verifications) ? s.verifications : []).filter(function (v) {
+      return v && typeof v.id === 'string' && v.id && typeof v.intitule === 'string' && v.intitule.trim();
+    });
+  }
   function empreinte(onglet) {
     var s = onglet.saisie, pts = Array.isArray(s.points) ? s.points : [];
-    if (s.type === 'validation_cadrage') return pts.map(function (p) { return p.id; }).join('|');
+    if (s.type === 'validation_cadrage') return pts.map(function (p) { return p.id; }).join('|') + '#' + verificationsDe(s).map(function (v) { return v.id; }).join('|');
     if (s.type === 'points_decision') return pts.map(function (p) { return p.id + ':' + (p.options || []).map(function (o) { return o.code; }).join(','); }).join('|');
     return '';
   }
@@ -664,6 +736,20 @@ textarea { resize: vertical; }
     za.input.addEventListener('input', function () { etat.textes.autre = za.input.value; ctx.change(); });
     zones.autre = za; detail.appendChild(za.wrap);
     corps.appendChild(detail);
+    // Vérifications sur pièces (S-MG-12) : facultatives, visibles quel que soit le choix Oui / Non.
+    var verifs = verificationsDe(onglet.saisie);
+    if (!etat.verifs || typeof etat.verifs !== 'object') etat.verifs = {};
+    if (verifs.length) {
+      var zv = h('fieldset', { class: 'verifications' });
+      zv.appendChild(h('legend', { text: 'Vérifications sur pièces (facultatif)' }));
+      zv.appendChild(h('p', { class: 'aide', text: 'Si vous avez le dossier papier sous les yeux, notez ce que vous constatez. Sinon, laissez vide : Claude gardera le point « à vérifier sur pièces ».' }));
+      verifs.forEach(function (v) {
+        var z = zoneTexte({ libelle: v.id + ' : ' + v.intitule, aide: 'Laissez vide si vous n’avez pas vérifié.', valeur: etat.verifs[v.id] });
+        z.input.addEventListener('input', function () { etat.verifs[v.id] = z.input.value; ctx.change(); });
+        zv.appendChild(z.wrap);
+      });
+      corps.appendChild(zv);
+    }
     groupe.addEventListener('change', function (ev) {
       if (ev.target && ev.target.name === nom) { etat.choix = ev.target.value; detail.hidden = etat.choix !== 'non'; ctx.change(); }
     });
@@ -674,6 +760,12 @@ textarea { resize: vertical; }
       if (a) out.push({ point: 'autre', texte: a });
       return out;
     }
+    function reponsesVerifs() {
+      var out = [];
+      verifs.forEach(function (v) { var t = nettoyer(etat.verifs[v.id]); if (t) out.push({ id: v.id, reponse: t }); });
+      return out;
+    }
+    function avecVerifs(val) { var r = reponsesVerifs(); if (r.length) val.verifications = r; return val; }
     return {
       corps: corps,
       collecter: function () {
@@ -682,62 +774,116 @@ textarea { resize: vertical; }
           err.push({ ctrl: radios.oui, msg: 'Choisissez une réponse : le cadrage est correct, ou vous avez des corrections.' });
           return { erreurs: err, valeurs: null };
         }
-        if (etat.choix === 'oui') return { erreurs: [], valeurs: { ok: true } };
+        if (etat.choix === 'oui') return { erreurs: [], valeurs: avecVerifs({ ok: true }) };
         c = corrections();
         if (!c.length) {
           err.push({ ctrl: (pts.length ? zones[pts[0].id] : zones.autre).input, msg: 'Écrivez au moins une correction, ou répondez « Oui ».' });
           return { erreurs: err, valeurs: null };
         }
-        v = { ok: false, corrections: c };
+        v = avecVerifs({ ok: false, corrections: c });
         return { erreurs: [], valeurs: v };
       },
       lots: function (v) {
-        if (v.ok) return null;
-        return decouper(v.corrections, function (items) { return enveloppe(onglet, { ok: false, corrections: items }); }, function (items) {
-          return items.length === 1 ? 'Envoyer la correction ' + items[0].point : 'Envoyer les corrections ' + items[0].point + ' à ' + items[items.length - 1].point;
-        }, function (it) { return 'La correction ' + it.point; });
+        var items = (v.ok ? [] : v.corrections.map(function (x) { return { k: 'c', x: x }; }))
+          .concat((v.verifications || []).map(function (x) { return { k: 'v', x: x }; }));
+        if (!items.length) return null;
+        return decouper(items, function (lot) {
+          var val = { ok: v.ok }, cs = [], vs = [];
+          lot.forEach(function (it) { (it.k === 'c' ? cs : vs).push(it.x); });
+          if (!v.ok && cs.length) val.corrections = cs;
+          if (vs.length) val.verifications = vs;
+          return enveloppe(onglet, val);
+        }, function (lot) {
+          var noms = lot.map(function (it) { return it.k === 'c' ? it.x.point : it.x.id; });
+          if (lot.every(function (it) { return it.k === 'c'; })) return lot.length === 1 ? 'Envoyer la correction ' + noms[0] : 'Envoyer les corrections ' + noms[0] + ' à ' + noms[noms.length - 1];
+          if (lot.every(function (it) { return it.k === 'v'; })) return lot.length === 1 ? 'Envoyer la vérification ' + noms[0] : 'Envoyer les vérifications ' + noms[0] + ' à ' + noms[noms.length - 1];
+          return 'Envoyer ' + noms[0] + ' à ' + noms[noms.length - 1];
+        }, function (it) { return it.k === 'c' ? 'La correction ' + it.x.point : 'La vérification ' + it.x.id; });
       },
       compteur: true,
-      approx: function () { return etat.choix === 'oui' ? { ok: true } : { ok: false, corrections: corrections() }; }
+      approx: function () { return avecVerifs(etat.choix === 'oui' ? { ok: true } : { ok: false, corrections: corrections() }); }
     };
   }
 
-  /* --- points de décision --- */
+  /* --- points de décision (S-MG-12) : tableau de synthèse en premier, puis un accordéon par point
+     avec le détail juridique ET le choix du juge ; l'état de chaque point est visible replié. --- */
   function ecranDecision(onglet, etat, ctx) {
-    var corps = h('div'), pts = Array.isArray(onglet.saisie.points) ? onglet.saisie.points : [], cartes = {}, avancement = h('p', { class: 'aide', role: 'status' });
+    var corps = h('div'), pts = Array.isArray(onglet.saisie.points) ? onglet.saisie.points : [], cartes = {}, avancement = h('p', { class: 'aide avancement', role: 'status' });
+    var detailPts = onglet._detailPoints || {}, intro = onglet._introPoints || [], cellules = {}, sections = {}, ordre = [];
     if (!pts.length) {
       corps.appendChild(h('p', { text: 'Aucun point de décision n’est à trancher pour le moment.' }));
       return { corps: corps, collecter: function () { return { erreurs: [], valeurs: { positions: [] } }; }, lots: null, compteur: false, sansBoutons: true };
     }
-    corps.appendChild(h('p', { text: 'Pour chaque point, choisissez l’option que vous retenez. Vous pouvez ajouter une réserve.' }));
-    corps.appendChild(avancement);
     function pos(id) { if (!etat.positions[id]) etat.positions[id] = { option: '', reserve: '' }; return etat.positions[id]; }
-    function maj() {
-      var n = pts.filter(function (p) { return pos(p.id).option; }).length;
-      avancement.textContent = n + ' point' + (n > 1 ? 's' : '') + ' sur ' + pts.length + ' renseigné' + (n > 1 ? 's' : '');
+    function etatTexte(p, court) {
+      var s = pos(p.id), r = nettoyer(s.reserve);
+      if (!s.option) return 'À trancher';
+      if (s.option === 'AUTRE') return r ? (court ? 'Autre solution' : 'Retenu : autre solution') : 'Autre solution : à décrire';
+      return (court ? 'Option ' : 'Retenu : option ') + s.option + (r ? ', avec réserve' : '');
     }
-    corps.appendChild(h('div', {}, [
-      h('button', { type: 'button', class: 'btn', text: 'Retenir les propositions de l’IA', onclick: function () {
-        var n = 0;
-        pts.forEach(function (p) {
-          var codes = (p.options || []).map(function (o) { return o.code; });
-          if (!pos(p.id).option && p.indicateur !== 'rouge' && codes.indexOf(p.prop_ia) >= 0) { pos(p.id).option = p.prop_ia; cartes[p.id].radios[p.prop_ia].checked = true; majAideReserve(p); n += 1; }
-        });
-        maj(); ctx.change(); ctx.dire(n + ' proposition' + (n > 1 ? 's' : '') + ' de l’IA retenue' + (n > 1 ? 's' : '') + '. Vous pouvez modifier chaque point.');
-      } }),
-      h('p', { class: 'aide', text: 'Coche la proposition de l’IA pour chaque point, sauf ceux où elle s’abstient. Rien n’est envoyé : vous pouvez ensuite modifier chaque point.' })
-    ]));
+    function tranche(p) { var s = pos(p.id); return !!s.option && (s.option !== 'AUTRE' || !!nettoyer(s.reserve)); }
+    function maj() {
+      var n = pts.filter(tranche).length, txt;
+      txt = n + ' point' + (n > 1 ? 's' : '') + ' sur ' + pts.length + ' tranché' + (n > 1 ? 's' : '') + '.';
+      if (avancement.textContent !== txt) avancement.textContent = txt;
+      pts.forEach(function (p) {
+        var fait = tranche(p);
+        cellules[p.id].textContent = etatTexte(p, true);
+        var e = sections[p.id].etat;
+        e.textContent = '';
+        e.appendChild(icone(fait ? 'coche' : 'cercle'));
+        e.appendChild(document.createTextNode(etatTexte(p, false)));
+        e.className = 'etat-point' + (fait ? ' fait' : '');
+      });
+    }
+    function ouvrirPoint(id) {
+      var s = sections[id];
+      if (!s) return;
+      s.details.open = true;
+      try { s.details.scrollIntoView({ block: 'start' }); } catch (e) { /* ignoré */ }
+      s.resume.focus();
+    }
+
+    corps.appendChild(h('p', { text: 'Le tableau résume vos choix. Ouvrez un point pour lire l’analyse et choisir une option ; vous pouvez ajouter une réserve.' }));
+    corps.appendChild(avancement);
+
+    // Tableau de synthèse, mis à jour en direct ; la question ouvre le point.
+    var t = h('table', { class: 'synthese' }), tb = h('tbody'), legende = h('caption', { text: 'Synthèse des points de décision', tabindex: '-1' });
+    t.appendChild(legende);
+    t.appendChild(h('thead', {}, [h('tr', {}, ['N°', 'Question', 'Indicateur', 'Proposition de l’IA', 'Votre choix'].map(function (x) { return h('th', { scope: 'col', text: x, class: x === 'Indicateur' ? 'col-indic' : null }); }))]));
+    pts.forEach(function (p) {
+      var c = h('td', { class: 'votre-choix' }), b = h('button', { type: 'button', class: 'btn-lien lien-point', text: String(p.intitule) });
+      b.addEventListener('click', function () { ouvrirPoint(p.id); });
+      cellules[p.id] = c;
+      tb.appendChild(h('tr', {}, [h('td', { text: String(p.id) }), h('td', {}, [b]), h('td', { class: 'col-indic' }, [pastille(p.indicateur)]), h('td', { text: p.prop_ia === 'ABSTENTION' ? 'Abstention' : p.prop_ia ? 'Option ' + p.prop_ia : '' }), c]));
+    });
+    t.appendChild(tb);
+    corps.appendChild(h('div', { class: 'tableau', role: 'region', tabindex: '0', 'aria-label': 'Tableau, défilement horizontal' }, [t]));
+    if (intro.length) corps.appendChild(h('div', { class: 'md intro-points' }, intro));
+
+    var deplier = h('button', { type: 'button', class: 'btn-lien tout-deplier', text: 'Tout déplier' });
+    deplier.addEventListener('click', function () {
+      var ouvrir = ordre.some(function (id) { return !sections[id].details.open; });
+      ordre.forEach(function (id) { sections[id].details.open = ouvrir; });
+      deplier.textContent = ouvrir ? 'Tout replier' : 'Tout déplier';
+    });
+    corps.appendChild(deplier);
+
     function majAideReserve(p) {
       var c = cartes[p.id];
       c.aide.textContent = pos(p.id).option === 'AUTRE' ? 'Décrivez ici la solution que vous retenez.' : 'Une réserve conditionne votre choix ; Claude la reprendra dans la motivation.';
     }
-    pts.forEach(function (p) {
-      var fs = h('fieldset', { class: 'carte' }), nom = uid('p'), radios = {}, slot = creerSlot(), opts = (p.options || []).map(function (o) { return { code: String(o.code), libelle: String(o.libelle) }; });
-      var prop;
-      fs.appendChild(h('legend', {}, ['Point ', h('span', { class: 'id', text: p.id }), ' : ', h('span', { text: p.intitule })]));
-      if (INDIC[p.indicateur]) fs.appendChild(h('p', {}, [pastille(p.indicateur)]));
-      if (p.prop_ia === 'ABSTENTION') fs.appendChild(h('p', { text: 'L’IA s’abstient de recommander : appréciation souveraine du juge.' }));
-      else if (p.prop_ia) fs.appendChild(h('p', { text: 'Proposition de l’IA : option ' + p.prop_ia + '.' }));
+    pts.forEach(function (p, i) {
+      var d = h('details', { class: 'section point' }), titre = h('span', { class: 'titre-point', text: 'Point ' + p.id + ' : ' + p.intitule }), et = h('span', { class: 'etat-point' });
+      var resume = h('summary', { class: 'section-titre' }, [titre, et]);
+      var fs = h('fieldset', { class: 'choix-point' }), nom = uid('p'), radios = {}, slot = creerSlot(), opts = (p.options || []).map(function (o) { return { code: String(o.code), libelle: String(o.libelle) }; });
+      var prop, suivant = pts[i + 1];
+      d.appendChild(resume);
+      if (detailPts[p.id] && detailPts[p.id].length) d.appendChild(h('div', { class: 'md' }, detailPts[p.id]));
+      if (INDIC[p.indicateur]) d.appendChild(h('p', {}, [pastille(p.indicateur)]));
+      if (p.prop_ia === 'ABSTENTION') d.appendChild(h('p', { text: 'L’IA s’abstient de recommander : appréciation souveraine du juge.' }));
+      else if (p.prop_ia) d.appendChild(h('p', { text: 'Proposition de l’IA : option ' + p.prop_ia + '.' }));
+      fs.appendChild(h('legend', { text: 'Votre choix pour le point ' + p.id }));
       opts.concat([{ code: 'AUTRE', libelle: 'Autre solution' }]).forEach(function (o) {
         var id = uid('o'), inp = h('input', { type: 'radio', name: nom, id: id, value: o.code });
         prop = o.code === p.prop_ia;
@@ -747,16 +893,28 @@ textarea { resize: vertical; }
       });
       fs.appendChild(slot);
       var z = zoneTexte({ libelle: 'Réserve ou précision (facultatif)', aide: 'Une réserve conditionne votre choix ; Claude la reprendra dans la motivation.', valeur: pos(p.id).reserve });
-      z.input.addEventListener('input', function () { pos(p.id).reserve = z.input.value; ctx.change(); });
+      z.input.addEventListener('input', function () { pos(p.id).reserve = z.input.value; maj(); ctx.change(); });
       fs.appendChild(z.wrap);
+      d.appendChild(fs);
+      var passer = h('button', { type: 'button', class: 'btn-lien passer', text: suivant ? 'Passer au point ' + suivant.id : 'Revenir au tableau' });
+      passer.addEventListener('click', function () {
+        if (suivant) { d.open = false; ouvrirPoint(suivant.id); }
+        else { try { legende.scrollIntoView({ block: 'start' }); } catch (e) { /* ignoré */ } legende.focus(); }
+      });
+      d.appendChild(passer);
       cartes[p.id] = { radios: radios, reserve: z, slot: slot, aide: z.wrap.querySelector('.aide') };
+      sections[p.id] = { details: d, resume: resume, etat: et };
+      ordre.push(p.id);
       lierErreur(radios[opts.length ? opts[0].code : 'AUTRE'], slot, null, fs);
       fs.addEventListener('change', function (ev) {
         if (ev.target && ev.target.name === nom) { pos(p.id).option = ev.target.value; majAideReserve(p); maj(); ctx.change(); }
       });
       majAideReserve(p);
-      corps.appendChild(fs);
+      corps.appendChild(d);
     });
+    // Au départ : seul le premier point à trancher est ouvert (tous tranchés : tout fermé).
+    var premier = pts.filter(function (p) { return !pos(p.id).option; })[0];
+    if (premier) sections[premier.id].details.open = true;
     maj();
     function positions() {
       var out = [];
@@ -772,8 +930,8 @@ textarea { resize: vertical; }
         var err = [], manquants = [], valeurs;
         pts.forEach(function (p) {
           var s = pos(p.id), c = cartes[p.id], first = Object.keys(c.radios)[0];
-          if (!s.option) { manquants.push(p.id); err.push({ ctrl: c.radios[first], msg: 'Point ' + p.id + ' : choisissez une option.', ouvre: true }); }
-          else if (s.option === 'AUTRE' && !nettoyer(s.reserve)) err.push({ ctrl: c.reserve.input, msg: 'Vous avez choisi « Autre solution » : décrivez-la dans la zone ci-dessous.' });
+          if (!s.option) { manquants.push(p.id); sections[p.id].details.open = true; err.push({ ctrl: c.radios[first], msg: 'Point ' + p.id + ' : choisissez une option.', ouvre: true }); }
+          else if (s.option === 'AUTRE' && !nettoyer(s.reserve)) { sections[p.id].details.open = true; err.push({ ctrl: c.reserve.input, msg: 'Vous avez choisi « Autre solution » : décrivez-la dans la zone ci-dessous.' }); }
         });
         if (manquants.length) err.unshift({ resume: 'Il reste ' + manquants.length + ' point' + (manquants.length > 1 ? 's' : '') + ' sans réponse : ' + manquants.join(', ') + '.' });
         valeurs = { positions: positions() };
@@ -791,16 +949,22 @@ textarea { resize: vertical; }
 
   /* --- corrections du jugement --- */
   function ecranJugement(onglet, etat, ctx) {
-    var corps = h('div'), zones = {}, ctrlLots = {};
+    var corps = h('div'), zones = {}, ctrlLots = {}, idSans, caseSans = null, slotSans;
     corps.appendChild(h('p', { text: 'Indiquez, partie par partie, ce que vous voulez changer dans le projet de jugement. Laissez vide ce qui vous convient.' }));
     corps.appendChild(h('p', { class: 'aide', text: 'Écrivez la correction avec vos mots ; citez le passage concerné si possible.' }));
     PARTIES.forEach(function (pa) {
       var cle = pa[0], z = zoneTexte({ libelle: pa[1], lignes: 6, valeur: etat.textes[cle] }), zoneLot = h('div');
-      z.input.addEventListener('input', function () { etat.textes[cle] = z.input.value; if (etat.envoyees[cle]) etat.envoyees[cle] = false; ctx.change(); });
+      z.input.addEventListener('input', function () { etat.textes[cle] = z.input.value; if (etat.envoyees[cle]) etat.envoyees[cle] = false; if (etat.sansCorr && nettoyer(z.input.value)) { etat.sansCorr = false; if (caseSans) caseSans.checked = false; } ctx.change(); });
       zones[cle] = z; ctrlLots[cle] = zoneLot;
       z.wrap.appendChild(zoneLot);
       corps.appendChild(z.wrap);
     });
+    // Case « sans correction » en bas (demande de Stéphane du 11/10/2026) : plus de bouton à part.
+    idSans = uid('sc'); caseSans = h('input', { type: 'checkbox', id: idSans }); slotSans = creerSlot();
+    caseSans.checked = etat.sansCorr === true;
+    caseSans.addEventListener('change', function () { etat.sansCorr = caseSans.checked; ctx.change(); });
+    corps.appendChild(h('div', { class: 'sans-correction' }, [h('label', { class: 'choix', for: idSans }, [caseSans, h('span', { class: 'corps', text: 'Le projet me convient, sans correction' })]), slotSans]));
+    lierErreur(caseSans, slotSans);
     function textes() {
       var out = {};
       PARTIES.forEach(function (pa) { var t = nettoyer(etat.textes[pa[0]]); if (t) out[pa[0]] = t; });
@@ -832,24 +996,21 @@ textarea { resize: vertical; }
     return {
       corps: corps,
       collecter: function () {
-        var t = textes(), err = [];
-        if (!Object.keys(t).length) err.push({ ctrl: zones.faits.input, msg: 'Écrivez au moins une correction, ou choisissez « Le projet me convient, sans correction ».' });
+        var t = textes(), err = [], n = Object.keys(t).length;
+        if (etat.sansCorr === true) {
+          if (n) {
+            err.push({ ctrl: caseSans, msg: 'Vous avez coché « Le projet me convient » mais écrit des corrections : décochez la case, ou effacez les corrections.' });
+            return { erreurs: err, valeurs: null };
+          }
+          return { erreurs: [], valeurs: { partie: 'tout', sans_correction: true, corrections: {} } };
+        }
+        if (!n) err.push({ ctrl: zones.faits.input, msg: 'Écrivez au moins une correction, ou cochez « Le projet me convient, sans correction ».' });
         return { erreurs: err, valeurs: { partie: 'tout', corrections: t } };
       },
       lots: null,
       compteur: true,
       approx: function () { return { partie: 'tout', corrections: textes() }; },
-      majLots: majLots,
-      tertiaire: {
-        texte: 'Le projet me convient, sans correction',
-        valeurs: { partie: 'tout', sans_correction: true, corrections: {} },
-        bloque: function () {
-          var t = textes(), cle = PARTIES.map(function (pa) { return pa[0]; }).filter(function (k) { return t[k]; })[0];
-          if (!cle) return null;
-          zones[cle].input.focus();
-          return 'Vous avez écrit des corrections. Effacez-les pour répondre que le projet vous convient, ou utilisez « Envoyer à Claude ».';
-        }
-      }
+      majLots: majLots
     };
   }
 
@@ -1030,7 +1191,7 @@ textarea { resize: vertical; }
   function construireSaisie(onglet) {
     var etat = etatPour(onglet), type = onglet.saisie.type, ctx, ecran, racine, zResume, zStatut, zBoutons, zLots, zTaille, zNoteLots, zAnnonce, zCopie, zEnvoye, zRestaure, zStockage, annonceFaite = false, noteLotsAnnoncee = false, occupe = false, elements = [];
     racine = h('section', { class: 'saisie', 'aria-labelledby': uid('h') });
-    var titre = h('h3', { id: racine.getAttribute('aria-labelledby'), tabindex: '-1', text: 'Votre saisie' });
+    var titre = h('h3', { id: racine.getAttribute('aria-labelledby'), tabindex: '-1', text: type === 'points_decision' ? 'Vos choix' : 'Votre saisie' });
     zRestaure = h('p', { role: 'status', class: 'note', hidden: !etat.restaure, text: 'Votre saisie précédente a été rétablie.' });
     zStockage = h('p', { class: 'note avert-stockage', hidden: stockageOK, text: 'Votre saisie n’est pas conservée si la page se recharge : envoyez-la avant que Claude ne mette l’artefact à jour.' });
     zEnvoye = h('p', { class: 'envoye', hidden: !etat.envoye, text: etat.envoye ? 'Envoyé à ' + etat.envoye : '' });
@@ -1057,9 +1218,11 @@ textarea { resize: vertical; }
         if (!ecran.compteur) return;
         a = ecran.approx();
         n = octets(enveloppe(onglet, a));
-        zTaille.textContent = 'Taille de l’envoi : ' + nombre(n) + ' sur ' + nombre(MAX_OCTETS) + ' octets';
+        // Compteur caché tant que la saisie est loin de la limite d'un envoi : il n'apprend rien au juge.
+        zTaille.hidden = n <= MAX_OCTETS * 0.8;
+        zTaille.textContent = 'Votre saisie est longue (' + Math.min(999, Math.round(n * 100 / MAX_OCTETS)) + ' % de la limite d’un envoi). Au-delà, elle partira en plusieurs envois.';
         zTaille.classList.toggle('alerte', n > MAX_OCTETS * 0.8);
-        if (n > MAX_OCTETS * 0.8 && !annonceFaite) { annonceFaite = true; zAnnonce.textContent = 'Attention : votre saisie approche de la limite de ' + nombre(MAX_OCTETS) + ' octets pour un seul envoi.'; }
+        if (n > MAX_OCTETS * 0.8 && !annonceFaite) { annonceFaite = true; zAnnonce.textContent = 'Attention : votre saisie approche de la limite d’un seul envoi.'; }
         if (n <= MAX_OCTETS * 0.8) { annonceFaite = false; zAnnonce.textContent = ''; }
       },
       majResume: function () {
@@ -1086,7 +1249,7 @@ textarea { resize: vertical; }
       liste.forEach(function (e) { poserErreur(e.ctrl, e.msg); });
       ul = h('ul');
       liste.forEach(function (e) {
-        ul.appendChild(h('li', {}, [h('a', { href: '#', text: libelleErreur(e), onclick: function (ev) { ev.preventDefault(); e.ctrl.focus(); } })]));
+        ul.appendChild(h('li', {}, [h('a', { href: '#', text: libelleErreur(e), onclick: function (ev) { ev.preventDefault(); var d = e.ctrl.closest && e.ctrl.closest('details'); if (d) d.open = true; e.ctrl.focus(); } })]));
       });
       var resumeTxt = r.erreurs.filter(function (e) { return e.resume; })[0];
       zResume.appendChild(h('div', { class: 'resume', role: 'alert' }, [h('p', { text: 'Votre saisie n’est pas complète. À corriger :' }), resumeTxt ? h('p', { text: resumeTxt.resume }) : null, ul]));
@@ -1215,17 +1378,24 @@ textarea { resize: vertical; }
     return racine;
   }
 
-  /* ---------- synthèse des points de décision (générée par la page) ---------- */
-  function syntheseDecision(points) {
-    var t = h('table'), tb = h('tbody');
-    t.appendChild(h('caption', { text: 'Synthèse des points de décision' }));
-    t.appendChild(h('thead', {}, [h('tr', {}, ['N°', 'Question', 'Options', 'Indicateur', 'Proposition de l’IA'].map(function (x) { return h('th', { scope: 'col', text: x }); }))]));
-    points.forEach(function (p) {
-      var opts = (p.options || []).map(function (o) { return o.code + '. ' + o.libelle; }).join(' ; ');
-      tb.appendChild(h('tr', {}, [h('td', { text: String(p.id) }), h('td', { text: String(p.intitule) }), h('td', { text: opts }), h('td', {}, [pastille(p.indicateur)]), h('td', { text: p.prop_ia === 'ABSTENTION' ? 'Abstention' : p.prop_ia ? 'Option ' + p.prop_ia : '' })]));
+  /* Découpe le détail des points de décision : nœuds rendus rangés par id de point (P1, P2…). */
+  function decouperPoints(o, md) {
+    var zone = h('div'), par = {}, intro = [], courant = null, rangCourant = 99;
+    if (md) rendreMarkdown(md, zone, true);
+    Array.prototype.slice.call(zone.childNodes).forEach(function (n) {
+      var tag = n.tagName || '', r = /^H[1-6]$/.test(tag) ? +tag.charAt(1) : 99, m;
+      if (r < 99) {
+        m = /^\s*POINT\s+(\d+)/i.exec(n.textContent || '');
+        if (m) { courant = 'P' + m[1]; rangCourant = r; if (!par[courant]) par[courant] = []; return; }
+        if (r <= rangCourant) { courant = null; rangCourant = 99; }
+      }
+      if (courant) par[courant].push(n); else if (!(n.nodeType === 3 && !n.textContent.trim())) intro.push(n);
     });
-    t.appendChild(tb);
-    return h('div', { class: 'tableau', role: 'region', tabindex: '0', 'aria-label': 'Tableau, défilement horizontal' }, [t]);
+    // Un bloc POINT sans point correspondant reste visible sous le tableau (rien ne se perd).
+    var ids = (o.saisie.points || []).map(function (p) { return String(p.id); });
+    Object.keys(par).forEach(function (k) { if (ids.indexOf(k) < 0) intro = intro.concat(par[k]); });
+    o._detailPoints = par;
+    o._introPoints = intro;
   }
 
   /* ---------- onglets ---------- */
@@ -1287,7 +1457,13 @@ textarea { resize: vertical; }
     if (o.id === 'definitif') p.appendChild(h('p', { class: 'bandeau', text: 'Version définitive rédigée par Claude. Relisez-la ici : vos corrections se font ensuite dans le Word, avec le suivi des modifications.' }));
     md = typeof o.contenu_md === 'string' && o.contenu_md.trim() ? o.contenu_md : '';
     pts = saisieValide(o) && o.saisie.type === 'points_decision' && Array.isArray(o.saisie.points) && o.saisie.points.length ? o.saisie.points : null;
-    avecLecture = !!(md || pts);
+    if (pts) {
+      // Points de décision : le détail de chaque « POINT n » va dans l'accordéon du point Pn ;
+      // le reste (sans correspondance) s'affiche sous le tableau. Plus de lecture séparée.
+      decouperPoints(o, md);
+      md = '';
+    }
+    avecLecture = !!md;
     if (saisieValide(o)) saisie = construireSaisie(o);
     if (avecLecture && saisie) {
       p.appendChild(h('button', { type: 'button', class: 'vers-saisie', text: 'Aller à la saisie', onclick: function () { saisie.querySelector('h3').focus(); } }));
@@ -1296,7 +1472,6 @@ textarea { resize: vertical; }
       lecture = h('section', { 'aria-label': 'En détail' }, [h('p', { class: 'etiquette', text: 'En détail' })]);
       var zone = h('div', { class: 'md' });
       if (md) rendreMarkdown(md, zone);
-      if (pts) zone.appendChild(syntheseDecision(pts));
       lecture.appendChild(zone);
       p.appendChild(lecture);
     }
@@ -1305,7 +1480,13 @@ textarea { resize: vertical; }
       p.appendChild(saisie);
       majAvertStockage();
     }
-    try { titre.scrollIntoView({ block: 'start' }); } catch (e) { /* ignoré */ }
+    remonter();
+  }
+  /* Haut de page à chaque onglet affiché (et à chaque nouvelle version publiée par Claude) :
+     jamais la position où le juge a cliqué « Envoyer à Claude ». */
+  function remonter() {
+    try { window.scrollTo(0, 0); } catch (e) { /* ignoré */ }
+    try { document.documentElement.scrollTop = 0; document.body.scrollTop = 0; } catch (e) { /* ignoré */ }
   }
 
   /* ---------- démarrage ---------- */
@@ -1336,8 +1517,20 @@ textarea { resize: vertical; }
       statutRoom = await verifierStatut();
       choix = visibles.filter(function (o) { return o.id === D.onglet_actif; })[0] || visibles[0];
       choisir(choix, false);
+      // Le navigateur peut restaurer l'ancienne position après le chargement : on la reprend.
+      window.addEventListener('load', remonter);
+      window.addEventListener('pageshow', remonter);
+      setTimeout(remonter, 0);
     } catch (e) { illisible(); }
   }
+  try { if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; } catch (e) { /* ignoré */ }
+  // Impression : tout déplier (un <details> fermé n'imprime pas son contenu), puis restaurer.
+  var fermesAvantImpression = [];
+  window.addEventListener('beforeprint', function () {
+    fermesAvantImpression = Array.prototype.filter.call(document.querySelectorAll('details'), function (d) { return !d.open; });
+    fermesAvantImpression.forEach(function (d) { d.open = true; });
+  });
+  window.addEventListener('afterprint', function () { fermesAvantImpression.forEach(function (d) { d.open = false; }); fermesAvantImpression = []; });
   demarrer();
 })();
 </script>
