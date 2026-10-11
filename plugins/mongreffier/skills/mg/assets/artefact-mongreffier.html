@@ -191,8 +191,9 @@ textarea { resize: vertical; }
 .pied { text-align: center; font-size: 14px; color: var(--texte-2); padding: 24px 0 32px; }
 .pied p { margin: 0; }
 .pied .accroche { margin-top: 4px; font-size: 13px; }
-.pied .avertissement { max-width: 62ch; margin: 0 auto 16px; padding-top: 16px; border-top: 1px solid var(--bordure); font-size: 14px; line-height: 1.5; color: var(--texte-2); }
+.pied .avertissement { max-width: 62ch; margin: 0 auto 16px; padding-top: 16px; border-top: 1px solid var(--bordure); font-size: 14px; line-height: 1.5; color: var(--texte-2); font-style: italic; }
 .pied .avertissement strong { color: var(--texte); }
+.pied .invitation { max-width: 62ch; margin: 0 auto 16px; font-size: 14px; line-height: 1.5; color: var(--texte-2); }
 details.section { border-top: 1px solid var(--bordure); padding: 4px 0; }
 details.section:last-of-type { border-bottom: 1px solid var(--bordure); }
 summary.section-titre { cursor: pointer; min-height: 48px; display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.05rem; color: var(--texte); list-style: none; }
@@ -201,7 +202,7 @@ summary.section-titre::before { content: '▸'; color: var(--accent-decor); tran
 details.section[open] > summary.section-titre::before { transform: rotate(90deg); }
 summary.section-titre:focus-visible { outline: 3px solid var(--focus, var(--accent-decor)); outline-offset: 2px; }
 .tout-deplier { display: block; margin: 0 0 8px auto; background: none; border: 0; padding: 8px 0; min-height: 44px; color: var(--accent-texte, var(--accent-decor)); text-decoration: underline; font: inherit; cursor: pointer; }
-@media print { details.section > *:not(summary) { display: block !important; } .tout-deplier { display: none; } }
+@media print { details.section > *:not(summary) { display: block !important; } .tout-deplier, .replier { display: none; } }
 details.point > *:not(summary) { margin-left: 4px; }
 summary.section-titre .titre-point { flex: 1 1 auto; }
 summary.section-titre .etat-point { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 6px; font-weight: 600; font-size: .95rem; color: var(--attention); }
@@ -217,6 +218,18 @@ table.synthese td, table.synthese th { vertical-align: middle; }
   summary.section-titre .etat-point { flex-basis: 100%; padding-left: 22px; }
   table.synthese .col-indic { display: none; }
 }
+.replier, .copier-lien { display: inline-flex; align-items: center; min-height: 44px; background: none; border: 0; padding: 4px 0; color: var(--accent-texte); text-decoration: underline; font: inherit; text-align: left; cursor: pointer; }
+details.section > .replier { margin: 4px 0 8px; }
+@media print { .replier, details.section > .replier { display: none !important; } }
+.actions-point { display: flex; flex-wrap: wrap; align-items: center; gap: 0 24px; }
+@media (max-width: 480px) { .actions-point { flex-direction: column; align-items: flex-start; gap: 0; margin-bottom: 8px; } }
+.copier-lien { flex: 0 0 100%; justify-content: center; text-align: center; }
+.importance { margin-left: 8px; font-weight: 400; vertical-align: middle; }
+.pastille.imp-capital { background: var(--accent-aplat); color: var(--accent-sur-aplat); border-color: var(--accent-aplat); }
+.pastille.imp-important { color: var(--texte); border: 2px solid var(--texte); }
+.pastille.imp-utile { color: var(--texte-2); border: 1px solid var(--texte-2); }
+.pastille .jauge { letter-spacing: 1px; }
+textarea:disabled { opacity: .6; cursor: not-allowed; }
 .lien-point { background: none; border: 0; padding: 4px 0; min-height: 44px; color: var(--accent-texte); text-decoration: underline; font: inherit; text-align: left; cursor: pointer; }
 .passer { display: block; background: none; border: 0; padding: 8px 0; min-height: 44px; margin: 8px 0 12px; color: var(--accent-texte); text-decoration: underline; font: inherit; cursor: pointer; }
 fieldset.verifications { margin-top: 24px; }
@@ -234,7 +247,7 @@ fieldset.choix-point { margin-top: 12px; }
   <div class="barre" id="mg-barre" role="tablist" aria-label="Étapes du dossier"></div>
   <main class="panneau" id="mg-panneau" role="tabpanel"></main>
   <nav class="barre barre-bas" id="mg-barre-bas" aria-label="Étapes du dossier (bas de page)"></nav>
-  <footer class="pied"><p class="avertissement"><strong>MonGreffier utilise l'IA&nbsp;: elle peut se tromper.</strong> Vérifiez toujours les analyses, les références et le projet de jugement avant de les utiliser.<br>MonGreffier propose, vous décidez. Un avis&nbsp;? Dites-le simplement à Claude.</p><p>Développé par <a href="https://evidencai.com" target="_blank" rel="noopener">EvidencAI<span class="sr"> (s’ouvre dans un nouvel onglet)</span></a></p><p class="accroche">Nous fabriquons des logiciels IA, les nôtres et les vôtres.</p></footer>
+  <footer class="pied"><p class="avertissement"><strong>MonGreffier utilise l’IA&nbsp;: elle peut se tromper.</strong> Vérifiez toujours les analyses, les références et le projet de jugement avant de les utiliser. MonGreffier propose, vous décidez. Les données non pseudonymisées que vous confiez à Claude restent sous votre responsabilité.</p><p class="invitation">Un bug, une idée&nbsp;? Dites à Claude «&nbsp;envoie un avis à MonGreffier&nbsp;»&nbsp;: après votre accord, il le transmet à l’équipe, sans aucune donnée de votre dossier.</p><p>Développé par <a href="https://evidencai.com" target="_blank" rel="noopener">EvidencAI<span class="sr"> (s’ouvre dans un nouvel onglet)</span></a></p><p class="accroche">Nous fabriquons des logiciels IA, les nôtres et les vôtres.</p></footer>
 </div>
 <script type="application/json" id="mg-donnees">
 {
@@ -257,8 +270,8 @@ fieldset.choix-point { margin-top: 12px; }
       {"id": "C9", "intitule": "Articles et jurisprudences cités"},
       {"id": "C10", "intitule": "Pièces clés et points à contrôler"}
     ], "verifications": [
-      {"id": "V1", "intitule": "Montant de la facture n° 12 sur l’original (pièce 3 de la demanderesse)"},
-      {"id": "V2", "intitule": "Date de réception de la mise en demeure (pièce 7)"}
+      {"id": "V1", "intitule": "Montant de la facture n° 12 sur l’original (pièce 3 de la demanderesse)", "importance": "capital"},
+      {"id": "V2", "intitule": "Date de réception de la mise en demeure (pièce 7)", "importance": "utile"}
     ]}},
     {"id": "decision", "titre": "Points de décision", "statut": "a_saisir", "contenu_md": "## POINT 1 : Exigibilité de la facture\n\n**Thèse de la demanderesse :** la prestation a été livrée sans réserve.\n\n**Thèse de la défenderesse :** la prestation est incomplète.\n\n## POINT 2 : Montant de l’indemnisation\n\nTrois méthodes de calcul sont possibles ; le juge apprécie souverainement.\n\n## POINT 3 : Frais irrépétibles\n\nApplication de l’article 700 du code de procédure civile.", "saisie": {"type": "points_decision", "points": [
       {"id": "P1", "intitule": "La facture est-elle exigible ?", "options": [{"code": "A", "libelle": "Oui, la prestation est exécutée"}, {"code": "B", "libelle": "Non, la prestation est incomplète"}], "indicateur": "vert", "prop_ia": "A"},
@@ -291,6 +304,7 @@ fieldset.choix-point { margin-top: 12px; }
     orange: ['Solutions divergentes', '🟠', 'triangle'],
     rouge: ['Appréciation souveraine', '🔴', 'carre']
   };
+  var IMPORTANCES = { capital: ['Capital', 3], important: ['Important', 2], utile: ['Utile', 1] };
   var D = null, room = null, statutRoom = 'off', stockageOK = true, ctxCourant = null;
   var etats = {}, compteurId = 0;
 
@@ -350,6 +364,32 @@ fieldset.choix-point { margin-top: 12px; }
     if (Array.isArray(o)) return o.length > MAX_ELEM || o.some(tropDElements);
     if (o && typeof o === 'object') { ks = Object.keys(o); return ks.length > MAX_ELEM || ks.some(function (k) { return tropDElements(o[k]); }); }
     return false;
+  }
+  function pourcent(n) { return Math.min(999, Math.round(n * 100 / MAX_OCTETS)); }
+  /* Importance d'une vérification : fixée par Claude ; absente ou inconnue, « important ». */
+  function importanceDe(v) {
+    var k = String(v && v.importance).trim().toLowerCase();
+    return Object.prototype.hasOwnProperty.call(IMPORTANCES, k) ? k : 'important';
+  }
+  function pastilleImportance(v) {
+    var k = importanceDe(v), d = IMPORTANCES[k];
+    return h('span', { class: 'pastille importance imp-' + k }, [
+      h('span', { class: 'sr', text: 'Importance : ' + d[0].toLowerCase() }),
+      h('span', { 'aria-hidden': 'true', text: d[0] }),
+      h('span', { class: 'jauge', 'aria-hidden': 'true', text: '●'.repeat(d[1]) + '○'.repeat(3 - d[1]) })
+    ]);
+  }
+  /* Bouton du bas d'un accordéon : referme, garde le titre en vue, y met le focus. */
+  function boutonReplier(d, libelle) {
+    var b = h('button', { type: 'button', class: 'btn-lien replier', text: libelle });
+    b.addEventListener('click', function () {
+      var t = d.querySelector('summary');
+      d.open = false;
+      if (!t) return;
+      try { t.scrollIntoView({ block: 'nearest' }); } catch (e) { /* ignoré */ }
+      t.focus({ preventScroll: true });
+    });
+    return b;
   }
   function nbMots(s) { return s.split(/\s+/).filter(Boolean).length; }
   function nombre(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
@@ -451,10 +491,15 @@ fieldset.choix-point { margin-top: 12px; }
     if (sections.length < 2) return;
     sections[0].open = true;
     bouton = h('button', { type: 'button', class: 'btn-lien tout-deplier', text: 'Tout déplier' });
+    function majBouton() { bouton.textContent = sections.some(function (d) { return !d.open; }) ? 'Tout déplier' : 'Tout replier'; }
     bouton.addEventListener('click', function () {
       var ouvrir = sections.some(function (d) { return !d.open; });
       sections.forEach(function (d) { d.open = ouvrir; });
-      bouton.textContent = ouvrir ? 'Tout replier' : 'Tout déplier';
+      majBouton();
+    });
+    sections.forEach(function (d) {
+      d.addEventListener('toggle', majBouton);
+      d.appendChild(boutonReplier(d, 'Replier cette section'));
     });
     racine.insertBefore(bouton, sections[0]);
   }
@@ -555,7 +600,7 @@ fieldset.choix-point { margin-top: 12px; }
     ta.addEventListener('input', maj);
     maj();
     lierErreur(ta, slot, aideId);
-    return { input: ta, maj: maj, aideEl: null, wrap: h('div', { class: 'champ' }, [h('label', { for: id, text: o.libelle }), o.aide ? h('p', { class: 'aide', id: aideId, text: o.aide }) : null, ta, cpt, slot]) };
+    return { input: ta, maj: maj, aideEl: null, wrap: h('div', { class: 'champ' }, [o.etiquette ? h('label', { for: id }, o.etiquette) : h('label', { for: id, text: o.libelle }), o.aide ? h('p', { class: 'aide', id: aideId, text: o.aide }) : null, ta, cpt, slot]) };
   }
 
   /* ---------- écrans de saisie ---------- */
@@ -564,7 +609,7 @@ fieldset.choix-point { margin-top: 12px; }
     if (type === 'fiche') {
       e = { juridiction: String(v.juridiction || ''), date_audience: String(v.date_audience || ''), date_delibere: String(v.date_delibere || ''), president: String(v.president || ''), formation: v.formation === 'juge_unique' || v.formation === 'collegiale' ? v.formation : '', assesseurs: [String((v.assesseurs || [])[0] || ''), String((v.assesseurs || [])[1] || '')], greffier: String(v.greffier || '') };
     } else if (type === 'corrections_jugement') e = { textes: {}, envoyees: {}, sansCorr: false };
-    else if (type === 'validation_cadrage') e = { choix: null, textes: {}, verifs: {} };
+    else if (type === 'validation_cadrage') e = { choix: null, textes: {}, verifs: {}, pasVerifie: {} };
     else if (type === 'points_decision') e = { positions: {} };
     else if (type === 'selection_robustesse') e = { coches: {}, annots: {}, obs: '' };
     else e = { textes: {}, envoyees: {} };
@@ -736,17 +781,30 @@ fieldset.choix-point { margin-top: 12px; }
     za.input.addEventListener('input', function () { etat.textes.autre = za.input.value; ctx.change(); });
     zones.autre = za; detail.appendChild(za.wrap);
     corps.appendChild(detail);
-    // Vérifications sur pièces (S-MG-12) : facultatives, visibles quel que soit le choix Oui / Non.
-    var verifs = verificationsDe(onglet.saisie);
+    // Vérifications sur pièces : obligatoires (réponse écrite ou « Pas pu vérifier »), visibles quel que soit le choix Oui / Non.
+    var verifs = verificationsDe(onglet.saisie), zonesV = {};
     if (!etat.verifs || typeof etat.verifs !== 'object') etat.verifs = {};
+    if (!etat.pasVerifie || typeof etat.pasVerifie !== 'object') etat.pasVerifie = {};
     if (verifs.length) {
       var zv = h('fieldset', { class: 'verifications' });
-      zv.appendChild(h('legend', { text: 'Vérifications sur pièces (facultatif)' }));
-      zv.appendChild(h('p', { class: 'aide', text: 'Si vous avez le dossier papier sous les yeux, notez ce que vous constatez. Sinon, laissez vide : Claude gardera le point « à vérifier sur pièces ».' }));
+      zv.appendChild(h('legend', { text: 'Vérifications sur pièces' }));
+      zv.appendChild(h('p', { class: 'aide', text: 'Claude a besoin de ces réponses. Pour chaque vérification, notez ce que vous constatez, ou cochez « Pas pu vérifier » si vous n’avez pas le dossier sous les yeux.' }));
+      zv.appendChild(h('p', { class: 'aide', text: 'Importance fixée par Claude : Capital (décisif), Important, Utile (à confirmer si vous le pouvez).' }));
       verifs.forEach(function (v) {
-        var z = zoneTexte({ libelle: v.id + ' : ' + v.intitule, aide: 'Laissez vide si vous n’avez pas vérifié.', valeur: etat.verifs[v.id] });
+        var z = zoneTexte({ etiquette: [v.id + ' : ' + v.intitule, pastilleImportance(v)], aide: 'Notez ce que vous constatez sur la pièce.', valeur: etat.verifs[v.id] });
+        var idCase = uid('pv'), cb = h('input', { type: 'checkbox', id: idCase });
+        cb.checked = etat.pasVerifie[v.id] === true;
+        z.input.disabled = cb.checked;
         z.input.addEventListener('input', function () { etat.verifs[v.id] = z.input.value; ctx.change(); });
+        cb.addEventListener('change', function () {
+          etat.pasVerifie[v.id] = cb.checked;
+          z.input.disabled = cb.checked;
+          if (cb.checked) retirerErreur(z.input);
+          ctx.change();
+        });
+        zonesV[v.id] = z;
         zv.appendChild(z.wrap);
+        zv.appendChild(h('label', { class: 'choix', for: idCase }, [cb, h('span', { class: 'corps' }, ['Pas pu vérifier', h('span', { class: 'sr', text: ' ' + v.id })])]));
       });
       corps.appendChild(zv);
     }
@@ -762,26 +820,33 @@ fieldset.choix-point { margin-top: 12px; }
     }
     function reponsesVerifs() {
       var out = [];
-      verifs.forEach(function (v) { var t = nettoyer(etat.verifs[v.id]); if (t) out.push({ id: v.id, reponse: t }); });
+      verifs.forEach(function (v) {
+        var t;
+        if (etat.pasVerifie[v.id] === true) { out.push({ id: v.id, pas_verifie: true }); return; }
+        t = nettoyer(etat.verifs[v.id]);
+        if (t) out.push({ id: v.id, reponse: t });
+      });
       return out;
     }
     function avecVerifs(val) { var r = reponsesVerifs(); if (r.length) val.verifications = r; return val; }
     return {
       corps: corps,
       collecter: function () {
-        var err = [], v, c;
+        var err = [], c;
         if (etat.choix !== 'oui' && etat.choix !== 'non') {
           err.push({ ctrl: radios.oui, msg: 'Choisissez une réponse : le cadrage est correct, ou vous avez des corrections.' });
-          return { erreurs: err, valeurs: null };
+        } else if (etat.choix === 'non') {
+          c = corrections();
+          if (!c.length) err.push({ ctrl: (pts.length ? zones[pts[0].id] : zones.autre).input, msg: 'Écrivez au moins une correction, ou répondez « Oui ».' });
         }
+        // Toutes les vérifications sans réponse sont listées d'un coup, dans l'ordre de l'écran.
+        verifs.forEach(function (x) {
+          if (etat.pasVerifie[x.id] === true || nettoyer(etat.verifs[x.id])) return;
+          err.push({ ctrl: zonesV[x.id].input, msg: 'Répondez à cette vérification, ou cochez « Pas pu vérifier ».', lib: x.id + ' : ' + x.intitule + ', répondez à cette vérification, ou cochez « Pas pu vérifier ».' });
+        });
+        if (err.length) return { erreurs: err, valeurs: null };
         if (etat.choix === 'oui') return { erreurs: [], valeurs: avecVerifs({ ok: true }) };
-        c = corrections();
-        if (!c.length) {
-          err.push({ ctrl: (pts.length ? zones[pts[0].id] : zones.autre).input, msg: 'Écrivez au moins une correction, ou répondez « Oui ».' });
-          return { erreurs: err, valeurs: null };
-        }
-        v = avecVerifs({ ok: false, corrections: c });
-        return { erreurs: [], valeurs: v };
+        return { erreurs: [], valeurs: avecVerifs({ ok: false, corrections: c }) };
       },
       lots: function (v) {
         var items = (v.ok ? [] : v.corrections.map(function (x) { return { k: 'c', x: x }; }))
@@ -862,10 +927,11 @@ fieldset.choix-point { margin-top: 12px; }
     if (intro.length) corps.appendChild(h('div', { class: 'md intro-points' }, intro));
 
     var deplier = h('button', { type: 'button', class: 'btn-lien tout-deplier', text: 'Tout déplier' });
+    function majDeplier() { deplier.textContent = ordre.some(function (id) { return !sections[id].details.open; }) ? 'Tout déplier' : 'Tout replier'; }
     deplier.addEventListener('click', function () {
       var ouvrir = ordre.some(function (id) { return !sections[id].details.open; });
       ordre.forEach(function (id) { sections[id].details.open = ouvrir; });
-      deplier.textContent = ouvrir ? 'Tout replier' : 'Tout déplier';
+      majDeplier();
     });
     corps.appendChild(deplier);
 
@@ -901,7 +967,8 @@ fieldset.choix-point { margin-top: 12px; }
         if (suivant) { d.open = false; ouvrirPoint(suivant.id); }
         else { try { legende.scrollIntoView({ block: 'start' }); } catch (e) { /* ignoré */ } legende.focus(); }
       });
-      d.appendChild(passer);
+      d.appendChild(h('div', { class: 'actions-point' }, [passer, boutonReplier(d, 'Replier ce point')]));
+      d.addEventListener('toggle', majDeplier);
       cartes[p.id] = { radios: radios, reserve: z, slot: slot, aide: z.wrap.querySelector('.aide') };
       sections[p.id] = { details: d, resume: resume, etat: et };
       ordre.push(p.id);
@@ -981,7 +1048,7 @@ fieldset.choix-point { margin-top: 12px; }
         if (trop && t[cle]) {
           var ch = chargePartie(cle, t[cle]), n = octets(ch);
           if (n > MAX_OCTETS) {
-            zone.appendChild(h('p', { class: 'erreur-champ' }, [icone('alerte'), 'La partie « ' + pa[1] + ' » est trop longue pour un envoi (' + nombre(n) + ' octets). Raccourcissez-la d’environ ' + nombre(Math.ceil((n - MAX_OCTETS) / 1.1)) + ' caractères, envoyez-la, puis écrivez le reste dans une nouvelle correction.']));
+            zone.appendChild(h('p', { class: 'erreur-champ' }, [icone('alerte'), 'La partie « ' + pa[1] + ' » est trop longue pour un envoi (' + pourcent(n) + ' % de la limite). Raccourcissez-la d’environ ' + nombre(Math.ceil((n - MAX_OCTETS) / 1.1)) + ' caractères, envoyez-la, puis écrivez le reste dans une nouvelle correction.']));
           } else {
             zone.appendChild(h('button', { type: 'button', class: 'btn', 'aria-label': 'Envoyer cette partie : ' + pa[1], text: etat.envoyees[cle] ? 'Envoyer à nouveau' : 'Envoyer cette partie', onclick: function () {
               if (!peutEnvoyer()) { ctx.dire('Cet écran ne peut pas envoyer directement : utilisez « Copier pour Claude ».'); return; }
@@ -1191,9 +1258,9 @@ fieldset.choix-point { margin-top: 12px; }
   function construireSaisie(onglet) {
     var etat = etatPour(onglet), type = onglet.saisie.type, ctx, ecran, racine, zResume, zStatut, zBoutons, zLots, zTaille, zNoteLots, zAnnonce, zCopie, zEnvoye, zRestaure, zStockage, annonceFaite = false, noteLotsAnnoncee = false, occupe = false, elements = [];
     racine = h('section', { class: 'saisie', 'aria-labelledby': uid('h') });
-    var titre = h('h3', { id: racine.getAttribute('aria-labelledby'), tabindex: '-1', text: type === 'points_decision' ? 'Vos choix' : 'Votre saisie' });
-    zRestaure = h('p', { role: 'status', class: 'note', hidden: !etat.restaure, text: 'Votre saisie précédente a été rétablie.' });
-    zStockage = h('p', { class: 'note avert-stockage', hidden: stockageOK, text: 'Votre saisie n’est pas conservée si la page se recharge : envoyez-la avant que Claude ne mette l’artefact à jour.' });
+    var titre = h('h3', { id: racine.getAttribute('aria-labelledby'), tabindex: '-1', text: type === 'points_decision' ? 'Vos choix' : 'Votre réponse à Claude' });
+    zRestaure = h('p', { role: 'status', class: 'note', hidden: !etat.restaure, text: 'Votre réponse précédente a été rétablie.' });
+    zStockage = h('p', { class: 'note avert-stockage', hidden: stockageOK, text: 'Votre réponse n’est pas conservée si la page se recharge : envoyez-la avant que Claude ne mette la page à jour.' });
     zEnvoye = h('p', { class: 'envoye', hidden: !etat.envoye, text: etat.envoye ? 'Envoyé à ' + etat.envoye : '' });
     zResume = h('div');
     zStatut = h('div', { class: 'statut', role: 'status', 'aria-live': 'polite' });
@@ -1218,11 +1285,11 @@ fieldset.choix-point { margin-top: 12px; }
         if (!ecran.compteur) return;
         a = ecran.approx();
         n = octets(enveloppe(onglet, a));
-        // Compteur caché tant que la saisie est loin de la limite d'un envoi : il n'apprend rien au juge.
+        // Compteur caché tant que la réponse est loin de la limite d'un envoi : il n'apprend rien au juge.
         zTaille.hidden = n <= MAX_OCTETS * 0.8;
-        zTaille.textContent = 'Votre saisie est longue (' + Math.min(999, Math.round(n * 100 / MAX_OCTETS)) + ' % de la limite d’un envoi). Au-delà, elle partira en plusieurs envois.';
+        zTaille.textContent = 'Votre réponse est longue (' + pourcent(n) + ' % de la limite d’un envoi). Au-delà, elle partira en plusieurs envois.';
         zTaille.classList.toggle('alerte', n > MAX_OCTETS * 0.8);
-        if (n > MAX_OCTETS * 0.8 && !annonceFaite) { annonceFaite = true; zAnnonce.textContent = 'Attention : votre saisie approche de la limite d’un seul envoi.'; }
+        if (n > MAX_OCTETS * 0.8 && !annonceFaite) { annonceFaite = true; zAnnonce.textContent = 'Attention : votre réponse approche de la limite d’un seul envoi.'; }
         if (n <= MAX_OCTETS * 0.8) { annonceFaite = false; zAnnonce.textContent = ''; }
       },
       majResume: function () {
@@ -1252,7 +1319,7 @@ fieldset.choix-point { margin-top: 12px; }
         ul.appendChild(h('li', {}, [h('a', { href: '#', text: libelleErreur(e), onclick: function (ev) { ev.preventDefault(); var d = e.ctrl.closest && e.ctrl.closest('details'); if (d) d.open = true; e.ctrl.focus(); } })]));
       });
       var resumeTxt = r.erreurs.filter(function (e) { return e.resume; })[0];
-      zResume.appendChild(h('div', { class: 'resume', role: 'alert' }, [h('p', { text: 'Votre saisie n’est pas complète. À corriger :' }), resumeTxt ? h('p', { text: resumeTxt.resume }) : null, ul]));
+      zResume.appendChild(h('div', { class: 'resume', role: 'alert' }, [h('p', { text: 'Votre réponse n’est pas complète. À corriger :' }), resumeTxt ? h('p', { text: resumeTxt.resume }) : null, ul]));
       premier = liste[0] && liste[0].ctrl;
       if (premier) { try { premier.scrollIntoView({ block: 'center' }); } catch (e) { /* ignoré */ } premier.focus({ preventScroll: true }); }
       return null;
@@ -1262,8 +1329,8 @@ fieldset.choix-point { margin-top: 12px; }
       if (occupe) return;
       if (D.demo === true) { zStatut.textContent = 'Mode démonstration : rien n’est envoyé.'; return; }
       n = octets(charge);
-      if (n > MAX_OCTETS) { zStatut.textContent = 'Cette saisie est trop longue pour un seul envoi (' + nombre(n) + ' octets, limite ' + nombre(MAX_OCTETS) + ').'; return; }
-      if (tropDElements(charge)) { zStatut.textContent = 'Cette saisie compte trop d’éléments pour un seul envoi (' + MAX_ELEM + ' au plus). Utilisez « Copier pour Claude ».'; return; }
+      if (n > MAX_OCTETS) { zStatut.textContent = 'Cette réponse est trop longue pour un seul envoi (' + pourcent(n) + ' % de la limite).'; return; }
+      if (tropDElements(charge)) { zStatut.textContent = 'Cette réponse compte trop d’éléments pour un seul envoi (' + MAX_ELEM + ' au plus). Utilisez « Copier pour Claude ».'; return; }
       mode = modeEnvoi();
       occupe = true;
       majOccupe(true);
@@ -1273,7 +1340,7 @@ fieldset.choix-point { margin-top: 12px; }
         occupe = false;
         etat.envoye = heure();
         zEnvoye.textContent = 'Envoyé à ' + etat.envoye; zEnvoye.hidden = false;
-        zStatut.textContent = mode === 'stage' ? 'Votre saisie est déposée dans la zone de message de la conversation. Appuyez sur Entrée pour l’envoyer.' : 'Envoyé. Regardez la conversation : confirmez l’envoi dans la fenêtre de Claude si elle s’affiche.';
+        zStatut.textContent = mode === 'stage' ? 'Votre réponse est déposée dans la zone de message de la conversation. Appuyez sur Entrée pour l’envoyer.' : 'Envoyé. Regardez la conversation : confirmez l’envoi dans la fenêtre de Claude si elle s’affiche.';
         if (apres) apres(); else effacer(cleBrouillon(onglet.id));
         if (!apres) { /* envoi complet : brouillon effacé */ }
         majOccupe(false);
@@ -1282,14 +1349,14 @@ fieldset.choix-point { margin-top: 12px; }
         occupe = false;
         if (code === 'rate_limited') zStatut.textContent = 'Trop d’envois rapprochés. Patientez quelques secondes, puis réessayez.';
         else if (code === 'upstream_error') zStatut.textContent = 'Le service de Claude a répondu par une erreur. Réessayez, ou utilisez « Copier pour Claude ».';
-        else if (code === 'invalid_argument') zStatut.textContent = 'L’envoi a été refusé : la saisie n’a pas le format attendu. Utilisez « Copier pour Claude ».';
+        else if (code === 'invalid_argument') zStatut.textContent = 'L’envoi a été refusé : la réponse n’a pas le format attendu. Utilisez « Copier pour Claude ».';
         else {
-          zStatut.textContent = 'Claude n’est pas joignable depuis cette page pour le moment. Votre saisie est conservée. Utilisez « Copier pour Claude », puis collez dans la conversation.';
+          zStatut.textContent = 'Claude n’est pas joignable depuis cette page pour le moment. Votre réponse est conservée. Utilisez « Copier pour Claude », puis collez dans la conversation.';
           verifierStatut().then(function (s) {
             statutRoom = s;
             if (s === 'available' && mode === 'send') {
               try { Promise.resolve(room.sendToClaudeSession(charge, { deliver: 'stage' })).then(function () {
-                zStatut.textContent = 'Votre saisie est déposée dans la zone de message de la conversation. Appuyez sur Entrée pour l’envoyer.';
+                zStatut.textContent = 'Votre réponse est déposée dans la zone de message de la conversation. Appuyez sur Entrée pour l’envoyer.';
                 etat.envoye = heure(); zEnvoye.textContent = 'Envoyé à ' + etat.envoye; zEnvoye.hidden = false;
                 if (apres) apres(); else effacer(cleBrouillon(onglet.id));
               }, function () { /* message déjà affiché */ }); } catch (e2) { /* message déjà affiché */ }
@@ -1315,7 +1382,7 @@ fieldset.choix-point { margin-top: 12px; }
       if (n > MAX_OCTETS || tropDElements(charge)) {
         lots = ecran.lots ? ecran.lots(r.valeurs) : null;
         if (lots && lots.lots) {
-          zStatut.textContent = (n > MAX_OCTETS ? 'Cette saisie est trop longue pour un seul envoi (' + nombre(n) + ' octets, limite ' + nombre(MAX_OCTETS) + ').' : 'Cette saisie compte trop d’éléments pour un seul envoi (' + MAX_ELEM + ' au plus).') + ' Envoyez-la en plusieurs lots avec les boutons ci-dessous, ou utilisez « Copier pour Claude ».';
+          zStatut.textContent = (n > MAX_OCTETS ? 'Cette réponse est trop longue pour un seul envoi (' + pourcent(n) + ' % de la limite).' : 'Cette réponse compte trop d’éléments pour un seul envoi (' + MAX_ELEM + ' au plus).') + ' Envoyez-la en plusieurs lots avec les boutons ci-dessous, ou utilisez « Copier pour Claude ».';
           var restants = lots.lots.length;
           lots.lots.forEach(function (l) {
             zLots.appendChild(h('button', { type: 'button', class: 'btn', text: l.libelle, onclick: function (ev) {
@@ -1324,9 +1391,9 @@ fieldset.choix-point { margin-top: 12px; }
             } }));
           });
         } else if (lots && lots.trop) {
-          zStatut.textContent = lots.f ? lots.trop + ' est trop longue pour un envoi (' + nombre(lots.octets) + ' octets, limite ' + nombre(MAX_OCTETS) + '). Raccourcissez-la, ou utilisez « Copier pour Claude ».' : lots.trop + ' est trop long pour un envoi (' + nombre(lots.octets) + ' octets, limite ' + nombre(MAX_OCTETS) + '). Raccourcissez-le, ou utilisez « Copier pour Claude ».';
+          zStatut.textContent = lots.f ? lots.trop + ' est trop longue pour un envoi (' + pourcent(lots.octets) + ' % de la limite). Raccourcissez-la, ou utilisez « Copier pour Claude ».' : lots.trop + ' est trop long pour un envoi (' + pourcent(lots.octets) + ' % de la limite). Raccourcissez-le, ou utilisez « Copier pour Claude ».';
         } else {
-          zStatut.textContent = 'Cette saisie est trop longue pour un seul envoi (' + nombre(n) + ' octets, limite ' + nombre(MAX_OCTETS) + '). Raccourcissez vos textes d’environ ' + nombre(Math.ceil((n - MAX_OCTETS) / 1.1)) + ' caractères, ou utilisez « Copier pour Claude ».';
+          zStatut.textContent = 'Cette réponse est trop longue pour un seul envoi (' + pourcent(n) + ' % de la limite). Raccourcissez vos textes d’environ ' + nombre(Math.ceil((n - MAX_OCTETS) / 1.1)) + ' caractères, ou utilisez « Copier pour Claude ».';
         }
         return;
       }
@@ -1357,7 +1424,11 @@ fieldset.choix-point { margin-top: 12px; }
         b._texte = lib;
         zBoutons.appendChild(b);
       }
-      zBoutons.appendChild(h('button', { type: 'button', class: 'btn' + (envoi || ctx.modeLots ? '' : ' primaire'), text: 'Copier pour Claude', onclick: clicCopie }));
+      // Avec un envoi possible (ou des lots) « Copier pour Claude » n'est qu'un lien, sous la rangée de boutons.
+      var lienCopie = peutEnvoyer(), copie = lienCopie
+        ? h('button', { type: 'button', class: 'btn-lien copier-lien', text: 'Copier pour Claude', onclick: clicCopie })
+        : h('button', { type: 'button', class: 'btn primaire', text: 'Copier pour Claude', onclick: clicCopie });
+      if (!lienCopie) zBoutons.appendChild(copie);
       if (ecran.tertiaire) zBoutons.appendChild(h('button', { type: 'button', class: 'btn tertiaire', text: ecran.tertiaire.texte, onclick: function () {
         var msg = ecran.tertiaire.bloque ? ecran.tertiaire.bloque() : null;
         zResume.textContent = '';
@@ -1365,8 +1436,9 @@ fieldset.choix-point { margin-top: 12px; }
         if (peutEnvoyer() && !ctx.modeLots) lancer(enveloppe(onglet, ecran.tertiaire.valeurs));
         else copier(ecran.tertiaire.valeurs);
       } }));
+      if (lienCopie) zBoutons.appendChild(copie);
       if (ctx.modeLots && peutEnvoyer()) {
-        zNoteLots.textContent = 'Vos corrections dépassent la taille d’un seul envoi (' + nombre(octets(enveloppe(onglet, ecran.approx()))) + ' sur ' + nombre(MAX_OCTETS) + ' octets). Envoyez-les partie par partie avec les boutons « Envoyer cette partie » ci-dessous.';
+        zNoteLots.textContent = 'Vos corrections dépassent la taille d’un seul envoi (' + pourcent(octets(enveloppe(onglet, ecran.approx()))) + ' % de la limite). Envoyez-les partie par partie avec les boutons « Envoyer cette partie » ci-dessous.';
         zNoteLots.hidden = false;
         if (!noteLotsAnnoncee) { noteLotsAnnoncee = true; zAnnonce.textContent = 'Envoi en plusieurs parties nécessaire : envoyez vos corrections partie par partie.'; }
       } else { zNoteLots.hidden = true; noteLotsAnnoncee = false; }
@@ -1466,10 +1538,10 @@ fieldset.choix-point { margin-top: 12px; }
     avecLecture = !!md;
     if (saisieValide(o)) saisie = construireSaisie(o);
     if (avecLecture && saisie) {
-      p.appendChild(h('button', { type: 'button', class: 'vers-saisie', text: 'Aller à la saisie', onclick: function () { saisie.querySelector('h3').focus(); } }));
+      p.appendChild(h('button', { type: 'button', class: 'vers-saisie', text: 'Aller à votre réponse', onclick: function () { saisie.querySelector('h3').focus(); } }));
     }
     if (avecLecture) {
-      lecture = h('section', { 'aria-label': 'En détail' }, [h('p', { class: 'etiquette', text: 'En détail' })]);
+      lecture = h('section', { 'aria-label': 'À lire' }, [h('p', { class: 'etiquette', text: 'À lire' })]);
       var zone = h('div', { class: 'md' });
       if (md) rendreMarkdown(md, zone);
       lecture.appendChild(zone);
@@ -1485,8 +1557,15 @@ fieldset.choix-point { margin-top: 12px; }
   /* Haut de page à chaque onglet affiché (et à chaque nouvelle version publiée par Claude) :
      jamais la position où le juge a cliqué « Envoyer à Claude ». */
   function remonter() {
+    var t;
     try { window.scrollTo(0, 0); } catch (e) { /* ignoré */ }
     try { document.documentElement.scrollTop = 0; document.body.scrollTop = 0; } catch (e) { /* ignoré */ }
+    // Dans un cadre (claude.ai affiche l'artefact dans une iframe), c'est le parent qui défile :
+    // amener le haut de la page en vue fait défiler les cadres parents. Pas de focus() ici.
+    try {
+      t = document.querySelector('.entete') || document.getElementById('mg-dossier');
+      if (t && t.scrollIntoView) t.scrollIntoView({ block: 'start' });
+    } catch (e) { /* ignoré */ }
   }
 
   /* ---------- démarrage ---------- */

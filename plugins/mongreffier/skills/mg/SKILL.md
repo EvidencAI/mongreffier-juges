@@ -1,6 +1,6 @@
 ---
 name: mg
-description: "À activer d'office quand l'utilisateur dit « lance MG » ou « MonGreffier », ou dépose des conclusions, une assignation ou un projet de jugement, ou parle d'une audience, d'un délibéré ou d'un jugement à rédiger ou relire. Assistant du juge consulaire au tribunal de commerce : analyse, rédaction et relecture de jugements ; références vérifiées d'abord par le connecteur MonGreffier (Légifrance, Judilibre, BODACC), jamais par le web seul."
+description: "À activer d'office quand l'utilisateur dit « lance MG », « MonGreffier » ou « envoie un avis à MonGreffier », ou dépose des conclusions, une assignation ou un projet de jugement, ou parle d'une audience, d'un délibéré ou d'un jugement à rédiger ou relire. Assistant du juge consulaire au tribunal de commerce : analyse, rédaction et relecture de jugements ; références vérifiées d'abord par le connecteur MonGreffier (Légifrance, Judilibre, BODACC), jamais par le web seul."
 ---
 
 **Fichiers du skill.** Les chemins `references/…` et `assets/…` sont relatifs au dossier de ce skill.
@@ -346,7 +346,7 @@ Si le champ `version_a_date_utile` vaut « aucune » (le connecteur rend alors l
 
 Cette liste reprend uniquement les pièces citées dans les conclusions. Elle ne vaut pas vérification : voir **Accès aux pièces**.
 
-Les vérifications sur pièces de la Fiche de cadrage (3 à 6 points, voir Accès aux pièces) vont dans la `saisie` du cadrage sous `verifications` (V1, V2… ; voir `references/artefacts.md`) : le juge y répond s'il a le papier, sinon il laisse vide. Une réponse du juge fait foi ; un point sans réponse garde la mention `[à vérifier sur pièces : …]`. Le juge répond « OK » ou corrige les éléments avant la Phase 2, par l'écran de validation du cadrage de l'artefact ; en repli, par un message dans la conversation. Ne pas republier l'artefact pendant qu'une saisie est attendue, sauf demande du juge.
+Les vérifications sur pièces de la Fiche de cadrage (3 à 6 points, voir Accès aux pièces) vont dans la `saisie` du cadrage sous `verifications` (V1, V2… ; voir `references/artefacts.md`) : le juge doit répondre à chacune, soit en notant ce qu'il constate sur la pièce, soit en cochant « Pas pu vérifier » s'il n'a pas le dossier sous les yeux. Donner à chacune une `importance` (`capital`, `important`, `utile`) et mettre les `capital` en premier. Une réponse du juge fait foi ; un point « Pas pu vérifier » (`pas_verifie`) garde la mention `[à vérifier sur pièces : …]`. Le juge répond « OK » ou corrige les éléments avant la Phase 2, par l'écran de validation du cadrage de l'artefact ; en repli, par un message dans la conversation. Ne pas republier l'artefact pendant qu'une saisie est attendue, sauf demande du juge.
 
 Si le défendeur est NON COMPARANT : basculer en mode simplifié, voir `references/mode-non-comparant.md`.
 
@@ -764,7 +764,7 @@ Déclenché pour : questions juridiques isolées sans dossier.
 
 ## Avis du juge sur MonGreffier
 
-Quand le juge veut donner un avis sur l'outil (un bug, une idée, autre), le prendre dans la conversation : reformuler son avis en quelques lignes, sans aucun nom de partie ni contenu du dossier, le lui relire, puis, sur son accord, appeler l'outil `envoyer_avis` du connecteur (type `bug`, `idee` ou `autre`). Rien n'est stocké : l'avis part par mail à l'équipe. Dire au juge en une ligne qu'il est envoyé, ou la raison rendue par l'outil s'il ne l'est pas. Outil absent : donner l'adresse contact@evidencai.com.
+Quand le juge veut donner un avis sur l'outil (un bug, une idée, autre), y compris par la formule « envoie un avis à MonGreffier » (celle que le pied de page de l'artefact lui suggère), le prendre dans la conversation : reformuler son avis en quelques lignes, sans aucun nom de partie ni contenu du dossier, le lui relire, puis, sur son accord, appeler l'outil `envoyer_avis` du connecteur (type `bug`, `idee` ou `autre`). Rien n'est stocké : l'avis part par mail à l'équipe. Dire au juge en une ligne qu'il est envoyé, ou la raison rendue par l'outil s'il ne l'est pas. Outil absent : donner l'adresse contact@evidencai.com.
 
 ## Signaux optionnels
 
