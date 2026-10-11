@@ -16,10 +16,11 @@ Le modèle est `assets/artefact-mongreffier.html`, dans le dossier du skill.
 2. Le fichier de travail s'appelle `mongreffier-<dossier.id>.html`, dans votre dossier de travail. Il n'est jamais renommé.
 3. Avant de copier, vérifiez qu'il n'existe pas déjà. Reprise d'un dossier : rouvrez ce même fichier, ne recopiez pas le modèle.
 4. Après la copie, ne réécrivez jamais la page. Toute mise à jour est un Edit ciblé du bloc `mg-donnees`.
+5. Titre de l'artefact : avant chaque publication, remplacez dans votre copie la balise `<title>MonGreffier</title>` par `<title>MG · RG <n° RG> · <intitulé court pseudonymisé></title>` (sans RG connu : `MG · <intitulé court>`). Ce titre nomme l'artefact dans claude.ai : jamais de nom de partie non pseudonymisé.
 
 ## 3. Le bloc `mg-donnees`
 
-C'est la seule zone que vous modifiez : l'unique `<script type="application/json" id="mg-donnees">` de la page.
+C'est la seule zone que vous modifiez, avec la balise `<title>` (section 2) : l'unique `<script type="application/json" id="mg-donnees">` de la page.
 
 ```json
 {
@@ -31,8 +32,8 @@ C'est la seule zone que vous modifiez : l'unique `<script type="application/json
     {"id": "etape0", "titre": "État des parties", "statut": "en_cours", "contenu_md": "..."},
     {"id": "cadrage", "titre": "Cadrage", "statut": "en_cours", "contenu_md": "..."},
     {"id": "decision", "titre": "Points de décision", "contenu_md": "...", "saisie": {"type": "points_decision", "points": []}},
-    {"id": "redaction", "titre": "Projet de jugement", "contenu_md": "...", "saisie": {"type": "corrections_jugement"}},
-    {"id": "robustesse", "titre": "Robustesse", "contenu_md": "...", "saisie": {"type": "selection_robustesse", "recommandations": [{"id": "R1", "gravite": "critique", "origine": "ombre", "intitule": "Motivation du quantum insuffisante", "detail": "Le montant retenu n'est pas rattaché aux pièces."}]}},
+    {"id": "redaction", "titre": "Projet de jugement", "contenu_md": "..."},
+    {"id": "robustesse", "titre": "Robustesse", "contenu_md": "...", "saisie": {"type": "selection_robustesse", "recommandations": [{"id": "R1", "gravite": "critique", "origine": "relecture", "intitule": "Motivation du quantum insuffisante", "detail": "Le montant retenu n'est pas rattaché aux pièces."}]}},
     {"id": "definitif", "titre": "Jugement définitif", "statut": "en_cours", "contenu_md": "..."}
   ]
 }
@@ -57,11 +58,11 @@ Règles du bloc :
 
 ### Les saisies par onglet
 
-- `fiche` : `{"type": "fiche", "valeurs": {"juridiction": "<juridiction rendue par qui_suis_je>"}}`. Pré-remplissez toujours `valeurs.juridiction` avec la juridiction du juge connecté (le juge peut la modifier dans le champ) ; `valeurs: {}` seulement si `qui_suis_je` n'a rien rendu. Il n'y a pas de champ RG dans la fiche. Composition : le président seul (juge unique), ou le président et exactement 2 assesseurs (formation collégiale). Un seul assesseur est interdit.
+- `fiche` : `{"type": "fiche", "valeurs": {"juridiction": "<juridiction rendue par qui_suis_je>"}}`. Pré-remplissez toujours `valeurs.juridiction` avec la juridiction du juge connecté (le juge peut la modifier dans le champ) ; `valeurs: {}` seulement si `qui_suis_je` n'a rien rendu. Il n'y a pas de champ RG dans la fiche. Au fond, la fiche demande le président de la formation, les 2 assesseurs (toujours renseignés : le délibéré est collégial), et comment l'audience s'est tenue : collégiale, ou par un seul juge (art. 871 du CPC), auquel cas le juge précise lequel (président, assesseur 1 ou 2). Un seul assesseur est interdit. En référé, posez `"mode": "refere"` au niveau de `saisie`, à côté de `type` (jamais dans `valeurs`) : la page n'affiche alors ni choix d'audience ni assesseurs, et le champ devient « Juge des référés » ; absent ou autre valeur = fond.
 - `validation_cadrage` : `{"type": "validation_cadrage", "points": [{"id": "C1", "intitule": "..."}], "verifications": [{"id": "V1", "intitule": "..."}]}`. Une entrée de `points` par rubrique de la Fiche de cadrage, dans l'ordre de la phase 1 (`C1`, `C2`, …), plus un champ libre `autre` que la page ajoute elle-même. `verifications` : les vérifications sur pièces demandées au juge (`V1`, `V2`…, 3 à 6, une question courte et précise chacune, par ex. « Montant de la facture n° 12 sur l'original ») ; la page affiche sous chacune un champ de réponse et une case « Pas pu vérifier » : la réponse est **obligatoire** (texte non vide, ou case cochée), la page bloque l'envoi sinon. Chaque entrée porte `"importance": "capital" | "important" | "utile"` (absente ou inconnue : `important`) ; la page l'affiche en mot et en points (●●●, ●●○, ●○○). Mettre les vérifications `capital` en premier : l'ordre affiché est celui de la liste, les identifiants restent stables. Sans vérification, omettez la clé.
 - `points_decision` : `{"type": "points_decision", "points": [{"id": "P1", "intitule": "...", "options": [{"code": "A", "libelle": "..."}, {"code": "B", "libelle": "..."}], "indicateur": "vert", "prop_ia": "A"}]}`. Chaque point porte 2 à 4 options (codes `A` à `D`). `prop_ia` est un code d'option, ou `ABSTENTION` pour un point rouge. La page affiche d'abord le tableau de synthèse (mis à jour avec les choix du juge), puis un accordéon par point : le bloc du `contenu_md` dont le titre commence par « POINT N » y est rangé avec l'écran de choix du point d'id `PN`. Titrez donc chaque bloc `## POINT 1 : …`, `## POINT 2 : …`, dans le même ordre que `points`. Aucun choix en lot : le juge tranche chaque point.
-- `corrections_jugement` : `{"type": "corrections_jugement"}`, une zone par partie (faits, procédure, prétentions, motifs, dispositif).
-- `selection_robustesse` : `{"type": "selection_robustesse", "recommandations": [{"id": "R1", "gravite": "critique|a_surveiller|mineur", "origine": "ombre|dissident", "intitule": "...", "detail": "..."}]}`. Ids `R1`, `R2`… dans l'ordre ; `intitule` 200 caractères au plus, `detail` 400 au plus (une ou deux phrases) ; le développement reste dans le `contenu_md`. /ombre produit les recommandations d'origine `ombre` ; /dissident, sur demande, ajoute les siennes à la suite, d'origine `dissident`, avec une gravité selon le risque de réformation. Le score A/B/C, la vérification des références et le filet « exécution provisoire de droit » restent dans le `contenu_md` de l'onglet `robustesse`.
+- `redaction` (Projet de jugement) : sans `saisie`. La page l'affiche en lecture seule, avec une phrase et un lien « Aller à l'onglet Robustesse » qu'elle génère elle-même (si l'onglet `robustesse` existe). Les corrections du juge se saisissent dans le champ « Vos corrections du projet de jugement » de l'écran `selection_robustesse` (clé `observations`). L'écran `corrections_jugement` n'est plus publié ; la page l'accepte encore pour les anciens artefacts.
+- `selection_robustesse` : `{"type": "selection_robustesse", "recommandations": [{"id": "R1", "gravite": "critique|a_surveiller|mineur", "origine": "relecture|appel", "intitule": "...", "detail": "..."}]}`. Ids `R1`, `R2`… dans l'ordre ; `intitule` 200 caractères au plus, `detail` 400 au plus (une ou deux phrases) ; le développement reste dans le `contenu_md`. La relecture critique produit les recommandations d'origine `relecture` ; la simulation d'appel, sur demande, ajoute les siennes à la suite, d'origine `appel`, avec une gravité selon le risque de réformation. Le score A/B/C, la vérification des références et le filet « exécution provisoire de droit » restent dans le `contenu_md` de l'onglet `robustesse`. La page accepte encore les anciennes origines `ombre` et `dissident` (anciens artefacts) et les affiche avec les libellés « relecture critique » et « simulation d'appel ».
 - `definitif` : onglet « Jugement définitif », sans saisie (le juge corrige ensuite dans le Word, avec le suivi des modifications).
 
 ## 4. Vérifier avant chaque publication
@@ -87,7 +88,10 @@ Le premier doit afficher `JSON ok`. Le second doit afficher `0` : c'est le résu
 - L'onglet `etape0` est rempli avant le cadrage.
 - L'onglet `cadrage` est d'abord publié SANS `saisie`, statut `en_cours`. La `saisie` `validation_cadrage` n'est ajoutée qu'une fois la vérification des sources et l'Étape 0 intégrées à la Fiche de cadrage. Ne faites jamais valider le cadrage avant les résultats.
 - Ne republiez pas l'artefact pendant qu'une saisie est attendue du juge, sauf demande du juge. Une republication recharge la page et peut faire perdre sa saisie.
-- La `saisie` `selection_robustesse` n'est publiée qu'une fois /ombre fait. Si le juge demande /dissident ensuite, ajoutez ses recommandations à la suite (ids suivants, origine `dissident`) et republiez seulement à sa demande.
+- Phases 3 et 4 : le projet (`redaction`, sans `saisie`) et la relecture (`robustesse`) sont publiés en UNE publication, sans arrêt entre les deux, `onglet_actif` = `robustesse`. Le « En bref » suit le modèle de la Phase 4 du SKILL.md (projet, relecture, action ; « Détail : onglets Projet de jugement et Robustesse »).
+- La `saisie` `selection_robustesse` n'est publiée qu'une fois la relecture critique faite. Si le juge demande la simulation d'appel ensuite, ajoutez ses recommandations à la suite (ids suivants, origine `appel`) et republiez seulement à sa demande.
+- Références de la relecture critique et de la simulation d'appel : le sous-agent n'a pas le connecteur. Le fil principal vérifie chaque référence apportée (`verifier_article`, `verifier_jurisprudence`) AVANT de publier l'onglet `robustesse` ; une référence non vérifiée reste marquée `[à vérifier]` et n'entre jamais dans une recommandation critique comme acquise.
+- Onglet terminé : ne retirez JAMAIS sa `saisie` (la page s'en sert, par exemple pour le tableau de synthèse des Points de décision générée depuis la `saisie` de l'onglet `decision`) ; passez seulement son statut à `fait`.
 - Passage phase 4 à phase 5 : ne republiez pas pendant que le juge choisit ses corrections (une republication recharge la page et fait perdre sa saisie). Une fois l'envoi reçu, publiez l'onglet `definitif` (`contenu_md` non vide, statut `en_cours`, `onglet_actif` = `definitif`) ; le projet de l'onglet `redaction` reste intact. Passez `definitif` à `fait` quand le Word est produit.
 - Reprise d'un dossier : si l'artefact existe déjà sans onglet `definitif`, rouvrez le fichier et ajoutez l'onglet par Edit ciblé à la phase 5 ; ne recopiez pas le modèle.
 - À chaque étape : mettez à jour l'onglet de l'étape, son statut, `onglet_actif`, puis vérifiez (section 4) et publiez.
@@ -106,10 +110,10 @@ Table unique des cinq écrans :
 
 | `ecran` | `valeurs` | Contrôles |
 |---|---|---|
-| `fiche` | `{"juridiction","date_audience","date_delibere","formation":"juge_unique\|collegiale","president","assesseurs":[...],"greffier"}` | Dates JJ/MM/AAAA ; noms complets (au moins deux mots) ; `juge_unique` : `"assesseurs": []` ; `collegiale` : exactement 2 assesseurs. Une fiche avec 1 assesseur est refusée et redemandée |
+| `fiche` | `{"juridiction","date_audience","date_delibere","president","formation","assesseurs":[...],"audience","juge_audience","greffier"}` | Dates JJ/MM/AAAA ; noms complets (au moins deux mots). Fond : `formation: "collegiale"` (composition du tribunal), exactement 2 assesseurs, `audience: "collegiale"\|"juge_unique"`, et `juge_audience: "president"\|"assesseur_1"\|"assesseur_2"` seulement si `audience` vaut `juge_unique`. Référé (`saisie.mode: "refere"`) : `formation: "juge_unique"`, `"assesseurs": []`, pas d'`audience`. Une fiche avec 1 assesseur est refusée et redemandée |
 | `validation_cadrage` | `{"ok": true}` ou `{"ok": false, "corrections": [{"point": "<id>", "texte": "..."}]}`, avec `"verifications": [{"id": "V1", "reponse": "..."}, {"id": "V2", "pas_verifie": true}]` | `point` = un id `C…` ou `autre` ; `verifications` contient TOUTES les vérifications demandées (y compris avec `ok: true`) : soit `reponse` (le juge a constaté, sa réponse fait foi), soit `pas_verifie: true` (le juge n'a pas pu vérifier : garder `[à vérifier sur pièces : …]`). En plusieurs envois, chaque lot garde `ok` ; un lot peut ne porter que des `verifications`, sans `corrections` |
 | `points_decision` | `{"positions": [{"point": "P1", "option": "A\|B\|AUTRE", "reserve": "..."}]}` | `option` = un code des options du point, ou `AUTRE` ; avec `AUTRE`, `reserve` est obligatoire (par exemple le montant) |
-| `corrections_jugement` | `{"partie": "faits\|procedure\|pretentions\|motifs\|dispositif\|tout", "corrections": {"faits": "..."}}` ou `{"partie": "tout", "sans_correction": true, "corrections": {}}` | Une zone par partie ; une partie seule est possible ; une partie absente de `corrections` = aucune correction sur cette partie. `sans_correction: true` = le juge valide le projet tel quel (la page refuse ce choix si des corrections sont écrites) |
+| `corrections_jugement` (anciens artefacts seulement) | `{"partie": "faits\|procedure\|pretentions\|motifs\|dispositif\|tout", "corrections": {"faits": "..."}}` ou `{"partie": "tout", "sans_correction": true, "corrections": {}}` | Une zone par partie ; une partie seule est possible ; une partie absente de `corrections` = aucune correction sur cette partie. `sans_correction: true` = le juge valide le projet tel quel (la page refuse ce choix si des corrections sont écrites) |
 | `selection_robustesse` | Voir ci-dessous | `reco` = un id `R…` de la saisie, sans doublon |
 
 Charges de `selection_robustesse` (`label` : « Corrections à intégrer · <RG> », sans « · » si le RG est vide) :
@@ -117,16 +121,16 @@ Charges de `selection_robustesse` (`label` : « Corrections à intégrer · <RG>
 | Cas | `valeurs` |
 |---|---|
 | Corrections retenues | `{"retenues":[{"reco":"R1","annotation":"..."}],"observations":"..."}` |
-| Observations seules (rien coché) | `{"retenues":[],"observations":"..."}` : valide, rédigez la version définitive en tenant compte des observations |
+| Observations seules (rien coché) | `{"retenues":[],"observations":"..."}` : valide, rédigez la version définitive en tenant compte des corrections du juge sur le projet (`observations`) |
 | Aucune correction | `{"retenues":[],"observations":"","sans_correction":true}` : rédigez la version définitive sans modification de fond, en reprenant le projet de la phase 3 |
 | Envoi en lots | chaque lot porte `"lot":{"n":1,"total":3}` ; `observations` seulement dans le dernier lot |
 
-La page refuse une annotation écrite sans case « Intégrer » cochée, et `sans_correction` si une case est cochée, une annotation écrite ou des observations saisies. De votre côté, redemandez : `reco` inconnue ou en double, lot manquant. Attendez tous les lots avant la phase 5.
+La page refuse une annotation écrite sans case « Intégrer » cochée, et `sans_correction` si une case est cochée, une annotation écrite ou des corrections du projet saisies (`observations`). De votre côté, redemandez : `reco` inconnue ou en double, lot manquant. Attendez tous les lots avant la phase 5.
 
 Traitement :
 
 - La casse des noms de la fiche est normalisée par vous, et le juge en est informé.
-- Un envoi incomplet (fiche avec un seul assesseur ou `formation` incohérente avec `assesseurs`, point sans position, nom d'un seul mot, `corrections_jugement` sans aucune correction et sans `sans_correction: true`) est redemandé : dites précisément ce qui manque.
+- Un envoi incomplet (fiche avec un seul assesseur ou `formation` ou `audience` incohérente avec `assesseurs`, point sans position, nom d'un seul mot, `corrections_jugement` sans aucune correction et sans `sans_correction: true`) est redemandé : dites précisément ce qui manque.
 - L'envoi de `selection_robustesse` déclenche la phase 5. Une recommandation retenue qui contredit une décision de la phase 2 est signalée au juge, pas appliquée d'office.
 - Les positions de `points_decision` valent décision du juge pour la phase 3, au même titre que la réponse en texte du repli.
 - Une charge limitée à 4 Ko : si le juge envoie par lots (points 1 à 6, puis 7 à 12 ; une partie du jugement à la fois), attendez tous les lots avant de poursuivre.

@@ -220,7 +220,10 @@ table.synthese td, table.synthese th { vertical-align: middle; }
 }
 .replier, .copier-lien { display: inline-flex; align-items: center; min-height: 44px; background: none; border: 0; padding: 4px 0; color: var(--accent-texte); text-decoration: underline; font: inherit; text-align: left; cursor: pointer; }
 details.section > .replier { margin: 4px 0 8px; }
-@media print { .replier, details.section > .replier { display: none !important; } }
+@media print { .replier, details.section > .replier, .lecture-seule { display: none !important; } }
+.lecture-seule { margin: 0 0 16px; }
+.lecture-seule .vers-saisie { font-size: inherit; }
+.lecture-seule p { margin: 0 0 4px; }
 .actions-point { display: flex; flex-wrap: wrap; align-items: center; gap: 0 24px; }
 @media (max-width: 480px) { .actions-point { flex-direction: column; align-items: flex-start; gap: 0; margin-bottom: 8px; } }
 .copier-lien { flex: 0 0 100%; justify-content: center; text-align: center; }
@@ -278,12 +281,12 @@ fieldset.choix-point { margin-top: 12px; }
       {"id": "P2", "intitule": "Quel montant d’indemnisation ?", "options": [{"code": "A", "libelle": "Montant demandé"}, {"code": "B", "libelle": "Montant réduit de moitié"}, {"code": "C", "libelle": "Montant forfaitaire"}, {"code": "D", "libelle": "Aucune indemnisation"}], "indicateur": "orange", "prop_ia": "B"},
       {"id": "P3", "intitule": "Faut-il allouer des frais irrépétibles ?", "options": [{"code": "A", "libelle": "Oui, à la demanderesse"}, {"code": "B", "libelle": "Non"}], "indicateur": "rouge", "prop_ia": "ABSTENTION"}
     ]}},
-    {"id": "redaction", "titre": "Projet de jugement", "statut": "a_saisir", "contenu_md": "## Projet de jugement\n\n### Faits\n\nPar contrat du 10 janvier 2025, les parties ont convenu d’une prestation de services.\n\n### Procédure\n\nLa demanderesse a assigné la défenderesse par acte du 3 mars 2025.\n\n### Dispositif\n\nPAR CES MOTIFS, le tribunal condamne la défenderesse au paiement de la somme de 12 000 euros.", "saisie": {"type": "corrections_jugement"}},
+    {"id": "redaction", "titre": "Projet de jugement", "statut": "a_saisir", "contenu_md": "## Projet de jugement\n\n### Faits\n\nPar contrat du 10 janvier 2025, les parties ont convenu d’une prestation de services.\n\n### Procédure\n\nLa demanderesse a assigné la défenderesse par acte du 3 mars 2025.\n\n### Dispositif\n\nPAR CES MOTIFS, le tribunal condamne la défenderesse au paiement de la somme de 12 000 euros."},
     {"id": "robustesse", "titre": "Robustesse", "statut": "a_saisir", "contenu_md": "## Robustesse de la solution\n\n| Point | Indicateur | Commentaire |\n|---|---|---|\n| P1 | 🟢 | Solution stable en jurisprudence. |\n| P2 | 🟠 | Les juridictions divergent sur la méthode de calcul. |\n| P3 | 🔴 | Pur pouvoir d’appréciation du juge. |\n", "saisie": {"type": "selection_robustesse", "recommandations": [
-      {"id": "R1", "gravite": "a_surveiller", "origine": "ombre", "intitule": "Réponse à l’argument sur la livraison partielle", "detail": "Le projet n’écarte pas expressément l’argument tiré de la livraison partielle."},
-      {"id": "R2", "gravite": "critique", "origine": "ombre", "intitule": "Motivation du quantum insuffisante", "detail": "Le montant retenu n’est pas rattaché aux pièces."},
-      {"id": "R3", "gravite": "mineur", "origine": "ombre", "intitule": "Rappel de la date de l’assignation", "detail": "La date figure dans la procédure mais pas dans les motifs."},
-      {"id": "R4", "gravite": "a_surveiller", "origine": "dissident", "intitule": "Moyen d’appel sur les frais irrépétibles", "detail": "L’absence de motivation propre à l’article 700 expose le jugement à la réformation."}
+      {"id": "R1", "gravite": "a_surveiller", "origine": "relecture", "intitule": "Réponse à l’argument sur la livraison partielle", "detail": "Le projet n’écarte pas expressément l’argument tiré de la livraison partielle."},
+      {"id": "R2", "gravite": "critique", "origine": "relecture", "intitule": "Motivation du quantum insuffisante", "detail": "Le montant retenu n’est pas rattaché aux pièces."},
+      {"id": "R3", "gravite": "mineur", "origine": "relecture", "intitule": "Rappel de la date de l’assignation", "detail": "La date figure dans la procédure mais pas dans les motifs."},
+      {"id": "R4", "gravite": "a_surveiller", "origine": "appel", "intitule": "Moyen d’appel sur les frais irrépétibles", "detail": "L’absence de motivation propre à l’article 700 expose le jugement à la réformation."}
     ]}},
     {"id": "definitif", "titre": "Jugement définitif", "statut": "en_cours", "contenu_md": "## Jugement définitif\n\n### Dispositif\n\nPAR CES MOTIFS, le tribunal condamne la défenderesse au paiement de la somme de 9 000 euros, après examen des pièces n° 1 et n° 4.\n\n> Ce texte est un exemple : la version définitive du dossier le remplace."}
   ]
@@ -607,7 +610,7 @@ fieldset.choix-point { margin-top: 12px; }
   function etatInitial(onglet) {
     var type = onglet.saisie.type, v = onglet.saisie.valeurs || {}, e;
     if (type === 'fiche') {
-      e = { juridiction: String(v.juridiction || ''), date_audience: String(v.date_audience || ''), date_delibere: String(v.date_delibere || ''), president: String(v.president || ''), formation: v.formation === 'juge_unique' || v.formation === 'collegiale' ? v.formation : '', assesseurs: [String((v.assesseurs || [])[0] || ''), String((v.assesseurs || [])[1] || '')], greffier: String(v.greffier || '') };
+      e = { juridiction: String(v.juridiction || ''), date_audience: String(v.date_audience || ''), date_delibere: String(v.date_delibere || ''), president: String(v.president || ''), audience: v.audience === 'collegiale' || v.audience === 'juge_unique' ? v.audience : '', juge: v.juge_audience === 'president' || v.juge_audience === 'assesseur_1' || v.juge_audience === 'assesseur_2' ? v.juge_audience : '', assesseurs: [String((v.assesseurs || [])[0] || ''), String((v.assesseurs || [])[1] || '')], greffier: String(v.greffier || '') };
     } else if (type === 'corrections_jugement') e = { textes: {}, envoyees: {}, sansCorr: false };
     else if (type === 'validation_cadrage') e = { choix: null, textes: {}, verifs: {}, pasVerifie: {} };
     else if (type === 'points_decision') e = { positions: {} };
@@ -625,6 +628,7 @@ fieldset.choix-point { margin-top: 12px; }
     var s = onglet.saisie, pts = Array.isArray(s.points) ? s.points : [];
     if (s.type === 'validation_cadrage') return pts.map(function (p) { return p.id; }).join('|') + '#' + verificationsDe(s).map(function (v) { return v.id; }).join('|');
     if (s.type === 'points_decision') return pts.map(function (p) { return p.id + ':' + (p.options || []).map(function (o) { return o.code; }).join(','); }).join('|');
+    if (s.type === 'fiche') return s.mode === 'refere' ? 'refere' : '';
     return '';
   }
   function etatPour(onglet) {
@@ -635,7 +639,10 @@ fieldset.choix-point { margin-top: 12px; }
     if (br && br.e === empreinte(onglet) && br.v && typeof br.v === 'object') {
       // Un brouillon vide n'efface pas une valeur pré-remplie par Claude (juridiction du juge connecté).
       Object.keys(br.v).forEach(function (k) { if (!(br.v[k] === '' && typeof e[k] === 'string' && e[k] !== '')) e[k] = br.v[k]; });
-      if (onglet.saisie.type === 'fiche' && (!Array.isArray(e.assesseurs) || e.assesseurs.length !== 2)) e.assesseurs = ['', ''];
+      if (onglet.saisie.type === 'fiche') {
+        if (!Array.isArray(e.assesseurs) || e.assesseurs.length !== 2) e.assesseurs = ['', ''];
+        delete e.formation;
+      }
       e.restaure = true;
     }
     etats[id] = e;
@@ -669,10 +676,10 @@ fieldset.choix-point { margin-top: 12px; }
       champs[cle] = c;
       return c.wrap;
     }
+    var refere = onglet.saisie.mode === 'refere';
     function dessinerAss() {
       zoneAss.textContent = '';
       lignes = [];
-      zoneAss.hidden = etat.formation !== 'collegiale';
       zoneAss.appendChild(h('legend', { text: 'Assesseurs' }));
       zoneAss.appendChild(h('p', { class: 'aide', text: 'Prénom et nom de chacun des deux assesseurs.' }));
       var grille = h('div', { class: 'deux-col' });
@@ -684,35 +691,58 @@ fieldset.choix-point { margin-top: 12px; }
       });
       zoneAss.appendChild(grille);
     }
-    var groupeForm = h('fieldset'), nomForm = uid('f'), radiosForm = {}, slotForm = creerSlot();
-    function radioForm(val, texte) {
-      var id = uid('rf'), inp = h('input', { type: 'radio', name: nomForm, id: id, value: val });
-      inp.checked = etat.formation === val;
-      radiosForm[val] = inp;
+    var groupeAud = h('fieldset'), nomAud = uid('a'), radiosAud = {}, slotAud = creerSlot();
+    var groupeJuge = h('fieldset'), nomJuge = uid('j'), radiosJuge = {}, slotJuge = creerSlot();
+    function radioDe(nom, reg, val, texte, coche) {
+      var id = uid('rf'), inp = h('input', { type: 'radio', name: nom, id: id, value: val });
+      inp.checked = coche;
+      reg[val] = inp;
       return h('label', { class: 'choix', for: id }, [inp, h('span', { class: 'corps', text: texte })]);
     }
-    groupeForm.appendChild(h('legend', { text: 'Composition de la formation' }));
-    groupeForm.appendChild(radioForm('juge_unique', 'Juge unique'));
-    groupeForm.appendChild(radioForm('collegiale', 'Formation collégiale (président et 2 assesseurs)'));
-    groupeForm.appendChild(slotForm);
-    lierErreur(radiosForm.juge_unique, slotForm, null, groupeForm);
-    groupeForm.addEventListener('change', function (ev) {
-      if (ev.target && ev.target.name === nomForm) {
-        etat.formation = ev.target.value; zoneAss.hidden = etat.formation !== 'collegiale';
-        lignes.forEach(function (c) { retirerErreur(c.input); });
-        ctx.change();
-      }
-    });
+    if (!refere) {
+      groupeAud.appendChild(h('legend', { text: 'Audience' }));
+      groupeAud.appendChild(h('p', { class: 'aide', text: 'Au fond, le délibéré est collégial ; un seul juge peut tenir l’audience si les parties ne s’y opposent pas (art. 871 du CPC).' }));
+      groupeAud.appendChild(radioDe(nomAud, radiosAud, 'collegiale', 'Audience collégiale (président et 2 assesseurs)', etat.audience === 'collegiale'));
+      groupeAud.appendChild(radioDe(nomAud, radiosAud, 'juge_unique', 'Audience tenue par un seul juge', etat.audience === 'juge_unique'));
+      groupeAud.appendChild(slotAud);
+      lierErreur(radiosAud.collegiale, slotAud, null, groupeAud);
+      groupeJuge.hidden = etat.audience !== 'juge_unique';
+      groupeJuge.appendChild(h('legend', { text: 'Juge qui a tenu l’audience' }));
+      groupeJuge.appendChild(radioDe(nomJuge, radiosJuge, 'president', 'Le président', etat.juge === 'president'));
+      groupeJuge.appendChild(radioDe(nomJuge, radiosJuge, 'assesseur_1', 'L’assesseur 1', etat.juge === 'assesseur_1'));
+      groupeJuge.appendChild(radioDe(nomJuge, radiosJuge, 'assesseur_2', 'L’assesseur 2', etat.juge === 'assesseur_2'));
+      groupeJuge.appendChild(slotJuge);
+      lierErreur(radiosJuge.president, slotJuge, null, groupeJuge);
+      groupeAud.addEventListener('change', function (ev) {
+        if (ev.target && ev.target.name === nomAud) {
+          var avant = etat.audience;
+          etat.audience = ev.target.value;
+          groupeJuge.hidden = etat.audience !== 'juge_unique';
+          if (etat.audience !== 'juge_unique') retirerErreur(radiosJuge.president);
+          ctx.change();
+          if (etat.audience === 'juge_unique' && avant !== 'juge_unique' && !etat.juge) ctx.dire('Précisez quel juge a tenu l’audience.');
+        }
+      });
+      groupeJuge.addEventListener('change', function (ev) {
+        if (ev.target && ev.target.name === nomJuge) { etat.juge = ev.target.value; ctx.change(); }
+      });
+    }
     corps.appendChild(h('p', { text: 'Renseignez la fiche du dossier. Elle alimente l’en-tête du jugement et celui du Word. Indiquez le prénom et le nom complets de chaque personne : Claude normalisera la casse des noms à la rédaction.' }));
     corps.appendChild(ch('juridiction', 'Juridiction', 'Par exemple : Tribunal de commerce de Lyon.'));
     corps.appendChild(h('div', { class: 'deux-col' }, [
       ch('date_audience', 'Date de l’audience', null, { date: true }),
       ch('date_delibere', 'Date du délibéré', null, { date: true })
     ]));
-    corps.appendChild(ch('president', 'Président d’audience', 'Prénom et nom.', { nom: true }));
-    corps.appendChild(groupeForm);
-    dessinerAss();
-    corps.appendChild(zoneAss);
+    if (refere) {
+      corps.appendChild(ch('president', 'Juge des référés', 'Prénom et nom du président.', { nom: true }));
+      corps.appendChild(h('p', { class: 'aide', text: 'Ordonnance de référé : le président statue seul (art. 872 et 873 du CPC).' }));
+    } else {
+      corps.appendChild(ch('president', 'Président de la formation', 'Prénom et nom.', { nom: true }));
+      corps.appendChild(groupeAud);
+      corps.appendChild(groupeJuge);
+      dessinerAss();
+      corps.appendChild(zoneAss);
+    }
     corps.appendChild(ch('greffier', 'Greffier', 'Prénom et nom.', { nom: true }));
     return {
       corps: corps,
@@ -729,24 +759,27 @@ fieldset.choix-point { margin-top: 12px; }
         else if (pa && pd.t < pa.t) err.push({ ctrl: champs.date_delibere.input, msg: 'La date du délibéré précède celle de l’audience.' });
         v.date_audience = pa ? pa.txt : da; v.date_delibere = pd ? pd.txt : dd;
         v.president = nettoyer(etat.president);
-        if (!v.president) err.push({ ctrl: champs.president.input, msg: 'Indiquez le président d’audience.' });
+        if (!v.president) err.push({ ctrl: champs.president.input, msg: refere ? 'Indiquez le juge des référés.' : 'Indiquez le président de la formation.' });
         else if (nbMots(v.president) < 2) err.push({ ctrl: champs.president.input, msg: nomInc });
-        if (etat.formation !== 'juge_unique' && etat.formation !== 'collegiale') err.push({ ctrl: radiosForm.juge_unique, msg: 'Choisissez la composition : juge unique, ou formation collégiale.' });
-        else if (etat.formation === 'collegiale') {
+        if (!refere) {
+          if (etat.audience !== 'juge_unique' && etat.audience !== 'collegiale') err.push({ ctrl: radiosAud.collegiale, msg: 'Choisissez comment l’audience s’est tenue : collégiale, ou par un seul juge.' });
+          else if (etat.audience === 'juge_unique' && !etat.juge) err.push({ ctrl: radiosJuge.president, msg: 'Indiquez quel juge a tenu l’audience.' });
           etat.assesseurs.forEach(function (a, i) {
             var n = nettoyer(a);
             if (!n) err.push({ ctrl: lignes[i].input, msg: 'Indiquez l’assesseur ' + (i + 1) + '.' });
             else if (nbMots(n) < 2) err.push({ ctrl: lignes[i].input, msg: nomInc });
             else ass.push(n);
           });
+          v.audience = etat.audience;
+          if (etat.audience === 'juge_unique' && etat.juge) v.juge_audience = etat.juge;
         }
-        v.formation = etat.formation;
+        v.formation = refere ? 'juge_unique' : 'collegiale';
         v.assesseurs = ass;
         v.greffier = nettoyer(etat.greffier);
         if (!v.greffier) err.push({ ctrl: champs.greffier.input, msg: 'Indiquez le greffier.' });
         else if (nbMots(v.greffier) < 2) err.push({ ctrl: champs.greffier.input, msg: nomInc });
         err.sort(function (a, b) { return a.ctrl.compareDocumentPosition(b.ctrl) & 4 ? -1 : 1; });
-        if (!err.length && etat.formation === 'collegiale' && ass.length !== 2) err.push({ ctrl: lignes[0].input, msg: 'Une formation collégiale compte exactement deux assesseurs.' });
+        if (!err.length && !refere && ass.length !== 2) err.push({ ctrl: lignes[0].input, msg: 'Une formation collégiale compte exactement deux assesseurs.' });
         return { erreurs: err, valeurs: v };
       },
       lots: null, compteur: false
@@ -1083,7 +1116,7 @@ fieldset.choix-point { margin-top: 12px; }
 
   /* --- corrections à intégrer après la robustesse --- */
   var GRAVITES = { critique: ['Critique', 'carre', 'rouge', 0], a_surveiller: ['À surveiller', 'triangle', 'orange', 1], mineur: ['Mineur', 'cercle', 'neutre', 2] };
-  var ORIGINES = { ombre: 'angles morts', dissident: 'simulation d’appel' };
+  var ORIGINES = { relecture: 'relecture critique', appel: 'simulation d’appel', ombre: 'relecture critique', dissident: 'simulation d’appel' }; // ombre et dissident : anciens artefacts
   function graviteDe(r) { return GRAVITES[r.gravite] ? r.gravite : 'mineur'; }
   function ecranRobustesse(onglet, etat, ctx) {
     var corps = h('div'), liste = Array.isArray(onglet.saisie.recommandations) ? onglet.saisie.recommandations : [], cases = {}, annots = {}, avancement = h('p', { class: 'aide', role: 'status' });
@@ -1107,7 +1140,7 @@ fieldset.choix-point { margin-top: 12px; }
         var n = nettoyer(ta.value).length, trop = n > MAX_TEXTE;
         cpt.textContent = nombre(n) + ' sur ' + nombre(MAX_TEXTE) + ' caractères';
         cpt.classList.toggle('alerte', trop);
-        if (trop && !depasse) annonce.textContent = nomDepasse + ' dépasse' + (nomDepasse.indexOf('Les ') === 0 ? 'nt' : '') + ' ' + nombre(MAX_TEXTE) + ' caractères.';
+        if (trop && !depasse) annonce.textContent = nomDepasse + ' dépasse' + (/^(Les|Vos) /.test(nomDepasse) ? 'nt' : '') + ' ' + nombre(MAX_TEXTE) + ' caractères.';
         if (!trop) { if (depasse) annonce.textContent = ''; }
         depasse = trop;
       }
@@ -1154,7 +1187,7 @@ fieldset.choix-point { margin-top: 12px; }
       fs.appendChild(z.wrap);
       corps.appendChild(fs);
     });
-    obs = zone('Observations générales (facultatif)', null, 'Pour tout ce qui ne se rattache à aucune recommandation.', etat.obs, 4, function (v) { etat.obs = v; ctx.change(); }, 'Les observations générales');
+    obs = zone('Vos corrections du projet de jugement (facultatif)', null, 'Ce que vous voulez changer dans le projet de jugement, ou toute autre observation. Claude en tient compte dans la version définitive ; vos retouches de détail se font ensuite dans le Word, en suivi des modifications.', etat.obs, 8, function (v) { etat.obs = v; ctx.change(); }, 'Vos corrections du projet');
     corps.appendChild(obs.wrap);
     corps.appendChild(annonce);
     majAvancement();
@@ -1170,8 +1203,8 @@ fieldset.choix-point { margin-top: 12px; }
     function approx() { return { retenues: retenues(), observations: nettoyer(etat.obs) }; }
     function ordreDom(a, b) { return a.ctrl.compareDocumentPosition(b.ctrl) & 4 ? -1 : 1; }
     function libellerLot(items, avecObs) {
-      var t = items.length === 0 ? 'Envoyer les observations' : items.length === 1 ? 'Envoyer la correction ' + items[0].reco : 'Envoyer les corrections ' + items[0].reco + ' à ' + items[items.length - 1].reco;
-      return items.length && avecObs ? t + ' et les observations' : t;
+      var t = items.length === 0 ? 'Envoyer vos corrections du projet' : items.length === 1 ? 'Envoyer la correction ' + items[0].reco : 'Envoyer les corrections ' + items[0].reco + ' à ' + items[items.length - 1].reco;
+      return items.length && avecObs ? t + ' et vos corrections du projet' : t;
     }
     return {
       corps: corps,
@@ -1190,16 +1223,16 @@ fieldset.choix-point { margin-top: 12px; }
           }
         });
         if (obsTxt.length > MAX_TEXTE) {
-          var m = 'Les observations générales dépassent ' + nombre(MAX_TEXTE) + ' caractères (' + nombre(obsTxt.length) + '). Raccourcissez-les d’environ ' + nombre(obsTxt.length - MAX_TEXTE) + ' caractères.';
+          var m = 'Vos corrections du projet dépassent ' + nombre(MAX_TEXTE) + ' caractères (' + nombre(obsTxt.length) + '). Raccourcissez-les d’environ ' + nombre(obsTxt.length - MAX_TEXTE) + ' caractères.';
           err.push({ ctrl: obs.input, msg: m, lib: m });
         }
         if (!err.length && !v.retenues.length && !obsTxt) {
           if (premiere) {
             premiere._slot = slotTop;
-            msgVide = 'Cochez au moins une correction, ou choisissez « Aucune correction, rédiger la version définitive ».';
+            msgVide = 'Cochez au moins une correction, écrivez vos corrections du projet, ou choisissez « Aucune correction, rédiger la version définitive ».';
             err.push({ ctrl: premiere, msg: msgVide, lib: msgVide });
           } else {
-            msgVide = 'Écrivez des observations, ou choisissez « Aucune correction, rédiger la version définitive ».';
+            msgVide = 'Écrivez vos corrections du projet, ou choisissez « Aucune correction, rédiger la version définitive ».';
             err.push({ ctrl: obs.input, msg: msgVide, lib: msgVide });
           }
         }
@@ -1234,7 +1267,7 @@ fieldset.choix-point { margin-top: 12px; }
           var msg1 = 'Vous avez coché ou annoté des corrections. Décochez-les et effacez les annotations pour répondre qu’aucune correction n’est à faire, ou utilisez « Envoyer à Claude ».';
           if (c) { cases[c].focus(); return msg1; }
           if (a) { annots[a].input.focus(); return msg1; }
-          if (nettoyer(etat.obs)) { obs.input.focus(); return 'Vous avez écrit des observations. Effacez-les pour répondre qu’aucune correction n’est à faire, ou utilisez « Envoyer à Claude ».'; }
+          if (nettoyer(etat.obs)) { obs.input.focus(); return 'Vous avez écrit des corrections du projet. Effacez-les pour répondre qu’aucune correction n’est à faire, ou utilisez « Envoyer à Claude ».'; }
           return null;
         }
       }
@@ -1527,6 +1560,20 @@ fieldset.choix-point { margin-top: 12px; }
     ctxCourant = null;
     p.appendChild(titre);
     if (o.id === 'definitif') p.appendChild(h('p', { class: 'bandeau', text: 'Version définitive rédigée par Claude. Relisez-la ici : vos corrections se font ensuite dans le Word, avec le suivi des modifications.' }));
+    // Projet de jugement sans écran de saisie : lecture seule, avec renvoi vers l'onglet Robustesse (s'il existe).
+    if (o.id === 'redaction' && !saisieValide(o)) {
+      var versRob = visibles.filter(function (x) { return x.id === 'robustesse'; })[0];
+      if (versRob) {
+        p.appendChild(h('div', { class: 'lecture-seule' }, [
+          h('p', { text: 'Ce projet est en lecture seule. Pour le corriger, utilisez le champ « Vos corrections du projet de jugement » de l’onglet Robustesse.' }),
+          h('button', { type: 'button', class: 'vers-saisie', text: 'Aller à l’onglet Robustesse', onclick: function () {
+            choisir(versRob, false);
+            var t = document.getElementById('mg-titre');
+            if (t) t.focus();
+          } })
+        ]));
+      }
+    }
     md = typeof o.contenu_md === 'string' && o.contenu_md.trim() ? o.contenu_md : '';
     pts = saisieValide(o) && o.saisie.type === 'points_decision' && Array.isArray(o.saisie.points) && o.saisie.points.length ? o.saisie.points : null;
     if (pts) {

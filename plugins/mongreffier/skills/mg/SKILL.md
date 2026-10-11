@@ -24,9 +24,9 @@ L'IA **ne juge pas**. Elle analyse, structure, propose, rédige. Chaque décisio
 
 ---
 
-# OUVERTURE DU DOSSIER (une fois par dossier, avant l'Étape 0)
+# OUVERTURE DU DOSSIER (une fois par dossier ; l'Étape 0 peut partir dès que `qui_suis_je` a confirmé la connexion)
 
-Dans cet ordre. Si une mémoire de projet ou un autre outil demande à être ouvert en début de conversation (par exemple Mycelora), il passe d'abord ; le parcours MG commence juste après, par l'étape 0.
+Dans cet ordre. Si une mémoire de projet ou un autre outil demande à être ouvert en début de conversation (par exemple Mycelora), il passe d'abord ; le parcours MG commence juste après, par l'étape 0 de l'ouverture (vérification du modèle).
 
 **0. Vérification du modèle.** Ce skill exige Opus 5.5. Le modèle se lit dans votre propre identité de modèle ; en cas de doute, demander au juge lequel est sélectionné. Sur un autre modèle, s'arrêter et répondre exactement : « Ce skill exige le modèle Claude Opus 5.5. Vous utilisez un autre modèle (Fable, Sonnet, Haiku ou autre) : choisissez Opus 5.5 dans le sélecteur de modèle de Claude, puis relancez votre demande. » Cette vérification précède toute saisie.
 
@@ -37,13 +37,13 @@ Dans cet ordre. Si une mémoire de projet ou un autre outil demande à être ouv
 - (d) `qui_suis_je` présent mais l'appel échoue (erreur, délai, refus d'autorisation) : ne pas poursuivre en silence. Répondre en une ligne : « Le connecteur MonGreffier ne répond pas. Reconnectez-le dans Claude (Vos plugins, MonGreffier, onglet Connecteurs, Connecter), puis écrivez simplement : lance MG. » Ne rien analyser tant que l'appel n'a pas réussi.
 Si `qui_suis_je` répond que le juge est introuvable ou inactif : même réponse qu'en (b).
 
-**1. Fiche du dossier.** Si `qui_suis_je` a rendu une fiche, proposer sa juridiction et son nom comme juge rédacteur ; le juge confirme ou corrige (le juge connecté n'est pas forcément le président). Demander : juridiction, date d'audience, date du délibéré, président d'audience, assesseurs, greffier. Les noms complets (prénom et nom) sont exigés. Tout élément manquant (juridiction comprise) est redemandé avant de poursuivre. La casse des noms est normalisée à la rédaction, et le juge en est informé. Ouvrir l'artefact MonGreffier (copie de `assets/artefact-mongreffier.html`, mode d'emploi dans `references/artefacts.md`), avec le champ Juridiction déjà rempli par celle de `qui_suis_je`, et faire saisir la fiche par son écran. Composition : président seul (juge unique) ou président et exactement 2 assesseurs (formation collégiale) ; une fiche avec 1 assesseur est refusée et redemandée. Deux replis distincts : (a) si l'artefact ne peut pas être publié, la fiche se demande par un seul message dans la conversation ; (b) si le bouton d'envoi est masqué chez le juge, il utilise « Copier pour Claude » puis colle le texte dans la conversation.
+**1. Fiche du dossier.** Si `qui_suis_je` a rendu une fiche, proposer sa juridiction et son nom comme juge rédacteur ; le juge confirme ou corrige (le juge connecté n'est pas forcément le président). Demander : juridiction, date d'audience, date du délibéré, président de la formation, assesseurs, greffier, et si l'audience a été tenue en formation collégiale ou par un seul juge (dans ce cas, lequel). Les noms complets (prénom et nom) sont exigés. Tout élément manquant (juridiction comprise) est redemandé avant de poursuivre. La casse des noms est normalisée à la rédaction, et le juge en est informé. Ouvrir l'artefact MonGreffier (copie de `assets/artefact-mongreffier.html`, mode d'emploi dans `references/artefacts.md`), avec le champ Juridiction déjà rempli par celle de `qui_suis_je`, et faire saisir la fiche par son écran. Avant chaque publication, remplacer dans cette copie la balise `<title>MonGreffier</title>` par `<title>MG · RG <n° RG> · <intitulé court pseudonymisé></title>` (sans RG connu : `MG · <intitulé court>`) : ce titre nomme l'artefact dans claude.ai ; jamais de nom de partie non pseudonymisé. Au fond, le délibéré est collégial : président et exactement 2 assesseurs, toujours renseignés ; un seul juge peut tenir l'audience si les parties ne s'y opposent pas (art. 871 du CPC), et la fiche précise alors lequel (`audience`, `juge_audience`). Une fiche avec 1 assesseur est refusée et redemandée. En référé, poser `saisie.mode: "refere"` : la fiche n'a ni choix d'audience ni assesseurs, le président statue seul. Deux replis distincts : (a) si l'artefact ne peut pas être publié, la fiche se demande par un seul message dans la conversation ; (b) si le bouton d'envoi est masqué chez le juge, il utilise « Copier pour Claude » puis colle le texte dans la conversation.
 
 **2. Avertissement.** Dire au juge : « Versez des conclusions pseudonymisées. À défaut, c'est sous votre responsabilité. »
 
 **3. Conclusions seulement.** Dire au juge : « Versez uniquement les conclusions des parties, et l'assignation si le défendeur ne comparaît pas. Ne versez pas les pièces annexes : je ne les lis pas, elles saturent l'analyse. Gardez-les en papier, je vous dirai quoi y vérifier. » Avant toute analyse, demander : « Ces conclusions sont-elles les dernières écritures de chaque partie ? » Tant que la réponse n'est pas oui, ne pas lancer l'analyse. Tri des pièces reçues, annexes écartées et lecture des scans : suivre `references/conversion.md`. Si references/conversion.md n'est pas présent, demandez au juge de verser seulement ses conclusions, sans annexes.
 
-**4. Usage de la fiche.** La fiche alimente le libellé « [juridiction de la fiche du dossier] » du dispositif et du référé, l'en-tête du jugement et l'en-tête de page du Word. Ces éléments ne sont plus surlignés « à compléter ».
+**4. Usage de la fiche.** La fiche alimente le libellé « [juridiction de la fiche du dossier] » du dispositif et du référé, l'en-tête du jugement et l'en-tête de page du Word. Composition dans l'en-tête : au fond, le président et les 2 assesseurs (`formation: collegiale`), qui ont délibéré ; si `audience` vaut `juge_unique`, écrire que l'audience des plaidoiries a été tenue par le seul juge chargé d'instruire l'affaire, désigné par `juge_audience` (son nom), les parties ne s'y étant pas opposées, qui en a rendu compte au tribunal dans son délibéré (art. 871 du CPC). En référé : le président seul, juge des référés. Ces éléments ne sont plus surlignés « à compléter ».
 
 ---
 
@@ -76,18 +76,19 @@ Aucune mention commerciale (EvidencAI ou autre) ne figure jamais dans un projet 
 
 ## Économie du contexte
 
-Quand l'environnement le permet, le volume part en sous-agents ; un sous-agent ne rend jamais de texte intégral. Le fil principal garde le cadrage, les points de décision, la rédaction, les échanges avec le juge et `/dissident`.
+Quand l'environnement le permet, le volume part en sous-agents ; un sous-agent ne rend jamais de texte intégral. Le fil principal garde le cadrage, les points de décision, la rédaction, les échanges avec le juge et la simulation d'appel.
 - **Pièces déjà lues** : un PDF dont le texte est déjà dans la conversation n'est pas relu par un sous-agent. Le fil principal en extrait directement les éléments structurés (parties, demandes chiffrées, moyens, dates, pièces citées), en appliquant les mêmes règles (annexes jamais lues, `[?]` conservés). Les sous-agents de lecture ne servent qu'aux PDF dont le texte n'est pas encore là.
 - Conversion des gros PDF : `references/conversion.md`. Vérification des références et Étape 0 : VÉRIFICATION AUTOMATIQUE. Le sous-agent de vérification rend un tableau référence / statut décidé / écart en une ligne. Statuts et règle de date non concordante : voir le tableau des statuts plus bas.
 - `rechercher` en sous-agent : 3 décisions au plus, avec numéro et une ligne chacune.
-- `/ombre` (Phase 4) : sous-agent frais, qui reçoit le projet, le cadrage ET les points de décision tranchés. Il rend tout le `contenu_md` de l'onglet `robustesse` décrit en Phase 4 et dans `references/artefacts.md` : score, références, filet exécution provisoire, R1… avec limites et origine `ombre`.
+- Relecture critique (Phase 4) : sous-agent frais, qui reçoit le projet, le cadrage ET les points de décision tranchés. Il rend tout le `contenu_md` de l'onglet `robustesse` décrit en Phase 4 et dans `references/artefacts.md` : score, références, filet exécution provisoire, R1… avec limites et origine `relecture`.
+- **Références de la relecture critique et de la simulation d'appel** : le sous-agent n'a pas accès au connecteur. Le fil principal vérifie toute référence qu'ils apportent (article, jurisprudence, loi) par `verifier_article` et `verifier_jurisprudence` AVANT de publier l'onglet `robustesse`. Une référence non vérifiée reste marquée `[à vérifier]` et n'entre jamais dans une recommandation critique comme acquise.
 - **Repli (phrase unique)** : si l'environnement n'offre pas de sous-agents, ou si un sous-agent n'a pas accès au connecteur, le fil principal fait le travail en ne gardant que le tableau de synthèse, et le dit une fois au juge ; un sous-agent sans connecteur ne bascule jamais seul sur le web sans le dire.
 
 ---
 
 # ÉTAPE 0 : VÉRIFICATION D'ÉTAT DES PARTIES (BLOQUANTE)
 
-⚠️ **À faire AVANT le cadrage, sur tout dossier, et systématiquement quand une partie ne comparaît pas.**
+⚠️ **À faire AVANT le cadrage, sur tout dossier, et systématiquement quand une partie ne comparaît pas.** Elle ne dépend que des parties : elle peut être lancée dès que `qui_suis_je` a confirmé la connexion, sans attendre la fiche du dossier ; ses résultats sont intégrés avant le cadrage.
 
 Une procédure collective ouverte contre une partie **avant l'audience** interrompt l'instance (art. L.622-22 C. com., applicable en liquidation par L.641-3). Tout jugement au fond rendu en l'état est **réputé non avenu** (art. 372 CPC ; Cass. com. 13/12/2023 n° 21-24.496).
 
@@ -229,6 +230,8 @@ Produire une Fiche de Cadrage incluant :
 
 **Calcul automatique de la prescription** : extraire la date du fait générateur, extraire la date de l'assignation, calculer le délai écoulé, comparer au délai applicable, alerter si dépassé. Préciser si la FNR a été soulevée ou non, et poser la décision requise au juge.
 
+**Recherche de jurisprudence obligatoire sur le moyen central de la défense** : même si aucune partie ne cite de jurisprudence, lancer une recherche par l'outil `rechercher` du connecteur sur ce moyen (3 décisions au plus), et vérifier toute décision retenue par `verifier_jurisprudence` avant de la citer. En défaut, l'écrire au juge.
+
 **FNR d'ordre public (à soulever d'office) :**
 - Incompétence d'attribution
 - Défaut de pouvoir juridictionnel (clause compromissoire)
@@ -268,7 +271,7 @@ L'IA ne charge **pas** les textes intégraux dans le contexte principal.
 
 Séquence correcte :
 1. Lister articles et jurisprudences
-2. Si l'environnement permet des sous-agents, **lancer immédiatement un sous-agent** et lui confier dans le même appel la vérification et l'**Étape 0** (état des parties au BODACC). Sinon, le fil principal fait lui-même l'Étape 0 puis la vérification, à la suite, par `etat_parties` (ou son repli décrit à l'Étape 0)
+2. Si l'environnement permet des sous-agents, **lancer immédiatement un sous-agent** (dès `qui_suis_je` confirmé, sans attendre la fiche) et lui confier dans le même appel la vérification et l'**Étape 0** (état des parties au BODACC). Sinon, le fil principal fait lui-même l'Étape 0 puis la vérification, à la suite, par `etat_parties` (ou son repli décrit à l'Étape 0)
 3. Attendre les résultats
 4. Les intégrer dans la fiche de cadrage
 5. **Puis** demander validation au juge. Dans l'artefact, l'onglet `cadrage` est d'abord publié sans écran de saisie (statut `en_cours`) ; l'écran de validation n'est ajouté qu'à cette étape, une fois les résultats et l'Étape 0 intégrés (l'onglet `etape0` est rempli avant le cadrage)
@@ -388,7 +391,7 @@ B : [libellé]
 | N° | QUESTION | OPTION A | OPTION B | Indic. | PROP. IA |
 |----|----------|----------|----------|--------|----------|
 
-Dans l'artefact, ce tableau est généré par la page, en tête de l'onglet `decision`, et se met à jour avec les choix du juge : ne pas l'écrire dans le détail, n'y mettre que les blocs POINT [N], un par point, dans l'ordre (la page range chaque bloc « POINT N » dans l'accordéon du point PN, avec son écran de choix). Le juge tranche chaque point lui-même (option du point, ou AUTRE avec réserve) : la proposition de l'IA est un repère, jamais retenue en lot. Le « En bref » de la conversation ne reprend pas ce tableau : il cite seulement les 2 ou 3 points qui demandent le plus d'attention. Le tableau ci-dessus reste le format du repli en conversation.
+Dans l'artefact, ce tableau est généré par la page, en tête de l'onglet `decision`, et se met à jour avec les choix du juge : ne pas l'écrire dans le détail, n'y mettre que les blocs POINT [N], un par point, dans l'ordre (la page range chaque bloc « POINT N » dans l'accordéon du point PN, avec son écran de choix). Le juge tranche chaque point lui-même (option du point, ou AUTRE avec réserve ; une réserve peut accompagner toute option et porter un montant, par exemple « A, article 700 ramené à 300 € » : Claude la reprend dans la motivation et le dispositif) : la proposition de l'IA est un repère, jamais retenue en lot. Le « En bref » de la conversation ne reprend pas ce tableau : il cite seulement les 2 ou 3 points qui demandent le plus d'attention. Le tableau ci-dessus reste le format du repli en conversation.
 
 ---
 
@@ -432,6 +435,10 @@ Ou : "Valide toutes les propositions IA sauf point 7 vers B"
 
 Attendre les positions du juge avant la Phase 3.
 
+**Onglet terminé.** On ne retire JAMAIS la `saisie` d'un onglet terminé : la page s'en sert (le tableau de synthèse des Points de décision est généré à partir de la `saisie` de l'onglet `decision`). On passe seulement son statut à `fait`.
+
+**Réouverture des débats.** Quand le juge retient en Phase 2 une option menant à la réouverture des débats (point que le tribunal doit voir débattu), Claude rédige, au lieu du jugement au fond, le jugement avant dire droit décrit dans `references/reouverture-debats.md` ; la relecture critique (Phase 4) s'applique ensuite à ce texte.
+
 ---
 
 ### Phase 3 : RÉDACTION
@@ -448,13 +455,13 @@ Attendre les positions du juge avant la Phase 3.
 
 ⚠️ Si un élément manque : alerter avant la génération.
 
-Les corrections du juge sur le projet se saisissent par l'écran de l'onglet `redaction` de l'artefact (une zone par partie : faits, procédure, prétentions, motifs, dispositif) ; en repli, par un message. Le projet est rédigé dans l'artefact (onglet `redaction`) : pas de Word à ce stade, il est produit en Phase 5.
+Le projet est rédigé dans l'artefact (onglet `redaction`, en lecture seule, sans écran de saisie) : pas de Word à ce stade, il est produit en Phase 5. La Phase 3 s'enchaîne à la Phase 4 sans arrêt : le juge ne corrige pas le projet dans un écran à part, il écrit ses corrections dans le champ « Vos corrections du projet de jugement » de l'onglet `robustesse`. Ne plus publier l'écran `corrections_jugement` (la page l'accepte encore pour les anciens artefacts).
 
 ---
 
 #### Structure du jugement
 
-1. EN-TÊTE (tribunal, RG, dates, composition)
+1. EN-TÊTE (tribunal, RG, dates, composition du délibéré, et mention de l'audience tenue par un seul juge le cas échéant : voir « Usage de la fiche »)
 2. PARTIES (identification complète)
 3. FAITS (chronologie + renvois pièces)
 4. ÉLÉMENTS DE PROCÉDURE (clôture : "C'est en l'état...")
@@ -560,15 +567,17 @@ CONDAMNE [demandeur] aux dépens.
 
 ### Phase 4 : ROBUSTESSE (automatique)
 
-Après chaque projet, sans Word :
+Enchaînée au projet, sans arrêt et sans Word :
 
-**/ombre** : angles morts du projet, produits comme une liste de recommandations numérotées R1, R2… Chaque recommandation porte une gravité (`critique`, `a_surveiller`, `mineur`), une origine (`ombre`), un intitulé (200 caractères au plus) et un détail court (400 au plus, une ou deux phrases). Le développement, le score A/B/C, la vérification des références et le filet « exécution provisoire de droit » restent dans le `contenu_md` de l'onglet `robustesse`.
+**Relecture critique** : angles morts du projet, produits comme une liste de recommandations numérotées R1, R2… Chaque recommandation porte une gravité (`critique`, `a_surveiller`, `mineur`), une origine (`relecture`), un intitulé (200 caractères au plus) et un détail court (400 au plus, une ou deux phrases). Le développement, le score A/B/C, la vérification des références et le filet « exécution provisoire de droit » restent dans le `contenu_md` de l'onglet `robustesse`.
 
-**/dissident** : simulation d'un mémoire d'appel (moyens, force, risque de réformation), sur demande. Il ajoute ses recommandations à la suite, avec l'origine `dissident` et une gravité selon le risque de réformation.
+**Simulation d'appel** : simulation d'un mémoire d'appel (moyens, force, risque de réformation), sur demande. Il ajoute ses recommandations à la suite, avec l'origine `appel` et une gravité selon le risque de réformation.
 
-La liste est versée dans la `saisie` `selection_robustesse` de l'onglet `robustesse`, publiée seulement une fois /ombre fait (voir `references/artefacts.md`). Le « En bref » donne les 2 ou 3 recommandations critiques et invite le juge à choisir les corrections à intégrer dans l'artefact.
+La liste est versée dans la `saisie` `selection_robustesse` de l'onglet `robustesse`, publiée seulement une fois la relecture critique faite (voir `references/artefacts.md`). Les onglets `redaction` et `robustesse` sont publiés en UNE publication, `onglet_actif` sur `robustesse`.
 
-Le juge coche les recommandations à intégrer, les annote, ajoute des observations générales, puis envoie l'écran. Ne pas republier l'artefact pendant qu'il choisit. Il peut aussi répondre « Aucune correction, rédiger la version définitive ».
+« En bref » de fin de Phase 3-4, dans cet ordre (projet, relecture, action), 4 phrases au plus, vouvoiement : « Le projet de jugement est rédigé (onglet Projet de jugement), puis relu de façon critique : N recommandations, dont K critiques (onglet Robustesse). [Les 2 ou 3 critiques en une ligne.] À vous : cochez les corrections à intégrer et écrivez vos corrections du projet dans l'onglet Robustesse, puis envoyez. Détail : onglets Projet de jugement et Robustesse de l'artefact MonGreffier. »
+
+Le juge coche les recommandations à intégrer, les annote, écrit ses corrections du projet dans le champ libre (clé `observations`), puis envoie l'écran. Ne pas republier l'artefact pendant qu'il choisit. Il peut aussi répondre « Aucune correction, rédiger la version définitive ».
 
 ---
 
@@ -577,7 +586,7 @@ Le juge coche les recommandations à intégrer, les annote, ajoute des observati
 **Déclenchement** : l'envoi de l'écran `selection_robustesse` (« Corrections à intégrer »). En repli, un message du juge listant les recommandations retenues (R1, R3…) et ses annotations. Si l'envoi arrive en lots, attendre tous les lots avant de commencer ; une `reco` inconnue ou en double, ou un lot manquant, est redemandé.
 
 **Rédaction :**
-- Intégrer les recommandations retenues avec leurs annotations, puis les observations générales (des observations seules, rien coché, valent consigne de rédaction).
+- Intégrer les recommandations retenues avec leurs annotations, puis les corrections du juge sur le projet, clé `observations` (elles seules, rien coché, valent consigne de rédaction).
 - Respecter les décisions du juge à la phase 2. Une recommandation qui contredit l'une d'elles est signalée au juge, pas appliquée d'office.
 - « Aucune correction » (`sans_correction`) : reprendre le projet de la phase 3 sans modification de fond.
 - La version définitive va dans l'onglet `definitif` (« Jugement définitif ») de l'artefact, avec un `contenu_md` non vide. Le projet de la phase 3 (onglet `redaction`) reste intact. L'onglet est publié à ce moment seulement, statut `en_cours`, `onglet_actif` sur `definitif` ; il passe à `fait` quand le Word est produit.
@@ -588,7 +597,7 @@ Le juge coche les recommandations à intégrer, les annote, ajoute des observati
 - Chaque recommandation retenue est traitée, ou signalée contradictoire avec une décision de la phase 2
 - Le contrôle arithmétique est rejoué sur la version définitive
 - La FNR est rejouée sur la version définitive, traitée en premier si applicable
-- Les observations générales sont prises en compte
+- Les corrections du juge sur le projet sont prises en compte
 ```
 
 ⚠️ Si un élément manque ou contredit : alerter avant de produire le Word.
@@ -675,7 +684,7 @@ Semestre courant vérifiable via WebFetch sur `economie.gouv.fr` (page sur le ta
 
 ## Mode RÉFÉRÉ
 
-**Déclencheurs** : "référé", "assignation en référé", "art. 872", "art. 873 C. com."
+**Déclencheurs** : "référé", "assignation en référé", "art. 872", "art. 873 CPC"
 
 | Élément | Fond | Référé |
 |---------|------|--------|
@@ -684,7 +693,7 @@ Semestre courant vérifiable via WebFetch sur `economie.gouv.fr` (page sur le ta
 | Formule | "Statuant par jugement..." | "Statuant en référé..." |
 | Examen | Fond du droit | Apparence + urgence/évidence |
 
-**Compétence du juge des référés (art. 872-873 C. com.) :**
+**Compétence du juge des référés (art. 872-873 CPC) :**
 
 | Fondement | Condition | Mesure |
 |-----------|-----------|--------|
@@ -696,7 +705,7 @@ Semestre courant vérifiable via WebFetch sur `economie.gouv.fr` (page sur le ta
 
 1. **CADRAGE** : parties, Étape 0, compétence référé, fondement invoqué, FNR
 2. **RÉDACTION** : structure allégée (pas de "Faits" développés)
-3. **ROBUSTESSE** : /ombre uniquement
+3. **ROBUSTESSE** : relecture critique uniquement
 4. **WORD** : à l'issue de la robustesse, l'ordonnance est produite selon PRODUCTION DU .DOCX (même template, même suivi des modifications), sans écran « Corrections à intégrer », sans phase 5 ni onglet `definitif`. Les phases 4 et 5 du mode RÉDACTION ne s'appliquent pas au référé.
 
 **Structure de l'ordonnance :**
@@ -770,8 +779,8 @@ Quand le juge veut donner un avis sur l'outil (un bug, une idée, autre), y comp
 
 | Signal | Action |
 |--------|--------|
-| /ombre | Angles morts avant de conclure |
-| /dissident | Contre-argumentation, simulation d'appel |
+| Relecture critique | Angles morts avant de conclure |
+| Simulation d'appel | Contre-argumentation, simulation d'un mémoire d'appel |
 | /pause | Point d'arrêt pour reprise ultérieure |
 
 ---
@@ -791,6 +800,7 @@ Quand le juge veut donner un avis sur l'outil (un bug, une idée, autre), y comp
 | `references/tc-vienne-fondamentaux-2026.md` | Fondamentaux 2026 du TC de Vienne, diapositives (méthode ; les règles du skill priment) | À la demande, par partie du jugement |
 | `assets/template-jugement.docx` | Template Word | Production du Word après la rédaction définitive, seule source du Word |
 | `references/artefacts.md` | Mode d'emploi de l'artefact MonGreffier : copie du modèle, bloc de données, publication, lecture des envois, replis | Dès l'ouverture du dossier, puis à chaque étape |
+| `references/reouverture-debats.md` | Format court du jugement avant dire droit ordonnant la réouverture des débats | Phase 2, quand le juge retient la réouverture |
 | `references/conversion.md` | Pièces versées : conclusions seulement, tri, annexes écartées, lecture des scans | Ouverture du dossier, puis à chaque pièce versée |
 | `assets/artefact-mongreffier.html` | Modèle de l'artefact (« En détail » et écrans de saisie) ; seul le bloc `mg-donnees` est modifié | Ouverture du dossier, copié une seule fois |
 
