@@ -142,7 +142,8 @@ Toujours vérifier l'adaptation du vocabulaire :
 ### Non-comparant
 
 Vérifications spécifiques :
-- Art. 472 CPC visé
+- Art. 472 CPC visé, dans la version applicable à la date d'introduction de l'instance
+- Si le projet applique l'alinéa 3 de l'art. 472 : instance introduite depuis le 01/10/2026, acte délivré à personne, première instance, pas d'opposition du demandeur, pas de motivation spéciale ni de moyen d'office (alinéa 4) ; sinon le signaler
 - Qualification correcte (réputé contradictoire / défaut selon art. 473)
 - Aucune thèse défendeur attribuée
 - Pas de référence à des pièces défendeur
