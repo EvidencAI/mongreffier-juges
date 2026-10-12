@@ -13,7 +13,7 @@
       "displayName": "MonGreffier",
       "source": "./plugins/mongreffier",
       "description": "Assistant de rédaction et de relecture de jugements, avec vérification des sources sur Légifrance et Judilibre.",
-      "version": "1.2.10"
+      "version": "1.2.11"
     }
   ]
 }
