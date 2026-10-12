@@ -186,6 +186,7 @@ textarea { resize: vertical; }
 .envoye { font-weight: 600; color: var(--ok); }
 .badge { display: inline-flex; align-items: center; gap: 6px; color: var(--ok); font-size: 15px; font-weight: 600; margin-top: 6px; }
 .lots { display: flex; flex-direction: column; gap: 12px; margin-top: 12px; align-items: flex-start; }
+@media (min-width: 640px) { .lots > .btn.primaire { align-self: flex-end; } }
 .barre-bas { margin-top: 16px; border-top: 1px solid var(--bordure); border-bottom: 0; }
 .barre-bas .onglet[aria-current="true"] { border-bottom-color: transparent; border-top: 3px solid var(--accent-decor); padding-top: 3px; }
 .pied { text-align: center; font-size: 14px; color: var(--texte-2); padding: 24px 0 32px; }
@@ -1447,6 +1448,7 @@ fieldset.choix-point { margin-top: 12px; }
           ta.value = etat.textes[r.id]; majCpt();
         }
         champ.hidden = ev.target.value !== 'modifier';
+        majErreurTous();
         maj(); ctx.change();
         if (ev.target.value === 'modifier') ctx.dire('Champ de texte affiché pour ' + r.id + ' : vous pouvez corriger la reformulation.');
       });
@@ -1481,6 +1483,12 @@ fieldset.choix-point { margin-top: 12px; }
       return out;
     }
     function ordreDom(a, b) { return a.ctrl.compareDocumentPosition(b.ctrl) & 4 ? -1 : 1; }
+    // Le message « tout écarté » est posé sur la première carte : il s'efface dès qu'un choix, sur n'importe quelle carte, le rend faux.
+    var erreurTous = false;
+    function toutEcarte() { return recos.every(function (r) { return choixDe(r.id) === 'ecarter'; }); }
+    function majErreurTous() {
+      if (erreurTous && !toutEcarte()) { erreurTous = false; retirerErreur(cartes[affichage[0].id].premier); }
+    }
     function libellerLot(items) {
       return items.length === 1 ? 'Envoyer la correction ' + items[0].reco : 'Envoyer les corrections ' + items[0].reco + ' à ' + items[items.length - 1].reco;
     }
@@ -1488,6 +1496,7 @@ fieldset.choix-point { margin-top: 12px; }
       corps: corps,
       collecter: function () {
         var err = [], v = { decisions: decisions() }, tous, msg2;
+        erreurTous = false;
         recos.forEach(function (r) {
           var c = choixDe(r.id), cs = cartes[r.id], p, n, msg;
           if (!c) {
@@ -1505,8 +1514,9 @@ fieldset.choix-point { margin-top: 12px; }
             err.push({ ctrl: cs.texte, msg: msg, lib: msg });
           }
         });
-        tous = recos.every(function (r) { return choixDe(r.id) === 'ecarter'; });
+        tous = toutEcarte();
         if (!err.length && tous) {
+          erreurTous = true;
           msg2 = 'Vous avez écarté toutes les corrections : il n’y a rien à intégrer dans le Word. Retenez ou modifiez au moins une correction.';
           sections[affichage[0].id].details.open = true;
           err.push({ ctrl: cartes[affichage[0].id].premier, msg: msg2, lib: msg2 });
@@ -1683,7 +1693,7 @@ fieldset.choix-point { margin-top: 12px; }
           zStatut.textContent = (n > MAX_OCTETS ? 'Cette réponse est trop longue pour un seul envoi (' + pourcent(n) + ' % de la limite).' : 'Cette réponse compte trop d’éléments pour un seul envoi (' + MAX_ELEM + ' au plus).') + ' Envoyez-la en plusieurs lots avec les boutons ci-dessous, ou utilisez « Copier pour Claude ».';
           var restants = lots.lots.length;
           lots.lots.forEach(function (l) {
-            zLots.appendChild(h('button', { type: 'button', class: 'btn', text: l.libelle, onclick: function (ev) {
+            zLots.appendChild(h('button', { type: 'button', class: 'btn primaire', text: l.libelle, onclick: function (ev) {
               var b = ev.currentTarget;
               lancer(l.charge, function () { restants -= 1; b._clos = true; b.setAttribute('disabled', ''); b.textContent = 'Lot envoyé : ' + l.libelle; if (restants <= 0) effacer(cleBrouillon(onglet.id)); });
             } }));
