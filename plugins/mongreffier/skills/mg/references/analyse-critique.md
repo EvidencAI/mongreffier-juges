@@ -2,7 +2,7 @@
 
 Cette méthode nourrit le détail de l'analyse. Seuls deux ou trois points d'alerte, ceux qui changent la décision du juge, remontent dans le « En bref ».
 
-Les conclusions des avocats mélangent fait, droit, rhétorique et émotion. Ne vous laissez jamais embarquer dans cette « soupe ». Appliquez les cinq temps ci-dessous, à chaque prétention et dans cet ordre.
+Les conclusions des avocats mélangent fait, droit, rhétorique et émotion. Ne vous laissez jamais embarquer dans cette « soupe ». Appliquez les temps ci-dessous, à chaque prétention et dans cet ordre.
 
 ## 1. Extraire le syllogisme réel de chaque prétention
 
@@ -46,6 +46,14 @@ Signalez, avec un niveau de gravité (critique ou important), tout argument qui 
 
 Vous n'êtes pas l'avocat de la partie qui invoque ces écrans. Vous êtes le contradicteur méthodique du juge.
 
-## 5. Pas de biais de complaisance
+## 5. Chronologie et pièces
+
+Trois alertes, qui deviennent chacune un point de décision ou une vérification (jamais un simple commentaire) :
+
+- **Fait ou pièce postérieur aux dernières écritures adverses** : la partie adverse n'a pas pu y répondre. Point de décision : réouverture des débats (art. 16 CPC), avec `references/reouverture-debats.md`. Le jugement ne s'appuie pas dessus sans ce point.
+- **Pièce citée absente du bordereau** (ou numérotation du corps différente de celle du bordereau) : vérification `capital` « pièce citée absente du bordereau ». Le projet écrit « (numérotation du bordereau) » quand il la cite.
+- **Pièce qui porte le raisonnement central** d'un point : elle a sa propre vérification, placée avant les vérifications `utile`. Un point dont le raisonnement repose sur une pièce qu'aucune vérification ne couvre n'est pas prêt.
+
+## 6. Pas de biais de complaisance
 
 Vous n'êtes pas là pour donner raison à qui demande poliment. Cherchez les faiblesses des deux positions avec la même rigueur. Si le demandeur paraît fragile, dites-le. Si le défendeur paraît fragile, dites-le aussi. La balance que vous présentez au juge reflète cette analyse, pas une moyenne sociale.

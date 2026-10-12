@@ -1,10 +1,10 @@
-# Table des renumérotations (Code civil 2016, Code de commerce 2019)
+# Table des renumérotations (Code civil 2016, Code de commerce 2019, Code de la consommation 2016)
 
 À quoi sert cette table : retrouver le texte qu'un ancien numéro d'article désignait avant une réforme, et le ou les numéros qui le portent depuis. Le skill la lit à la demande, quand `version_a_date_utile` vaut « aucune » ou quand l'article rendu est abrogé (voir SKILL.md, section SOURCES DE VÉRIFICATION).
 
 **L'ancien et le nouveau numéro peuvent désigner deux articles différents ; se fier à la date utile (voir SKILL.md).** Exemple prouvé : l'ancien 1315 (preuve des obligations) et le nouveau 1315 (exceptions du débiteur solidaire) n'ont rien en commun. Un contrat conclu avant le 01/10/2016 relève de l'ancien texte.
 
-Chaque ligne a été vérifiée le 10/10/2026 dans la source primaire (connecteur local, version dont la fin est la date de la réforme, puis version nouvelle). Les identifiants LEGIARTI désignent la version utile. Un article encore modifié depuis la réforme a d'autres versions : passer par `date_utile`.
+Chaque ligne a été vérifiée le 10/10/2026 dans la source primaire (connecteur local, version dont la fin est la date de la réforme, puis version nouvelle). Les identifiants LEGIARTI désignent la version utile. Un article encore modifié depuis la réforme a d'autres versions : passer par `date_utile`. Code de la consommation : les trois lignes ont été consultées le 12/10/2026 au connecteur ; le rapprochement est prouvé par le texte rendu.
 
 ## Code civil : ordonnance 2016-131 du 10 février 2016 (en vigueur le 01/10/2016)
 
@@ -42,9 +42,25 @@ Pièges de numéro réutilisé :
 - Le L.441-6 actuel n'est plus l'ancien : il prévoit l'amende administrative pour manquement aux L.441-3 à L.441-5 (LEGIARTI000038414424).
 - L.441-10 est rendu en état ABROGE_DIFF (fin 01/01/2027) : une version postérieure existe. Passer par `date_utile`.
 
+## Code de la consommation : cautionnement, recodification du 01/07/2016
+
+Numéros réutilisés : au Code de la consommation, L.331-x et L.332-x désignaient le surendettement avant le 01/07/2016. Si le connecteur rend un article sans rapport avec la thèse, ou « version aucune » à la date utile, ne pas conclure : statut « Trouvé, version non applicable à la date utile », chercher par `rechercher` (mots de la thèse), le dire au juge.
+
+| Ancien numéro | Nouveau(x) numéro(s) | Objet | Id ancien | Id(s) nouveau(x) | Vérifié le |
+|---|---|---|---|---|---|
+| L.341-2 | L.331-1 | Mention manuscrite de la caution (rapprochement prouvé : même texte) | LEGIARTI000006292690 | LEGIARTI000032225694 | consulté le 2026-10-12 |
+| L.341-3 | L.331-2 | Cautionnement solidaire (rapprochement prouvé : même mention ; la sanction de nullité n'est plus dans l'article) | LEGIARTI000006292692 | LEGIARTI000032225692 | consulté le 2026-10-12 |
+| L.341-4 | L.332-1 | Disproportion du cautionnement (rapprochement prouvé : même texte) | LEGIARTI000006292693 | LEGIARTI000032225686 | consulté le 2026-10-12 |
+
+Notes :
+- Anciens L.341-2 : en vigueur du 05/02/2004 au 01/07/2016 ; nouveau L.331-1 : du 01/07/2016 au 01/01/2022. L.341-3 et L.341-4 : en vigueur jusqu'au 01/07/2016.
+- Les nouveaux L.331-x et L.332-x sont abrogés au 01/01/2022 par l'ordonnance n° 2021-1192, pour les cautionnements conclus à compter de cette date (Code civil, articles 2297 et suivants). Le texte transitoire est l'article 37 de l'ordonnance : le citer quand il fonde l'application.
+- Le connecteur rend la version 2016-2022 de L.331-2 et L.332-1 depuis le correctif S-MG-29 (12/10/2026) ; avant, il rendait l'homonyme du surendettement : si cela se reproduit, appliquer la règle des numéros réutilisés ci-dessus.
+
 ## Lignes retirées ou non rapprochées
 
 - Code de commerce, 3°, 4°, 6° à 13° de l'ancien L.442-6, I (autres pratiques restrictives) : texte ancien rendu, mais le nouveau numéro n'a pas été prouvé par le texte. Ne pas deviner : chercher par `rechercher` du connecteur.
 - Code de commerce, L.442-6 hors alinéa I (nullité des clauses, action en justice) : texte ancien rendu, mais le nouveau numéro n'a pas été prouvé par le texte. Ne pas deviner : chercher par `rechercher` du connecteur.
 - Code de commerce, L.441-6 vers L.441-9 (factures) : rapprochement non prouvé, non retenu.
 - Aucune ligne demandée n'a été retirée pour texte ancien non rendu : les treize anciens numéros ont été rendus par la source.
+- Code de la consommation, L.341-6, L.343-4, L.343-5 (L.343-4 est cité par `references/thematiques.md`) : non vérifiés le 12/10/2026, aucun nouveau numéro. Ne pas deviner : chercher par `rechercher` du connecteur.

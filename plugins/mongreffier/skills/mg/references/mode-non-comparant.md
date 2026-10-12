@@ -86,7 +86,9 @@ Dossier [Demandeur] c/ [Défendeur]
    Observations :
    • [Montant conforme à l'assignation / écart identifié ; contrôle sur pièces par le juge, sur l'original papier]
    • [Calcul des intérêts vérifié / à recalculer]
-   • Chef reposant sur une pièce non vérifiable par Claude : option « écarté faute de justification » ajoutée au point de décision, jamais par défaut (indicateur 🟠 ou 🔴, PROP. IA : abstention ou maintien) ; le juge tranche sur l'original papier
+   • Chef reposant sur une pièce non vérifiable par Claude : option « écarté faute de justification » ajoutée au point de décision, jamais par défaut ; le juge tranche sur l'original papier
+   • Indicateur : voir la règle spéciale QUANTUM de SKILL.md (niveaux 🟠 et 🔴, option D « Autre montant »)
+   • Fait non lu, hypothèse de calcul : règle « Fait non lu » de SKILL.md (réserve `[à vérifier sur pièces : …]`)
 
 4. ARTICLE 700 CPC
    ─────────────────────────────────────────────────────────────────

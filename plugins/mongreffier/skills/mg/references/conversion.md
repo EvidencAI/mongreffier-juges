@@ -20,6 +20,7 @@ Dire au juge, mot pour mot :
 - Le classement d'un fichier se décide sur sa première page, même s'il n'est pas encore lu ; la règle suivante dit où s'arrêter dans un fichier classé conclusions. Un bordereau de pièces fait partie des conclusions ; il se lit, les pièces qu'il liste non.
 - Un fichier qui enchaîne conclusions puis pièces : arrêter la lecture à la première page qui n'est plus des conclusions (page « Pièce n° », facture après le bordereau) et dire « pages X à Y : annexes, non lues ». Vaut aussi pour des conclusions déjà visibles dans la conversation.
 - Plusieurs versions des conclusions d'une même partie : retenir la plus récente et dire laquelle.
+- Jamais d'extraction globale d'un PDF dont on ne connaît pas la fin des conclusions (commande qui extrait toutes les pages d'un coup) : les annexes s'afficheraient, et ce que le fil a vu ne se « désapprend » pas. Extraire par tranches de 5 pages, vérifier chaque tranche, et s'arrêter à la première page « Pièce n° » ou à la première facture.
 
 ## 3. Annexe reçue malgré tout
 

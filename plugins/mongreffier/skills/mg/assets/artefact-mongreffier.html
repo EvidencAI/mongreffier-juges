@@ -403,7 +403,9 @@ fieldset.choix-point { margin-top: 12px; }
     });
     return b;
   }
-  function nbMots(s) { return s.split(/\s+/).filter(Boolean).length; }
+  /* Civilités et titres : ils ne comptent pas comme prénom ou nom (mot entier, casse et point indifférents). */
+  var CIVILITES = /^(m|mme|mlle|me|monsieur|madame|maître|maitre|dr)\.?$/i;
+  function nbMots(s) { return s.split(/\s+/).filter(function (m) { return m && !CIVILITES.test(m); }).length; }
   function nombre(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
   function idSur(s) { return String(s).replace(/[^A-Za-z0-9_-]/g, '_'); }
   /* AAAA-MM-JJ (champ date natif) <-> JJ/MM/AAAA (charge envoyée) */
