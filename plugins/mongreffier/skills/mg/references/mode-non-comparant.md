@@ -21,16 +21,15 @@ Alinéa 3, texte exact : « Lorsque l'acte introductif d'instance a été déliv
 Alinéa 4 : « Les dispositions du troisième alinéa ne sont pas applicables lorsque le juge est tenu de motiver spécialement sa décision ou de relever un moyen d'office. »
 Alinéa 5 : l'alinéa 3 ne vaut que devant les juridictions judiciaires statuant en matière civile et commerciale.
 
-**Deux dates à relever, toujours** : la date de délivrance de l'assignation, et la date de saisine du tribunal, c'est-à-dire la remise au greffe d'une copie de l'assignation (art. 857 CPC). Le skill ne tranche pas laquelle des deux fixe l'introduction de l'instance au sens du décret : si elles encadrent le 01/10/2026 (délivrée avant, remise au greffe après), le signaler au juge comme point de décision, contrôle complet par défaut.
+**Date retenue : la délivrance de l'assignation.** La demande en justice est formée par l'assignation (art. 54 et 750 CPC) ; en ce sens, Cass. 1re civ., 18/05/2011, n° 10-17.943 (instance introduite par la délivrance de l'assignation, en matière de divorce). Ni le décret ni sa circulaire du 29/07/2026 ne tranchent. Relever aussi la date de remise au greffe (art. 857 CPC, saisine du tribunal) : si elle tombe de l'autre côté du 01/10/2026 (délivrée avant, remise au greffe après), le signaler au juge en une ligne, la remise au greffe pouvant être soutenue comme date d'introduction.
 
-| Instance introduite (les deux dates) | Acte délivré | Régime |
+| Assignation délivrée | Acte délivré | Régime |
 |---|---|---|
 | Avant le 01/10/2026 | Peu importe | Alinéas 1 et 2 seuls : contrôle complet, régularité, recevabilité **et bien-fondé sur pièces** |
 | Depuis le 01/10/2026 | Autrement qu'à personne | Même contrôle complet |
 | Depuis le 01/10/2026 | **À personne** | Alinéa 3 possible, dans ses termes exacts ci-dessus, sauf alinéa 4 |
-| Dates de part et d'autre du 01/10/2026 | À personne | Point de décision soumis au juge ; contrôle complet par défaut |
 
-**Le contrôle complet reste la règle par défaut.** L'alinéa 3 est une faculté du juge : le proposer comme option dans les points de décision, jamais le retenir à sa place, et seulement si la fiche a relevé les deux dates, le mode de délivrance et l'absence d'opposition du demandeur. Au moindre doute sur l'alinéa 4 (motivation spéciale exigée, moyen à relever d'office), contrôle complet.
+**Le contrôle complet reste la règle par défaut.** L'alinéa 3 est une faculté du juge : le proposer comme option dans les points de décision, jamais le retenir à sa place, et seulement si la fiche a relevé la date de délivrance, le mode de délivrance et l'absence d'opposition du demandeur. Au moindre doute sur l'alinéa 4 (motivation spéciale exigée, moyen à relever d'office), contrôle complet.
 
 Avant de citer l'article 472, le vérifier par `verifier_article` (`code` « CPC », `numero` « 472 ») à la date d'introduction de l'instance : une instance introduite avant le 01/10/2026 cite la version en deux alinéas.
 
@@ -48,7 +47,7 @@ Dossier [Demandeur] c/ [Défendeur]
    ─────────────────────────────────────────────────────────────────
    □ Date de l'assignation (délivrance) : [date]
    □ Date de saisine (remise au greffe, art. 857 CPC) : [date]
-   □ Instance introduite depuis le 01/10/2026 : [oui / non / dates de part et d'autre]
+   □ Assignation délivrée depuis le 01/10/2026 : [oui / non] (remise au greffe de l'autre côté du 01/10 : le signaler)
    □ Opposition du demandeur à l'alinéa 3 de l'art. 472 : [oui / non / non dite]
    □ Délai de comparution respecté : [oui/non - calcul]
    □ Mentions obligatoires présentes : [oui/non]

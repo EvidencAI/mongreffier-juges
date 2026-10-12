@@ -63,6 +63,7 @@ Règles du bloc :
 - `points_decision` : `{"type": "points_decision", "points": [{"id": "P1", "intitule": "...", "options": [{"code": "A", "libelle": "..."}, {"code": "B", "libelle": "..."}], "indicateur": "vert", "prop_ia": "A"}]}`. Chaque point porte 2 à 4 options (codes `A` à `D`). `prop_ia` est un code d'option, ou `ABSTENTION` pour un point rouge. La page affiche d'abord le tableau de synthèse (mis à jour avec les choix du juge), puis un accordéon par point : le bloc du `contenu_md` dont le titre commence par « POINT N » y est rangé avec l'écran de choix du point d'id `PN`. Titrez donc chaque bloc `## POINT 1 : …`, `## POINT 2 : …`, dans le même ordre que `points`. Aucun choix en lot : le juge tranche chaque point.
 - `redaction` (Projet de jugement) : sans `saisie`. La page l'affiche en lecture seule, avec une phrase et un lien « Aller à l'onglet Robustesse » qu'elle génère elle-même (si l'onglet `robustesse` existe). Les corrections du juge se saisissent dans le champ « Vos corrections du projet de jugement » de l'écran `selection_robustesse` (clé `observations`). L'écran `corrections_jugement` n'est plus publié ; la page l'accepte encore pour les anciens artefacts.
 - `selection_robustesse` : `{"type": "selection_robustesse", "recommandations": [{"id": "R1", "gravite": "critique|a_surveiller|mineur", "origine": "relecture|appel", "intitule": "...", "detail": "..."}]}`. Ids `R1`, `R2`… dans l'ordre ; `intitule` 200 caractères au plus, `detail` 400 au plus (une ou deux phrases) ; le développement reste dans le `contenu_md`. La relecture critique produit les recommandations d'origine `relecture` ; la simulation d'appel, sur demande, ajoute les siennes à la suite, d'origine `appel`, avec une gravité selon le risque de réformation. Le score A/B/C, la vérification des références et le filet « exécution provisoire de droit » restent dans le `contenu_md` de l'onglet `robustesse`. La page accepte encore les anciennes origines `ombre` et `dissident` (anciens artefacts) et les affiche avec les libellés « relecture critique » et « simulation d'appel ».
+- `corrections_relecture` (mode RELECTURE, onglet libre `corrections`, titre « Corrections à intégrer ») : `{"type": "corrections_relecture", "source": "word_depose|reconstruit", "recommandations": [{"id": "R1", "gravite": "critique|a_surveiller|mineur", "intitule": "...", "detail": "...", "citation": "...", "reformulation": "...", "lieu": "..."}]}`. Format complet, limites et production du Word : `relecture-corrections.md`. Onglet sans `contenu_md`, placé après `relecture` ; la fiche `relecture` reste sans `saisie`. La page génère elle-même, dans l'onglet `relecture`, le renvoi vers cet onglet : ne l'écrivez pas. `source` est obligatoire à chaque publication (absent, la page dit prudemment que le projet sera reconstruit).
 - `definitif` : onglet « Jugement définitif », sans saisie (le juge corrige ensuite dans le Word, avec le suivi des modifications).
 
 ## 4. Vérifier avant chaque publication
@@ -106,7 +107,7 @@ Charge :
 {"label": "fiche", "mongreffier": 1, "ecran": "fiche", "rg": "", "valeurs": {}}
 ```
 
-Table unique des cinq écrans :
+Table unique des six écrans :
 
 | `ecran` | `valeurs` | Contrôles |
 |---|---|---|
@@ -115,6 +116,9 @@ Table unique des cinq écrans :
 | `points_decision` | `{"positions": [{"point": "P1", "option": "A\|B\|AUTRE", "reserve": "..."}]}` | `option` = un code des options du point, ou `AUTRE` ; avec `AUTRE`, `reserve` est obligatoire (par exemple le montant) |
 | `corrections_jugement` (anciens artefacts seulement) | `{"partie": "faits\|procedure\|pretentions\|motifs\|dispositif\|tout", "corrections": {"faits": "..."}}` ou `{"partie": "tout", "sans_correction": true, "corrections": {}}` | Une zone par partie ; une partie seule est possible ; une partie absente de `corrections` = aucune correction sur cette partie. `sans_correction: true` = le juge valide le projet tel quel (la page refuse ce choix si des corrections sont écrites) |
 | `selection_robustesse` | Voir ci-dessous | `reco` = un id `R…` de la saisie, sans doublon |
+| `corrections_relecture` | `{"decisions": [{"reco": "R1", "choix": "retenir\|ecarter\|modifier", "texte": "..."}]}` (+ `lot` en cas d'envoi en lots) | `reco` = un id `R…` de la saisie, sans doublon ; `choix` ∈ `retenir`, `ecarter`, `modifier` ; `texte` obligatoire avec `modifier`, absent sinon. Toutes les corrections de l'écran figurent dans `decisions`, dans l'ordre des ids. Traitement : `relecture-corrections.md` |
+
+Charge de `corrections_relecture` (`label` : « Corrections à intégrer · <RG> », sans « · » si le RG est vide) : `{"label": "Corrections à intégrer · 2026/01234", "mongreffier": 1, "ecran": "corrections_relecture", "rg": "2026/01234", "valeurs": {"decisions": [{"reco": "R1", "choix": "retenir"}, {"reco": "R2", "choix": "modifier", "texte": "..."}, {"reco": "R3", "choix": "ecarter"}]}}`. Chaque lot porte `"lot":{"n":1,"total":2}` ; attendez tous les lots. La page refuse un envoi sans choix pour une correction, `modifier` sans texte ou avec un texte identique à la reformulation, et un envoi où tout est écarté.
 
 Charges de `selection_robustesse` (`label` : « Corrections à intégrer · <RG> », sans « · » si le RG est vide) :
 
@@ -144,7 +148,7 @@ Traitement :
 
 ## 8. Modes à onglets libres
 
-Les modes référé, relecture, consultation, vérification et non-comparant n'ont pas d'onglet dédié. Ajoutez des onglets libres avec un `id` neuf (par exemple `refere`, `relecture`, `verification`), sans `saisie` ou avec un type existant. Chaque « En bref » de ces modes se termine par la même phrase de renvoi : « Détail : onglet <titre> de l'artefact MonGreffier ». Ne modifiez pas `mode-non-comparant.md` ni `relecture.md` pour cela.
+Les modes référé, relecture, consultation, vérification et non-comparant n'ont pas d'onglet dédié. Ajoutez des onglets libres avec un `id` neuf (par exemple `refere`, `relecture`, `verification`), sans `saisie`, avec un type existant, ou avec le type `corrections_relecture` en RELECTURE (onglet `corrections`). Chaque « En bref » de ces modes se termine par la même phrase de renvoi : « Détail : onglet <titre> de l'artefact MonGreffier ». Ne modifiez pas `mode-non-comparant.md` ni `relecture.md` pour cela.
 
 ## 9. Règles
 
