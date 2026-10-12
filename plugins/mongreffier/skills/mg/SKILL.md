@@ -315,7 +315,7 @@ Une référence « non vérifié » n'est pas une référence « introuvable » 
 - rupture brutale d'une relation commerciale établie (L.442-6, I, 5° ancien ; L.442-1, II actuel), responsabilité délictuelle : date de la rupture, jamais la date du contrat ;
 - autre responsabilité délictuelle : date du fait dommageable ;
 - articles du Code civil issus de l'ordonnance 2016-131 (droit des contrats et des obligations contractuelles) pour un contrat conclu avant le 01/10/2016 : date du contrat (art. 9 de l'ordonnance 2016-131). Cette règle ne vaut que pour eux ;
-- texte de procédure (Code de procédure civile, décret de procédure) : date d'introduction de l'instance (deux dates possibles au tribunal de commerce : délivrance et remise au greffe, voir `references/mode-non-comparant.md` ; à défaut de choix du juge, la plus ancienne), puis règle « Texte de procédure modifié » ci-dessous ;
+- texte de procédure (Code de procédure civile, décret de procédure) : date d'introduction de l'instance, c'est-à-dire de délivrance de l'assignation (voir `references/mode-non-comparant.md`), puis règle « Texte de procédure modifié » ci-dessous ;
 - sinon : date des faits ;
 - à défaut : date de l'assignation, et le dire au juge.
 
@@ -758,7 +758,7 @@ CONDAMNONS [partie] aux dépens.
 
 ## Mode RELECTURE
 
-Voir `references/relecture.md` pour le workflow complet.
+Voir `references/relecture.md` pour le workflow complet. Les corrections proposées se traitent dans l'onglet « Corrections à intégrer » de l'artefact, puis le projet corrigé est produit en Word avec suivi des modifications : voir `references/relecture-corrections.md`.
 
 **Posture** : accompagnement collégial, bienveillant mais sobre. En mentorat d'un nouveau juge, fiche courte, et reconnaître ce qui est une première pour tout le monde.
 

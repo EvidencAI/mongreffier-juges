@@ -228,6 +228,11 @@ details.section > .replier { margin: 4px 0 8px; }
 @media (max-width: 480px) { .actions-point { flex-direction: column; align-items: flex-start; gap: 0; margin-bottom: 8px; } }
 @media (min-width: 640px) { .btns > .btn-envoi, .btns > .btn.primaire { margin-left: auto; } .btns > .btn.tertiaire { flex: 0 0 100%; margin-left: 0; } }
 .btns > .aide-envoi { flex: 0 0 100%; margin: 0; }
+.etiq-bloc { font-weight: 700; font-size: 15px; line-height: 1.4; margin: 14px 0 4px; }
+blockquote.bloc-cite, blockquote.bloc-reformule { margin: 0 0 8px; padding: 8px 16px; white-space: pre-wrap; overflow-wrap: anywhere; color: var(--texte); }
+blockquote.bloc-cite { background: var(--surface-2); border-left: 3px solid var(--bordure-champ); }
+blockquote.bloc-reformule { background: var(--surface); border-left: 3px solid var(--accent-decor); }
+@media print { details.point, fieldset.choix-point { break-inside: avoid; } }
 .fin-panneau { display: flex; justify-content: flex-end; margin-top: 20px; }
 .importance { display: inline-flex; align-items: baseline; gap: 4px; margin-left: 8px; font-size: 13px; font-weight: 400; color: var(--texte-2); white-space: nowrap; background: none; border: 0; }
 .importance .jauge { letter-spacing: 1px; font-size: 11px; }
@@ -299,7 +304,7 @@ fieldset.choix-point { margin-top: 12px; }
   var MAX_OCTETS = 4000, MAX_TEXTE = 1500, MAX_ELEM = 64;
   var NS = 'http://www.w3.org/2000/svg';
   var PARTIES = [['faits', 'Faits'], ['procedure', 'Procédure'], ['pretentions', 'Prétentions des parties'], ['motifs', 'Motifs'], ['dispositif', 'Dispositif']];
-  var TITRES_ECRAN = { fiche: 'Fiche', validation_cadrage: 'Cadrage', points_decision: 'Points de décision', corrections_jugement: 'Corrections du jugement', selection_robustesse: 'Corrections à intégrer' };
+  var TITRES_ECRAN = { fiche: 'Fiche', validation_cadrage: 'Cadrage', points_decision: 'Points de décision', corrections_jugement: 'Corrections du jugement', selection_robustesse: 'Corrections à intégrer', corrections_relecture: 'Corrections à intégrer' };
   var STATUTS = { a_saisir: 'À compléter', en_cours: 'En cours', fait: 'Fait' };
   var INDIC = {
     vert: ['Jurisprudence constante', '🟢', 'cercle'],
@@ -618,6 +623,7 @@ fieldset.choix-point { margin-top: 12px; }
     else if (type === 'validation_cadrage') e = { choix: null, textes: {}, verifs: {}, pasVerifie: {} };
     else if (type === 'points_decision') e = { positions: {} };
     else if (type === 'selection_robustesse') e = { coches: {}, annots: {}, obs: '' };
+    else if (type === 'corrections_relecture') e = { choix: {}, textes: {} };
     else e = { textes: {}, envoyees: {} };
     return e;
   }
@@ -627,11 +633,24 @@ fieldset.choix-point { margin-top: 12px; }
       return v && typeof v.id === 'string' && v.id && typeof v.intitule === 'string' && v.intitule.trim();
     });
   }
+  /** Hachage court (FNV-1a 32 bits) d'un texte : sert à reconnaître un contenu inchangé, pas à protéger. */
+  function hacher(t) {
+    var h = 2166136261, i;
+    for (i = 0; i < t.length; i++) { h ^= t.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; }
+    return h.toString(36) + '.' + t.length;
+  }
   function empreinte(onglet) {
     var s = onglet.saisie, pts = Array.isArray(s.points) ? s.points : [];
     if (s.type === 'validation_cadrage') return pts.map(function (p) { return p.id; }).join('|') + '#' + verificationsDe(s).map(function (v) { return v.id; }).join('|');
     if (s.type === 'points_decision') return pts.map(function (p) { return p.id + ':' + (p.options || []).map(function (o) { return o.code; }).join(','); }).join('|');
     if (s.type === 'fiche') return s.mode === 'refere' ? 'refere' : '';
+    if (s.type === 'corrections_relecture') {
+      // Les ids R1, R2… restent stables d'une publication à l'autre : le contenu entre dans l'empreinte, sinon un brouillon périmé s'appliquerait à une autre correction.
+      return (Array.isArray(s.recommandations) ? s.recommandations : []).map(function (r) {
+        r = r || {};
+        return String(r.id) + ':' + hacher(String(r.citation || '') + '\u0001' + String(r.reformulation || ''));
+      }).join('|');
+    }
     return '';
   }
   function etatPour(onglet) {
@@ -1294,6 +1313,221 @@ fieldset.choix-point { margin-top: 12px; }
     };
   }
 
+  /* --- corrections à intégrer après la relecture (S-MG-23) --- */
+  var CHOIX_CORR = { retenir: ['Retenue', 'Retenir'], ecarter: ['Écartée', 'Écarter'], modifier: ['Modifiée', 'Modifier'] };
+  function ecranCorrections(onglet, etat, ctx) {
+    var corps = h('div'), s = onglet.saisie, liste = Array.isArray(s.recommandations) ? s.recommandations : [], vus = {}, sections = {}, cartes = {}, ordre = [];
+    var recos = liste.filter(function (r) {
+      if (!r || typeof r !== 'object' || !r.id || vus[String(r.id)]) return false;
+      if (typeof r.citation !== 'string' || !r.citation.trim() || typeof r.reformulation !== 'string' || !r.reformulation.trim()) return false;
+      vus[String(r.id)] = true;
+      return true;
+    }).map(function (r) { return { id: String(r.id), gravite: graviteDe(r), intitule: String(r.intitule || ''), detail: String(r.detail || ''), citation: r.citation, reformulation: r.reformulation, lieu: typeof r.lieu === 'string' ? r.lieu.trim() : '' }; });
+    var affichage = recos.map(function (r, i) { return { r: r, i: i }; }).sort(function (a, b) { return GRAVITES[a.r.gravite][3] - GRAVITES[b.r.gravite][3] || a.i - b.i; }).map(function (x) { return x.r; });
+    var avancement = h('p', { class: 'aide', role: 'status' }), deplier = null, intituleListe;
+    if (!etat.choix || typeof etat.choix !== 'object') etat.choix = {};
+    if (!etat.textes || typeof etat.textes !== 'object') etat.textes = {};
+    if (!recos.length) {
+      corps.appendChild(h('p', { text: 'Aucune correction à intégrer n’a été proposée dans cette relecture.' }));
+      return {
+        corps: corps, sansBoutons: true, compteur: false,
+        collecter: function () { return { erreurs: [], valeurs: { decisions: [] } }; },
+        approx: function () { return { decisions: [] }; }
+      };
+    }
+    function choixDe(id) { var c = etat.choix[id]; return Object.prototype.hasOwnProperty.call(CHOIX_CORR, c) ? c : ''; }
+    function texteDe(r) { return typeof etat.textes[r.id] === 'string' ? etat.textes[r.id] : r.reformulation; }
+    function problemeTexte(r) {
+      var t = nettoyer(texteDe(r));
+      if (!t) return 'vide';
+      if (t === nettoyer(r.reformulation)) return 'identique';
+      if (t.length > MAX_TEXTE) return 'long';
+      return '';
+    }
+    function traitee(r) { var c = choixDe(r.id); return !!c && (c !== 'modifier' || !problemeTexte(r)); }
+    function etatDe(r) { return traitee(r) ? CHOIX_CORR[choixDe(r.id)][0] : 'À traiter'; }
+    function majEtat(r) {
+      var sec = sections[r.id], fait = traitee(r);
+      sec.etat.textContent = '';
+      sec.etat.className = 'etat-point' + (fait ? ' fait' : '');
+      sec.etat.appendChild(icone(fait ? 'coche' : 'cercle'));
+      sec.etat.appendChild(document.createTextNode(etatDe(r)));
+    }
+    function majAvancement() {
+      var n = recos.filter(traitee).length;
+      avancement.textContent = n === 0 ? 'Aucune correction traitée sur ' + recos.length : n + ' correction' + (n > 1 ? 's' : '') + ' traitée' + (n > 1 ? 's' : '') + ' sur ' + recos.length;
+    }
+    function maj() { recos.forEach(majEtat); majAvancement(); }
+    function ouvrirCorr(id) {
+      var c = sections[id];
+      if (!c) return;
+      c.details.open = true;
+      try { c.details.scrollIntoView({ block: 'start' }); } catch (e) { /* ignoré */ }
+      c.resume.focus();
+    }
+
+    corps.appendChild(h('p', { text: 'Pour chaque correction, choisissez Retenir, Écarter ou Modifier. Claude intègre celles que vous retenez dans le projet, en suivi des modifications.' }));
+    corps.appendChild(h('p', { class: 'aide', text: 'Les corrections critiques sont présentées en premier. Rien n’est choisi d’office. Votre fiche de relecture reste inchangée.' }));
+    corps.appendChild(h('p', { class: 'aide aide-fichier', text: s.source === 'word_depose'
+      ? 'Les modifications seront faites dans le fichier Word que vous avez déposé, en suivi des modifications.'
+      : 'Vous n’avez pas déposé de fichier Word : Claude reconstruira le projet en Word à partir du texte, puis y portera vos corrections en suivi des modifications. La mise en page peut différer de l’original.' }));
+    if (recos.some(function (r) { return r.gravite === 'critique'; })) {
+      corps.appendChild(h('div', {}, [
+        h('button', { type: 'button', class: 'btn', text: 'Retenir toutes les critiques', onclick: function () {
+          var nouveaux = 0;
+          recos.forEach(function (r) {
+            if (r.gravite !== 'critique' || choixDe(r.id)) return;
+            nouveaux += 1;
+            etat.choix[r.id] = 'retenir';
+            cartes[r.id].radios.retenir.checked = true;
+            cartes[r.id].champ.hidden = true;
+            retirerErreur(cartes[r.id].premier);
+          });
+          maj(); ctx.change();
+          ctx.dire(nouveaux === 0 ? 'Toutes les corrections critiques ont déjà un choix.' : nouveaux + ' correction' + (nouveaux > 1 ? 's' : '') + ' critique' + (nouveaux > 1 ? 's' : '') + ' retenue' + (nouveaux > 1 ? 's' : '') + '. Vos choix déjà faits sont conservés.');
+        } }),
+        h('p', { class: 'aide', text: 'Retient toutes les corrections critiques qui n’ont pas encore de choix. Rien n’est envoyé : vous pouvez ensuite écarter ou modifier chacune.' })
+      ]));
+    }
+    corps.appendChild(avancement);
+    deplier = h('button', { type: 'button', class: 'btn-lien tout-deplier', text: 'Tout déplier' });
+    function majDeplier() { deplier.textContent = ordre.some(function (id) { return !sections[id].details.open; }) ? 'Tout déplier' : 'Tout replier'; }
+    deplier.addEventListener('click', function () {
+      var ouvrir = ordre.some(function (id) { return !sections[id].details.open; });
+      ordre.forEach(function (id) { sections[id].details.open = ouvrir; });
+      majDeplier();
+    });
+    corps.appendChild(deplier);
+
+    affichage.forEach(function (r, i) {
+      var d = h('details', { class: 'section point' }), et = h('span', { class: 'etat-point' }), G = GRAVITES[r.gravite], suivant = affichage[i + 1];
+      var resume = h('summary', { class: 'section-titre' }, [h('span', { class: 'titre-point', text: r.id + ' : ' + r.intitule }), et]);
+      var fs = h('fieldset', { class: 'choix-point' }), nom = uid('rr'), radios = {}, slot = creerSlot(), premier = null;
+      var champId = uid('t'), aideId = champId + '-aide', slotTxt = creerSlot(), cpt = h('p', { class: 'compteur-zone', 'aria-hidden': 'true' });
+      var ta = h('textarea', { id: champId, rows: '6', 'aria-describedby': aideId }), champ;
+      d.appendChild(resume);
+      d.appendChild(h('div', { class: 'reperes' }, [h('span', { class: 'pastille ' + G[2] }, [icone(G[1]), G[0]]), r.lieu ? h('span', { class: 'repere', text: 'Dans le projet : ' + r.lieu }) : null]));
+      if (r.detail) d.appendChild(h('p', { text: r.detail }));
+      d.appendChild(h('p', { class: 'etiq-bloc', text: 'Le projet dit' }));
+      d.appendChild(h('blockquote', { class: 'bloc-cite', text: r.citation }));
+      d.appendChild(h('p', { class: 'etiq-bloc', text: 'Reformulation proposée' }));
+      d.appendChild(h('blockquote', { class: 'bloc-reformule', text: r.reformulation }));
+      fs.appendChild(h('legend', {}, ['Votre choix', h('span', { class: 'sr', text: ' pour ' + r.id })]));
+      Object.keys(CHOIX_CORR).forEach(function (k) {
+        var id = uid('o'), inp = h('input', { type: 'radio', name: nom, id: id, value: k });
+        inp.checked = choixDe(r.id) === k;
+        radios[k] = inp;
+        if (!premier) premier = inp;
+        fs.appendChild(h('label', { class: 'choix', for: id }, [inp, h('span', { class: 'corps', text: CHOIX_CORR[k][1] })]));
+      });
+      fs.appendChild(slot);
+      d.appendChild(fs);
+      // Champ Modifier : prérempli avec la reformulation proposée ; n'apparaît qu'avec le choix Modifier.
+      ta.value = texteDe(r);
+      function majCpt() {
+        var n = nettoyer(ta.value).length;
+        cpt.textContent = nombre(n) + ' sur ' + nombre(MAX_TEXTE) + ' caractères';
+        cpt.classList.toggle('alerte', n > MAX_TEXTE);
+      }
+      majCpt();
+      lierErreur(ta, slotTxt, aideId);
+      ta.addEventListener('input', function () { etat.textes[r.id] = ta.value; majCpt(); maj(); ctx.change(); });
+      champ = h('div', { class: 'champ', hidden: choixDe(r.id) !== 'modifier' }, [
+        h('label', { for: champId }, ['Votre texte', h('span', { class: 'sr', text: ' pour ' + r.id })]),
+        h('p', { class: 'aide', id: aideId, text: 'Partez de la reformulation proposée et corrigez-la. Ce texte remplacera le passage cité.' }),
+        ta, cpt, slotTxt
+      ]);
+      d.appendChild(champ);
+      lierErreur(premier, slot, null, fs);
+      fs.addEventListener('change', function (ev) {
+        if (!ev.target || ev.target.name !== nom) return;
+        etat.choix[r.id] = ev.target.value;
+        if (ev.target.value === 'modifier') {
+          if (typeof etat.textes[r.id] !== 'string') etat.textes[r.id] = r.reformulation;
+          ta.value = etat.textes[r.id]; majCpt();
+        }
+        champ.hidden = ev.target.value !== 'modifier';
+        maj(); ctx.change();
+        if (ev.target.value === 'modifier') ctx.dire('Champ de texte affiché pour ' + r.id + ' : vous pouvez corriger la reformulation.');
+      });
+      d.appendChild(h('div', { class: 'actions-point' }, [
+        h('button', { type: 'button', class: 'btn-lien passer', text: suivant ? 'Passer à la correction ' + suivant.id : 'Revenir au début de la liste', onclick: function () {
+          if (suivant) { d.open = false; ouvrirCorr(suivant.id); }
+          else { try { ctx.titre.scrollIntoView({ block: 'start' }); } catch (e) { /* ignoré */ } ctx.titre.focus(); }
+        } }),
+        boutonReplier(d, 'Replier cette correction')
+      ]));
+      d.addEventListener('toggle', majDeplier);
+      cartes[r.id] = { radios: radios, premier: premier, champ: champ, texte: ta, slotTexte: slotTxt };
+      sections[r.id] = { details: d, resume: resume, etat: et };
+      ordre.push(r.id);
+      corps.appendChild(d);
+    });
+    maj();
+    // Au départ : seule la première correction non traitée est ouverte.
+    intituleListe = affichage.filter(function (r) { return !traitee(r); })[0];
+    if (intituleListe) sections[intituleListe.id].details.open = true;
+    majDeplier();
+
+    function decisions() {
+      var out = [];
+      recos.forEach(function (r) {
+        var c = choixDe(r.id), it;
+        if (!c) return;
+        it = { reco: r.id, choix: c };
+        if (c === 'modifier') it.texte = nettoyer(texteDe(r));
+        out.push(it);
+      });
+      return out;
+    }
+    function ordreDom(a, b) { return a.ctrl.compareDocumentPosition(b.ctrl) & 4 ? -1 : 1; }
+    function libellerLot(items) {
+      return items.length === 1 ? 'Envoyer la correction ' + items[0].reco : 'Envoyer les corrections ' + items[0].reco + ' à ' + items[items.length - 1].reco;
+    }
+    return {
+      corps: corps,
+      collecter: function () {
+        var err = [], v = { decisions: decisions() }, tous, msg2;
+        recos.forEach(function (r) {
+          var c = choixDe(r.id), cs = cartes[r.id], p, n, msg;
+          if (!c) {
+            sections[r.id].details.open = true;
+            msg = r.id + ' : choisissez Retenir, Écarter ou Modifier.';
+            err.push({ ctrl: cs.premier, msg: msg, lib: msg });
+          } else if (c === 'modifier') {
+            p = problemeTexte(r);
+            if (!p) return;
+            sections[r.id].details.open = true;
+            n = nettoyer(texteDe(r)).length;
+            msg = p === 'vide' ? r.id + ' : écrivez votre texte, ou choisissez Retenir ou Écarter.'
+              : p === 'identique' ? r.id + ' : votre texte est identique à la reformulation proposée. Choisissez « Retenir », ou modifiez le texte.'
+              : r.id + ' : votre texte dépasse ' + nombre(MAX_TEXTE) + ' caractères (' + nombre(n) + '). Raccourcissez-le d’environ ' + nombre(n - MAX_TEXTE) + ' caractères.';
+            err.push({ ctrl: cs.texte, msg: msg, lib: msg });
+          }
+        });
+        tous = recos.every(function (r) { return choixDe(r.id) === 'ecarter'; });
+        if (!err.length && tous) {
+          msg2 = 'Vous avez écarté toutes les corrections : il n’y a rien à intégrer dans le Word. Retenez ou modifiez au moins une correction.';
+          sections[affichage[0].id].details.open = true;
+          err.push({ ctrl: cartes[affichage[0].id].premier, msg: msg2, lib: msg2 });
+        }
+        err.sort(ordreDom);
+        return { erreurs: err, valeurs: v };
+      },
+      lots: function (v) {
+        var fab = function (items, n, total) { return enveloppe(onglet, { decisions: items, lot: { n: n, total: total } }); };
+        var r = decouper(v.decisions, function (items) { return fab(items, 99, 99); }, libellerLot, function (it) { return 'La correction ' + it.reco; });
+        var groupes;
+        if (r.trop) { r.f = true; return r; }
+        groupes = r.lots.map(function (l) { return l.charge.valeurs.decisions; });
+        return { lots: groupes.map(function (items, i) { return { libelle: libellerLot(items), charge: fab(items, i + 1, groupes.length) }; }) };
+      },
+      statutApres: function () { return 'Envoyé. Claude prépare le projet corrigé en Word, avec vos corrections en suivi des modifications. Regardez la conversation : confirmez l’envoi dans la fenêtre de Claude si elle s’affiche.'; },
+      compteur: true,
+      approx: function () { return { decisions: decisions() }; }
+    };
+  }
+
   /* découpage en lots de 4 000 octets au plus */
   function decouper(items, fabriquer, libelleLot, nomItem) {
     var lots = [], cur = [], i, it;
@@ -1321,7 +1555,7 @@ fieldset.choix-point { margin-top: 12px; }
   function construireSaisie(onglet) {
     var etat = etatPour(onglet), type = onglet.saisie.type, ctx, ecran, racine, zResume, zStatut, zBoutons, zLots, zTaille, zNoteLots, zAnnonce, zCopie, zEnvoye, zRestaure, zStockage, annonceFaite = false, noteLotsAnnoncee = false, occupe = false, statutApres = null, elements = [];
     racine = h('section', { class: 'saisie', 'aria-labelledby': uid('h') });
-    var titre = h('h3', { id: racine.getAttribute('aria-labelledby'), tabindex: '-1', text: type === 'points_decision' ? 'Vos choix' : 'Votre réponse à Claude' });
+    var titre = h('h3', { id: racine.getAttribute('aria-labelledby'), tabindex: '-1', text: type === 'points_decision' || type === 'corrections_relecture' ? 'Vos choix' : 'Votre réponse à Claude' });
     zRestaure = h('p', { role: 'status', class: 'note', hidden: !etat.restaure, text: 'Votre réponse précédente a été rétablie.' });
     zStockage = h('p', { class: 'note avert-stockage', hidden: stockageOK, text: 'Votre réponse n’est pas conservée si la page se recharge : envoyez-la avant que Claude ne mette la page à jour.' });
     zEnvoye = h('p', { class: 'envoye', hidden: !etat.envoye, text: etat.envoye ? 'Envoyé à ' + etat.envoye : '' });
@@ -1361,7 +1595,7 @@ fieldset.choix-point { margin-top: 12px; }
         if (!reste) zResume.textContent = '';
       }
     };
-    ecran = type === 'fiche' ? ecranFiche(onglet, etat, ctx) : type === 'validation_cadrage' ? ecranCadrage(onglet, etat, ctx) : type === 'points_decision' ? ecranDecision(onglet, etat, ctx) : type === 'selection_robustesse' ? ecranRobustesse(onglet, etat, ctx) : ecranJugement(onglet, etat, ctx);
+    ecran = type === 'fiche' ? ecranFiche(onglet, etat, ctx) : type === 'validation_cadrage' ? ecranCadrage(onglet, etat, ctx) : type === 'points_decision' ? ecranDecision(onglet, etat, ctx) : type === 'selection_robustesse' ? ecranRobustesse(onglet, etat, ctx) : type === 'corrections_relecture' ? ecranCorrections(onglet, etat, ctx) : ecranJugement(onglet, etat, ctx);
 
     function libelleErreur(e) {
       if (e.lib) return e.lib;
@@ -1549,7 +1783,7 @@ fieldset.choix-point { margin-top: 12px; }
 
   /* ---------- onglets ---------- */
   var visibles = [], actif = null;
-  var TYPES = ['fiche', 'validation_cadrage', 'points_decision', 'corrections_jugement', 'selection_robustesse'];
+  var TYPES = ['fiche', 'validation_cadrage', 'points_decision', 'corrections_jugement', 'selection_robustesse', 'corrections_relecture'];
   function saisieValide(o) { return o && o.saisie && typeof o.saisie === 'object' && TYPES.indexOf(o.saisie.type) >= 0; }
   function iconeStatut(s) { return s === 'fait' ? 'coche' : s === 'en_cours' ? 'demi' : 'cercle'; }
   function dessinerBarre() {
@@ -1612,6 +1846,20 @@ fieldset.choix-point { margin-top: 12px; }
           h('p', { text: 'Ce projet est en lecture seule. Pour le corriger, utilisez le champ « Vos corrections du projet de jugement » de l’onglet Robustesse.' }),
           h('button', { type: 'button', class: 'vers-saisie', text: 'Aller à l’onglet Robustesse', onclick: function () {
             choisir(versRob, false);
+            var t = document.getElementById('mg-titre');
+            if (t) t.focus();
+          } })
+        ]));
+      }
+    }
+    // Fiche de relecture : renvoi, généré par la page, vers l'onglet Corrections à intégrer (s'il existe).
+    if (o.id === 'relecture') {
+      var versCorr = visibles.filter(function (x) { return x.id === 'corrections' && saisieValide(x); })[0];
+      if (versCorr) {
+        p.appendChild(h('div', { class: 'lecture-seule' }, [
+          h('p', { text: 'Les corrections proposées par cette relecture se traitent dans l’onglet Corrections à intégrer.' }),
+          h('button', { type: 'button', class: 'vers-saisie', text: 'Aller à l’onglet Corrections à intégrer', onclick: function () {
+            choisir(versCorr, false);
             var t = document.getElementById('mg-titre');
             if (t) t.focus();
           } })
