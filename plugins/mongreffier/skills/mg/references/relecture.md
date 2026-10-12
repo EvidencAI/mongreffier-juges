@@ -10,11 +10,11 @@ Ce mode s'active automatiquement quand le juge fournit un projet de jugement exi
 
 ## Posture : Accompagnement collégial
 
-La fiche de relecture s'adresse à un confrère juge, souvent en formation. L'objectif est de l'aider à progresser, pas de sanctionner son travail.
+La fiche de relecture s'adresse au rédacteur du projet (réponse à « Qui a rédigé le projet ? » : le juge lui-même, un confrère, un greffier), souvent en formation. L'objectif est de l'aider à progresser, pas de sanctionner son travail.
 
 **Ton à adopter :**
 - Bienveillant mais sobre, pas de condescendance
-- Direct et amical : on tutoie, on s'adresse par prénom
+- Direct et courtois : vouvoiement partout, on s'adresse au destinataire par son titre et son nom
 - Pédagogique : on explique le « pourquoi » des corrections
 - Constructif : on commence par ce qui fonctionne
 
@@ -29,7 +29,7 @@ La fiche de relecture s'adresse à un confrère juge, souvent en formation. L'ob
 ## Ce qu'on ne relève PAS
 
 Les éléments de mise en forme gérés par le greffe :
-- Identification complète des parties (forme sociale, capital, RCS)
+- Identification complète des parties (forme sociale, capital, RCS), sauf un écart révélé par l'Étape 0 (siège transféré, procédure collective, radiation), toujours signalé
 - Formatage de l'en-tête
 - Orthographe des noms propres (greffier, etc.)
 
@@ -58,7 +58,7 @@ Relu le : [date]
 
 ---
 
-Pour [Prénom],
+Pour [Titre et nom du destinataire],
 
 [Paragraphe d'introduction : valoriser ce qui fonctionne, annoncer les points à reprendre]
 
@@ -79,10 +79,10 @@ En résumé
 Améliorations souhaitables :
 [Liste numérotée]
 
-N'hésite pas si tu veux qu'on en discute.
+N'hésitez pas à en discuter avec le relecteur si vous souhaitez en discuter.
 
 ---
-Relecture collégiale - [juridiction de la fiche du dossier]
+Relecture collégiale - [juridiction de la fiche du dossier, reprise telle quelle]
 ```
 
 ---
@@ -93,7 +93,7 @@ Relecture collégiale - [juridiction de la fiche du dossier]
 
 **Dispositif :**
 - Inversion créancier/débiteur
-- Incohérence de montant entre motifs et dispositif
+- Incohérence de montant entre motifs et dispositif, et entre lettres et chiffres (« trois mille euros (2 000 €) »)
 - Ultra petita ou omission de statuer
 - « Condamne » au lieu de « Fixe au passif » en procédure collective
 
@@ -111,6 +111,10 @@ Quand un fondement juridique semble douteux mais qu'on n'a pas les conclusions :
 - Exposer l'état du droit
 - Signaler le doute
 - Formuler « À vérifier avec les conclusions »
+
+**Durées** : toute obligation limitée dans le temps citée par le projet (clause, bail, délai, interdiction) est-elle encore en vigueur à la date du prononcé ? Pour un texte de procédure modifié, voir la règle « Texte de procédure modifié » de SKILL.md.
+
+**Arrêt cité à l'appui d'un critère** : le confronter à sa solution (rejet ou cassation). Par `verifier_jurisprudence` : une cassation citée comme appui est à confronter à la partie qui l'a obtenue ; une cassation obtenue par la partie que le critère dessert est un signal fort. Si le sens n'est pas lisible (ni `solution` ni extrait de motivation ne le disent) : statut « Trouvé, portée non contrôlée ».
 
 ### Structure et forme (signaler comme « améliorations souhaitables »)
 
@@ -145,6 +149,7 @@ Vérifications spécifiques :
 - Art. 472 CPC visé, dans la version applicable à la date d'introduction de l'instance
 - Si le projet applique l'alinéa 3 de l'art. 472 : instance introduite depuis le 01/10/2026, acte délivré à personne, première instance, pas d'opposition du demandeur, pas de motivation spéciale ni de moyen d'office (alinéa 4) ; sinon le signaler
 - Qualification correcte (réputé contradictoire / défaut selon art. 473)
+- Défendeur personne physique : voir `mode-non-comparant.md` (identification, compétence, hors champ du connecteur)
 - Aucune thèse défendeur attribuée
 - Pas de référence à des pièces défendeur
 
@@ -179,4 +184,4 @@ Générer un document Word (.docx) :
 - Citations en retrait avec fond gris clair
 - Propositions de reformulation avec fond vert clair
 
-Le document doit être directement transmissible au confrère.
+Le document doit être directement transmissible à son destinataire.

@@ -53,6 +53,8 @@ Dossier [Demandeur] c/ [Défendeur]
    □ Délai de comparution respecté : [oui/non - calcul]
    □ Mentions obligatoires présentes : [oui/non]
    □ Mode de signification : [personne / domicile / art. 659 CPC]
+   □ Si procès-verbal de recherches (art. 659 CPC) : diligences précises du commissaire de justice ; lettre recommandée envoyée au plus tard le premier jour ouvrable suivant ; lettre simple
+   □ Assignation qui « annule et remplace » une précédente : laquelle fixe la date de la demande en justice (capitalisation, intérêts) ? À soumettre au juge, sans trancher
    
    → Qualification décision : [RÉPUTÉ CONTRADICTOIRE / PAR DÉFAUT]
    → Régime art. 472 : [contrôle complet / alinéa 3 possible, à proposer au juge]
@@ -61,6 +63,7 @@ Dossier [Demandeur] c/ [Défendeur]
 2. RECEVABILITÉ (vérifications d'office)
    ─────────────────────────────────────────────────────────────────
    □ Compétence TC : [acte de commerce / société commerciale]
+   □ Défendeur personne physique (notamment entrepreneur individuel radié du RCS) : nom, prénom, date et lieu de naissance si l'acte les donne ; engagements pris pendant l'activité, nature commerciale ; si l'acte donne un SIREN (cas fréquent de l'entrepreneur individuel) : `etat_parties` comme pour toute partie ; si l'acte n'en donne aucun : hors champ du connecteur, ni web par nom, ni repli : « Non vérifié (SIREN absent) », le juge vérifie autrement
    □ Qualité à agir du demandeur : [vérifiée - motif]
    □ Intérêt à agir : [vérifié - motif]
    □ Prescription : [non acquise - délai applicable / point de départ]
@@ -84,6 +87,7 @@ Dossier [Demandeur] c/ [Défendeur]
    Observations :
    • [Montant conforme à l'assignation / écart identifié ; contrôle sur pièces par le juge, sur l'original papier]
    • [Calcul des intérêts vérifié / à recalculer]
+   • Chef reposant sur une pièce non vérifiable par Claude : option « écarté faute de justification » ajoutée au point de décision, jamais par défaut (indicateur 🟠 ou 🔴, PROP. IA : abstention ou maintien) ; le juge tranche sur l'original papier
 
 4. ARTICLE 700 CPC
    ─────────────────────────────────────────────────────────────────
@@ -117,6 +121,8 @@ Si alinéa 3 possible : point de décision « Accueillir sur le fondement de l'a
 
 **Mention liminaire (après identification parties) :**
 > La société [DÉFENDEUR], régulièrement assignée par acte d'huissier du [date], n'a pas constitué avocat.
+>
+> Personne physique : « [Prénom NOM], [né(e) le … à …], [ancien entrepreneur individuel], régulièrement assigné(e) … ».
 
 **Motifs - structure allégée :**
 
