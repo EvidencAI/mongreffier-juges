@@ -478,13 +478,18 @@ Ne pas utiliser "Exposé du litige". Détail dans `references/structure-jugement
 ```
 Sur [intitulé du chef] :
 
-[Texte de loi + principe, une phrase : "En droit, aux termes de l'article X…"]
+[Majeure : la règle, une phrase, ouverte directement par elle : "Aux termes de l'article 1103 du code civil, les contrats légalement formés tiennent lieu de loi à ceux qui les ont faits."]
 
-[Application aux faits + renvois pièces : "En l'espèce, il ressort de la pièce n° 3…"]
+[Mineure : application aux faits + renvois pièces : "Il ressort de la pièce n° 3 que…"]
 
-Le tribunal retient :
-[Conclusion motivée]
+[Conclusion : une phrase ouverte par un mot de liaison : "Dès lors, [conclusion motivée]."]
 ```
+
+**Syllogisme sans étiquettes.** Le syllogisme reste (règle, faits, conclusion) mais aucune de ses parties n'est étiquetée ni mise en intertitre.
+- **Majeure** : elle ouvre directement par la règle (« Aux termes de l'article 1103 du code civil, les contrats légalement formés tiennent lieu de loi à ceux qui les ont faits. » ; « Les conventions légalement formées… »). « En droit, » n'ouvre jamais le paragraphe.
+- **Mineure** : entrées variées : « Or, », « En l'occurrence, », « Il ressort de la pièce n° 3 que… », « Il est constant que… ». « En l'espèce, » est permis mais jamais systématique.
+- **Conclusion** : une phrase ouverte par un mot de liaison varié : « Dès lors, », « Il s'ensuit que », « En conséquence, », « Le tribunal en déduit que ». Pas d'intertitre « Le tribunal retient : ». Elle reste le dernier paragraphe du motif.
+- Jamais deux motifs consécutifs ouverts par la même entrée.
 
 ---
 
@@ -522,9 +527,9 @@ Sur la fin de non-recevoir tirée de la prescription :
 Aux termes de l'article L.110-4 du Code de commerce, les obligations
 commerciales se prescrivent par cinq ans.
 
-En l'espèce, [application aux faits + dates].
+En l'occurrence, [application aux faits + dates].
 
-La fin de non-recevoir n'est pas fondée. L'action est recevable.
+Dès lors, la fin de non-recevoir n'est pas fondée. L'action est recevable.
 ```
 
 **Si la FNR est accueillie :** même motivation, puis "La fin de non-recevoir est fondée. L'action est irrecevable. Il n'y a pas lieu d'examiner le fond."
@@ -621,7 +626,6 @@ Nommage : `Projet Jugement_<RG>_<DEMANDEUR>_c_<DEFENDEUR>.docx`
 | Titres de section | 13 | centré | gras | 10 |
 | Sous-titres "Sur ..." | 12 | gauche | gras souligné | 6 |
 | Corps | 12 | justifié | normal | 6 |
-| "Le tribunal retient :" | 12 | gauche | italique | 3 |
 | Visa des textes | 12 | justifié | italique | 8 |
 | Chefs du dispositif | 12 | justifié | verbe en gras | 8 |
 
@@ -629,7 +633,7 @@ Marges : 1,905 cm à gauche et à droite, 2,54 cm en haut et en bas. En-tête de
 
 **Surlignage jaune** : le Word est produit à partir de la version définitive. Surligner les passages marqués `[à vérifier sur pièces : …]` dans l'artefact et ceux qui restent à compléter (renvois). Trois à six passages, pas plus, et les récapituler dans la réponse au juge.
 
-⚠️ **Suivi des modifications : ACTIVER SYSTÉMATIQUEMENT.** Ajouter `<w:trackChanges/>` dans `word/settings.xml` du .docx produit, afin que les corrections du juge soient identifiables lors d'une reprise ultérieure du dossier. Sans cela, l'IA qui relit le fichier ne distingue pas ses propres phrases de celles que le juge a réécrites, et une reprise "fidèle" ne l'est qu'en apparence.
+⚠️ **Suivi des modifications : ACTIVER SYSTÉMATIQUEMENT.** Ajouter `<w:trackRevisions/>` dans `word/settings.xml` du .docx produit, afin que les corrections du juge soient identifiables lors d'une reprise ultérieure du dossier. Sans cela, l'IA qui relit le fichier ne distingue pas ses propres phrases de celles que le juge a réécrites, et une reprise "fidèle" ne l'est qu'en apparence.
 
 ---
 

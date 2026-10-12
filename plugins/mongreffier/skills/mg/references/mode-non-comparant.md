@@ -96,18 +96,17 @@ SYNTHÈSE - DÉCISIONS À RENDRE
 ```
 Sur la demande en paiement :
 
-En droit, aux termes de l'article 472 du Code de procédure civile, si le défendeur 
+Aux termes de l'article 472 du Code de procédure civile, si le défendeur 
 ne comparaît pas, il est néanmoins statué sur le fond ; le juge ne fait 
 droit à la demande que dans la mesure où il l'estime régulière, recevable 
 et bien fondée.
 
-En l'espèce, la créance de [montant] € résulte de la facture n°[X] en date du [date] 
+Il ressort de la facture n°[X] en date du [date] 
 (pièce n°1 du demandeur), établie conformément au contrat du [date] 
-(pièce n°2). Cette facture est demeurée impayée malgré mise en demeure 
+(pièce n°2), que la créance s'élève à [montant] €. Cette facture est demeurée impayée malgré mise en demeure 
 du [date] (pièce n°3).
 
-Le tribunal retient :
-La demande, régulière en la forme, recevable et justifiée par les pièces 
+Il s'ensuit que la demande, régulière en la forme, recevable et justifiée par les pièces 
 produites, sera accueillie.
 ```
 
