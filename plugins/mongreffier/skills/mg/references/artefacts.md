@@ -144,7 +144,7 @@ Traitement :
 
 ## 8. Modes à onglets libres
 
-Les modes référé, relecture, consultation et non-comparant n'ont pas d'onglet dédié. Ajoutez des onglets libres avec un `id` neuf (par exemple `refere`, `relecture`), sans `saisie` ou avec un type existant. Chaque « En bref » de ces modes se termine par la même phrase de renvoi : « Détail : onglet <titre> de l'artefact MonGreffier ». Ne modifiez pas `mode-non-comparant.md` ni `relecture.md` pour cela.
+Les modes référé, relecture, consultation, vérification et non-comparant n'ont pas d'onglet dédié. Ajoutez des onglets libres avec un `id` neuf (par exemple `refere`, `relecture`, `verification`), sans `saisie` ou avec un type existant. Chaque « En bref » de ces modes se termine par la même phrase de renvoi : « Détail : onglet <titre> de l'artefact MonGreffier ». Ne modifiez pas `mode-non-comparant.md` ni `relecture.md` pour cela.
 
 ## 9. Règles
 

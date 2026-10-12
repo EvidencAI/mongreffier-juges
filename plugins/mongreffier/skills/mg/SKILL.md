@@ -1,6 +1,6 @@
 ---
 name: mg
-description: "À activer d'office quand l'utilisateur dit « lance MG », « MonGreffier » ou « envoie un avis à MonGreffier », ou dépose des conclusions, une assignation ou un projet de jugement, ou parle d'une audience, d'un délibéré ou d'un jugement à rédiger ou relire. Assistant du juge consulaire au tribunal de commerce : analyse, rédaction et relecture de jugements ; références vérifiées d'abord par le connecteur MonGreffier (Légifrance, Judilibre, BODACC), jamais par le web seul."
+description: "À activer d'office quand l'utilisateur dit « lance MG », « MonGreffier » ou « envoie un avis à MonGreffier », ou dépose des conclusions, une assignation ou un projet de jugement, ou parle d'une audience, d'un délibéré ou d'un jugement à rédiger ou relire, ou demande de vérifier les références d'un document juridique. Assistant du juge consulaire au tribunal de commerce : analyse, rédaction et relecture de jugements ; références vérifiées d'abord par le connecteur MonGreffier (Légifrance, Judilibre, BODACC), jamais par le web seul."
 ---
 
 **Fichiers du skill.** Les chemins `references/…` et `assets/…` sont relatifs au dossier de ce skill.
@@ -70,7 +70,7 @@ Dans les conclusions versées, `[?]` marque une lecture incertaine sur une page 
 
 ## Lecture à deux niveaux
 
-Chaque étape se termine par un « En bref » court dans la conversation : décision, incertitudes, points à vérifier sur pièces. Le détail va dans l'artefact décrit dans `references/artefacts.md`. Ce détail est toujours découpé en sections `## …` (au moins deux), que la page replie en accordéons. Chaque « En bref » finit par : « Détail : onglet <titre> de l'artefact MonGreffier ». Si l'artefact ne peut pas être publié, le détail va dans la conversation, après le En bref, sous l'intertitre En détail ; si le bouton d'envoi est masqué chez le juge, il copie la saisie (« Copier pour Claude ») et la colle dans la conversation. Modes référé, relecture, consultation et non-comparant : onglets libres de l'artefact, même phrase de renvoi (voir `references/artefacts.md`).
+Chaque étape se termine par un « En bref » court dans la conversation : décision, incertitudes, points à vérifier sur pièces. Le détail va dans l'artefact décrit dans `references/artefacts.md`. Ce détail est toujours découpé en sections `## …` (au moins deux), que la page replie en accordéons. Chaque « En bref » finit par : « Détail : onglet <titre> de l'artefact MonGreffier ». Si l'artefact ne peut pas être publié, le détail va dans la conversation, après le En bref, sous l'intertitre En détail ; si le bouton d'envoi est masqué chez le juge, il copie la saisie (« Copier pour Claude ») et la colle dans la conversation. Modes référé, relecture, consultation, vérification et non-comparant : onglets libres de l'artefact, même phrase de renvoi (voir `references/artefacts.md`).
 
 Aucune mention commerciale (EvidencAI ou autre) ne figure jamais dans un projet de jugement ni dans le Word.
 
@@ -180,6 +180,9 @@ Corollaire de l'article 472 CPC : quand le défendeur ne comparaît pas, le juge
 | Assignation en référé | RÉFÉRÉ | 3 phases (cadrage, rédaction, robustesse) |
 | Projet de jugement existant (.docx/.pdf) | RELECTURE | Fiche collégiale |
 | Questions juridiques isolées | CONSULTATION | Réponse directe + sources |
+| Document juridique quelconque (conclusions, contrat, note, consultation, décision, projet) avec demande de vérifier ses références | VÉRIFICATION | Liste, contrôle, rapport |
+
+**Détection VÉRIFICATION** : la demande porte sur les références du document (articles, décisions, sociétés), pas sur la rédaction d'un jugement. Doute entre vérifier les références et rédiger ou relire : une seule question au juge. Un projet de jugement à relire reste RELECTURE, qui inclut la vérification de ses références (voir Mode RELECTURE). Sans demande explicite de vérification, un dépôt de conclusions reste RÉDACTION.
 
 **Détection automatique RÉFÉRÉ** : présence de "référé", "assignation en référé", "art. 872", "art. 873", "trouble manifestement illicite", "dommage imminent", "obligation non sérieusement contestable".
 
@@ -761,6 +764,22 @@ Voir `references/relecture.md` pour le workflow complet.
 - ⚠️ **Décompte non recalculé**
 - Vocabulaire inapproprié ("le tribunal s'étonne", "contre-attaque", "prétend")
 - Procédure collective : "Fixe au passif" et non "Condamne"
+- **Références du projet** : les vérifier par le connecteur comme en mode VÉRIFICATION (`references/verification-document.md`), car `relecture.md` ne contrôle que la cohérence interne. Les résultats vont dans l'onglet libre `relecture`, sans toucher à `relecture.md`
+
+---
+
+## Mode VÉRIFICATION
+
+Voir `references/verification-document.md` pour le détail.
+
+Déclenché pour : un document juridique dont le juge demande de vérifier les références. Pas de fiche du dossier, pas de « dernières écritures », pas de phases. Les exigences d'ouverture restent les mêmes : Opus (étape 0) et `qui_suis_je` (étape 0 bis) avant toute analyse.
+
+**Comportement** :
+- Extraire toutes les références : articles de code ou de loi (avec la date utile si le document la donne), décisions de justice (juridiction, date, numéro), sociétés identifiables par SIREN
+- Vérifier chacune par le connecteur : `verifier_article`, `verifier_jurisprudence`, `etat_parties` ; jamais par le web seul. Statuts et recours au web : règles de « SOURCES DE VÉRIFICATION »
+- Rendre un « En bref » dans la conversation (divergences en tête) et le détail dans l'onglet libre `verification` de l'artefact MonGreffier
+- Rappeler une fois au juge que le document doit être pseudonymisé
+- Proposer de basculer en RÉDACTION ou RELECTURE si le document relève d'un dossier
 
 ---
 
@@ -797,6 +816,7 @@ Quand le juge veut donner un avis sur l'outil (un bug, une idée, autre), y comp
 | `references/structure-jugement.md` | Structure détaillée, checklist de validation | Phase 3 |
 | `references/mode-non-comparant.md` | Workflow art. 472 CPC | Si défendeur absent |
 | `references/relecture.md` | Mode relecture | Mode RELECTURE |
+| `references/verification-document.md` | Vérification des références d'un document juridique | Mode VÉRIFICATION, et vérification des références en mode RELECTURE |
 | `references/vocabulaire-juge.md` | Formulations correctes et interdites | Phases 3, 4 et 5 |
 | `references/thematiques.md` | Vigilance par matière | Sur demande |
 | `references/analyse-critique.md` | Méthode d'analyse critique des prétentions | Phases 1 et 2 |
