@@ -161,7 +161,9 @@ Corollaire de l'article 472 CPC : quand le défendeur ne comparaît pas, le juge
 |---|---|
 | Somme des factures ou échéances | Additionner, comparer au total réclamé |
 | Décomposition du "principal" | Un principal bancaire inclut souvent des intérêts déjà échus, qui produiraient alors intérêts hors des conditions de l'art. 1343-2 C. civ. Séparer : principal, intérêts échus arrêtés à une date, intérêts à courir |
-| Point de départ des intérêts | Les décomptes font courir les intérêts majorés sur le capital dès la dernière échéance impayée, alors qu'il n'est exigible qu'à la **déchéance du terme** |
+| Point de départ des intérêts | Les décomptes font courir les intérêts majorés sur le capital dès la dernière échéance impayée, alors qu'il n'est exigible qu'à la **déchéance du terme** (date vérifiée sur pièces). Chaque frais accessoire (commission, frais, indemnité) doit trouver sa clause |
+| Montant qui ne se retrouve pas | Reconstituer au centime le calcul du demandeur par hypothèses successives (base, taux, point de départ) : celle qui tombe juste montre l'erreur (exemple : capital majoré depuis le 22/02 au lieu du 12/03, date de la déchéance) |
+| Montant en lettres et en chiffres | Le montant en lettres du dispositif correspond à celui en chiffres et à celui des motifs |
 | Cohérence des unités | Nombre de prestations facturées, de commandes, de rapports : reconstituer depuis les montants et le prix unitaire, signaler tout écart |
 | Avoirs et acomptes | Vérifier l'imputation, demander la cause d'un avoir non expliqué |
 | Indemnité forfaitaire | 40 € par facture impayée, donc nombre de factures x 40 |
@@ -299,14 +301,15 @@ Il donne accès à Légifrance, à Judilibre (Cour de cassation) et au BODACC pa
 
 | Statut au juge | Sens | Conduite |
 |---|---|---|
-| Vérifié | Trouvé en source primaire, texte rendu conforme à ce que cite la partie | Utilisable |
+| Vérifié | Trouvé en source primaire, texte rendu conforme à ce que cite la partie ; pour une décision, ce que le document lui fait dire ne dépasse pas ce que rend `solution` | Utilisable |
 | Divergent | Trouvé, mais numéro, date, contenu ou portée différents de la citation. `date_concordante: false` (ou ligne « Attention : date indiquée … ») = Divergent, jamais Vérifié. Même règle si le texte à la date utile ne correspond pas au numéro d'article cité | Signaler l'écart, citer la version vérifiée |
 | Introuvable | Aucune trace dans la source primaire | Ne pas citer, le dire au juge |
+| Trouvé, portée non contrôlée | Décision trouvée (date, solution rendues) mais le document lui fait dire un principe de fond que `solution` ne permet pas de contrôler. Si le connecteur rend un extrait de motivation (`extrait_motivation`), le comparer | Le dire : l'existence est établie, la portée citée ne l'est pas |
 | Non vérifié (hors couverture) | Jurisprudence non publiée au bulletin, arrêt d'appel ou de première instance, texte de moins de 48 h, droit européen ou international | Le dire expressément, jamais présenté comme vérifié |
 
 Quand une référence décisive pour un arbitrage reste « Non vérifié », ne pas s'arrêter là : chercher sur le web (sources secondaires : revues, éditeurs juridiques), puis revérifier par le connecteur tout arrêt ou texte ainsi trouvé. Le dire au juge, et ne mettre aucun nom de partie dans la requête web. Une source secondaire oriente, elle ne se cite jamais seule dans un jugement. Ce recours s'ajoute au connecteur ; il ne remplace pas le repli « connecteur absent » ci-dessous et n'autorise aucune des sources à ne pas utiliser.
 
-Une référence « non vérifié » n'est pas une référence « introuvable » : ne pas les confondre. Un « Non vérifié » du serveur (source indisponible) n'est pas non plus le « Non vérifié » hors couverture : dire au juge lequel des deux s'applique.
+Une référence « non vérifié » n'est pas une référence « introuvable » : ne pas les confondre. Un « Non vérifié » du serveur (source indisponible) n'est pas non plus le « Non vérifié » hors couverture : dire au juge lequel des deux s'applique. « Trouvé, portée non contrôlée » est un statut du skill, distinct du statut serveur « Trouvé » : la décision existe, mais ce que le document lui fait dire n'a pas pu être contrôlé.
 
 **Date utile.** Toujours passer `date_utile` à `verifier_article`. Elle se choisit ainsi :
 - rupture brutale d'une relation commerciale établie (L.442-6, I, 5° ancien ; L.442-1, II actuel), responsabilité délictuelle : date de la rupture, jamais la date du contrat ;
@@ -398,6 +401,8 @@ B : [libellé]
 |----|----------|----------|----------|--------|----------|
 
 Dans l'artefact, ce tableau est généré par la page, en tête de l'onglet `decision`, et se met à jour avec les choix du juge : ne pas l'écrire dans le détail, n'y mettre que les blocs POINT [N], un par point, dans l'ordre (la page range chaque bloc « POINT N » dans l'accordéon du point PN, avec son écran de choix). Le juge tranche chaque point lui-même (option du point, ou AUTRE avec réserve ; une réserve peut accompagner toute option et porter un montant, par exemple « A, article 700 ramené à 300 € » : Claude la reprend dans la motivation et le dispositif) : la proposition de l'IA est un repère, jamais retenue en lot. Le « En bref » de la conversation ne reprend pas ce tableau : il cite seulement les 2 ou 3 points qui demandent le plus d'attention. Le tableau ci-dessus reste le format du repli en conversation.
+
+**Points dépendants** (la proposition de P3 suit la réponse à P2) : ne pas les proposer ensemble. Publier le point dépendant après réception de l'envoi du premier lot, à la suite (ids suivants), la `saisie` de l'onglet conservée, et le dire en une ligne.
 
 ---
 
@@ -756,6 +761,8 @@ CONDAMNONS [partie] aux dépens.
 Voir `references/relecture.md` pour le workflow complet.
 
 **Posture** : accompagnement collégial, bienveillant mais sobre. En mentorat d'un nouveau juge, fiche courte, et reconnaître ce qui est une première pour tout le monde.
+
+**Ouverture** : la fiche du dossier s'applique (OUVERTURE DU DOSSIER). Après son retour et avant toute rédaction de la fiche de relecture, poser en conversation une seule question : « Qui a rédigé le projet ? ». La réponse fixe le destinataire et le ton de la fiche Word, au vouvoiement ; sans réponse, le destinataire est le juge connecté (fiche du dossier), et le dire. Les dernières écritures relèvent de la fiche du dossier (OUVERTURE DU DOSSIER, point 3), jamais d'une seconde question.
 
 **Points de contrôle prioritaires :**
 - ⚠️ **Étape 0 refaite** : une procédure collective ouverte depuis la rédaction du projet change tout
