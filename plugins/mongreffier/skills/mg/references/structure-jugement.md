@@ -33,12 +33,11 @@ Pour **CHAQUE** chef de prétention :
 ```
 Sur [intitulé du chef] :
 
-[Texte de loi cité + principe applicable : "En droit, aux termes de l'article X…"]
+[Majeure : la règle citée, ouverte directement par elle : "Aux termes de l'article X…"]
 
-[Application aux faits + renvois pièces : "En l'espèce, il ressort de la pièce n° 3 du demandeur…"]
+[Mineure : application aux faits + renvois pièces, entrée variée : "Il ressort de la pièce n° 3 du demandeur…", "En l'occurrence,", "Or,"]
 
-Le tribunal retient :
-[Conclusion motivée - position validée en Phase 2]
+[Conclusion : une phrase ouverte par un mot de liaison varié ("Dès lors,", "Il s'ensuit que", "En conséquence,", "Le tribunal en déduit que") - position validée en Phase 2]
 ```
 
 **Règles :**
@@ -95,7 +94,7 @@ CONDAMNE la société Y aux dépens.
 Avant de générer le .docx, **vérifier** :
 
 ```
-✅ Structure syllogistique : règle de droit, application aux faits, Le tribunal retient (sans intertitres "Cadre juridique" ni "En l'espèce")
+✅ Structure syllogistique : règle de droit, application aux faits, conclusion ouverte par un mot de liaison (sans étiquette ni intertitre : ni "Cadre juridique", ni "En l'espèce", ni "Le tribunal retient"), jamais deux motifs consécutifs ouverts par la même entrée
 ✅ Renvois aux pièces présents dans chaque application aux faits
 ✅ Sections : FAITS + ÉLÉMENTS DE PROCÉDURE (pas "Exposé du litige")
 ✅ PCM : formule art. 450 complète + point-virgule
@@ -116,8 +115,8 @@ Avant de générer le .docx, **vérifier** :
 | ❌ INTERDIT | ✅ CORRECT |
 |-------------|-----------|
 | "Exposé du litige" | "FAITS" + "ÉLÉMENTS DE PROCÉDURE" |
-| Motifs en texte libre | Structure : règle de droit → application aux faits → Le tribunal retient |
-| Intertitres "Cadre juridique :" et "En l'espèce :" en tête de paragraphe | Les amener dans la phrase : "En droit, aux termes de l'article…" ; "En l'espèce, il ressort de la pièce n° 3…" |
+| Motifs en texte libre | Structure : règle de droit → application aux faits → conclusion (sans étiquettes) |
+| Intertitres "Cadre juridique :" et "En l'espèce :" en tête de paragraphe | Ouvrir la majeure directement par la règle : "Aux termes de l'article…" ; varier la mineure : "Il ressort de la pièce n° 3…", "En l'occurrence,", "Or," |
 | Pas de renvoi aux pièces | "(pièce n°X du demandeur)" systématique |
 | "Vu" en romain | *Vu* en italique |
 | Verbes minuscules | VERBES MAJUSCULES |

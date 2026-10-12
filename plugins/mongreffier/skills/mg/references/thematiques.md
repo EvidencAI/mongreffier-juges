@@ -118,16 +118,15 @@ Critère : faute intentionnelle d'une particulière gravité incompatible avec l
 ```
 Sur la clause pénale :
 
-En droit, aux termes de l'article 1231-5 du Code civil, le juge peut, même d'office, 
+Aux termes de l'article 1231-5 du Code civil, le juge peut, même d'office, 
 modérer la pénalité si elle est manifestement excessive.
 
-En l'espèce, la clause pénale prévue à l'article X des conditions générales stipule une 
+Il ressort de la pièce n° 1 que la clause pénale prévue à l'article X des conditions générales stipule une 
 indemnité de [montant]. Le préjudice effectivement subi par le créancier 
 s'établit à [montant] selon [pièces].
 
-Le tribunal retient :
-[Faire droit à l'intégralité / Modérer à hauteur de X €, la pénalité 
-apparaissant manifestement excessive au regard du préjudice démontré.]
+Dès lors, [faire droit à l'intégralité / modérer à hauteur de X €, la pénalité 
+apparaissant manifestement excessive au regard du préjudice démontré].
 ```
 
 ---

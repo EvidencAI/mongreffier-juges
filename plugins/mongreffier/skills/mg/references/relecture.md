@@ -115,7 +115,7 @@ Quand un fondement juridique semble douteux mais qu'on n'a pas les conclusions :
 ### Structure et forme (signaler comme « améliorations souhaitables »)
 
 **Motifs :**
-- Structure syllogistique (règle de droit, application aux faits, Le tribunal retient), sans intertitres "Cadre juridique" ni "En l'espèce"
+- Structure syllogistique (règle de droit, application aux faits, conclusion), sans étiquettes ni intertitres ("Cadre juridique", "En l'espèce", "Le tribunal retient"), majeure ouverte directement par la règle, jamais deux motifs ouverts par la même entrée
 - Style direct (pas de « Attendu que »)
 - Renvois aux pièces
 

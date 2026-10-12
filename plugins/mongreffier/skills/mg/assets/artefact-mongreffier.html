@@ -218,7 +218,7 @@ table.synthese td, table.synthese th { vertical-align: middle; }
   summary.section-titre .etat-point { flex-basis: 100%; padding-left: 22px; }
   table.synthese .col-indic { display: none; }
 }
-.replier, .copier-lien { display: inline-flex; align-items: center; min-height: 44px; background: none; border: 0; padding: 4px 0; color: var(--accent-texte); text-decoration: underline; font: inherit; text-align: left; cursor: pointer; }
+.replier { display: inline-flex; align-items: center; min-height: 44px; background: none; border: 0; padding: 4px 0; color: var(--accent-texte); text-decoration: underline; font: inherit; text-align: left; cursor: pointer; }
 details.section > .replier { margin: 4px 0 8px; }
 @media print { .replier, details.section > .replier, .lecture-seule, .vers-haut, details.section > .vers-haut, .fin-panneau { display: none !important; } }
 .lecture-seule { margin: 0 0 16px; }
@@ -226,11 +226,9 @@ details.section > .replier { margin: 4px 0 8px; }
 .lecture-seule p { margin: 0 0 4px; }
 .actions-point { display: flex; flex-wrap: wrap; align-items: center; gap: 0 24px; }
 @media (max-width: 480px) { .actions-point { flex-direction: column; align-items: flex-start; gap: 0; margin-bottom: 8px; } }
-.copier-lien { flex: 0 0 100%; justify-content: center; text-align: center; }
-.vers-haut { display: inline-flex; align-items: center; min-height: 44px; background: none; border: 0; padding: 4px 0; color: var(--accent-texte); text-decoration: underline; font: inherit; cursor: pointer; justify-content: center; text-align: center; }
-@media (min-width: 640px) { .vers-haut { margin-left: auto; } }
+@media (min-width: 640px) { .btns > .btn-envoi, .btns > .btn.primaire { margin-left: auto; } .btns > .btn.tertiaire { flex: 0 0 100%; margin-left: 0; } }
+.btns > .aide-envoi { flex: 0 0 100%; margin: 0; }
 .fin-panneau { display: flex; justify-content: flex-end; margin-top: 20px; }
-@media (max-width: 639px) { .fin-panneau { justify-content: center; } }
 .importance { display: inline-flex; align-items: baseline; gap: 4px; margin-left: 8px; font-size: 13px; font-weight: 400; color: var(--texte-2); white-space: nowrap; background: none; border: 0; }
 .importance .jauge { letter-spacing: 1px; font-size: 11px; }
 textarea:disabled { opacity: .6; cursor: not-allowed; }
@@ -309,7 +307,10 @@ fieldset.choix-point { margin-top: 12px; }
     rouge: ['Appréciation souveraine', '🔴', 'carre']
   };
   var IMPORTANCES = { capital: ['Capital', 3], important: ['Important', 2], utile: ['Utile', 1] };
-  var D = null, room = null, statutRoom = 'off', stockageOK = true, ctxCourant = null;
+  var D = null, room = null, statutRoom = 'off', stockageOK = true, ctxCourant = null, etroitAvant = null;
+  var etroit = window.matchMedia('not all and (min-width: 640px)');
+  etroitAvant = etroit.matches;
+  if (etroit.addEventListener) etroit.addEventListener('change', function () { if (etroit.matches === etroitAvant) return; etroitAvant = etroit.matches; if (ctxCourant) ctxCourant.boutons(); });
   var etats = {}, compteurId = 0;
 
   /* ---------- outils ---------- */
@@ -1308,7 +1309,7 @@ fieldset.choix-point { margin-top: 12px; }
 
   /* Lien de secours « Aller en haut » : remonter() puis focus() du geste du juge (fait défiler le cadre parent). */
   function lienHaut() {
-    return h('button', { type: 'button', class: 'btn-lien vers-haut', text: 'Aller en haut', onclick: function () {
+    return h('button', { type: 'button', class: 'btn vers-haut', text: 'Aller en haut', onclick: function () {
       var t;
       remonter();
       t = document.getElementById('mg-titre');
@@ -1432,7 +1433,7 @@ fieldset.choix-point { margin-top: 12px; }
     }
     ctx.lancer = lancer;
     function majOccupe(oui) {
-      Array.prototype.forEach.call(racine.querySelectorAll('.btn'), function (b) { if (oui || b._clos) b.setAttribute('disabled', ''); else b.removeAttribute('disabled'); });
+      Array.prototype.forEach.call(racine.querySelectorAll('.btn:not(.vers-haut)'), function (b) { if (oui || b._clos) b.setAttribute('disabled', ''); else b.removeAttribute('disabled'); });
       var env = $('.btn-envoi', racine);
       if (env) { env.setAttribute('aria-busy', oui ? 'true' : 'false'); env.textContent = oui ? 'Envoi en cours…' : env._texte; }
     }
@@ -1479,30 +1480,40 @@ fieldset.choix-point { margin-top: 12px; }
     }
     function clicCopie() { var r = valider(); if (r) copier(r.valeurs); }
     ctx.boutons = function () {
-      var envoi = peutEnvoyer() && !ctx.modeLots, lib = statutRoom === 'available_if_opened' ? 'Déposer dans la conversation' : 'Envoyer à Claude', b;
+      var envoi = peutEnvoyer() && !ctx.modeLots, b, lib = statutRoom === 'available_if_opened' ? 'Déposer dans la conversation' : 'Envoyer à Claude';
+      var actif = document.activeElement, cleFocus = actif && zBoutons.contains(actif) ? (actif.classList.contains('vers-haut') ? 'vers-haut' : actif.classList.contains('btn-envoi') ? 'btn-envoi' : actif.textContent) : null;
       zBoutons.textContent = '';
-      if (ecran.sansBoutons) { zBoutons.appendChild(lienHaut()); return; }
+      if (ecran.sansBoutons) { var seul = lienHaut(); zBoutons.appendChild(seul); if (cleFocus) seul.focus(); return; }
       if (!peutEnvoyer()) zBoutons.appendChild(h('p', { class: 'note aide-envoi', text: 'L’envoi direct n’est possible que lorsque cette page est ouverte à côté de la conversation avec Claude. Ici, utilisez « Copier pour Claude », puis collez dans la conversation.' }));
       if (envoi) {
         b = h('button', { type: 'button', class: 'btn primaire btn-envoi', text: lib, onclick: clicEnvoi });
         b._texte = lib;
-        zBoutons.appendChild(b);
       }
-      // Avec un envoi possible (ou des lots) « Copier pour Claude » n'est qu'un lien, sous la rangée de boutons.
-      var lienCopie = peutEnvoyer(), copie = lienCopie
-        ? h('button', { type: 'button', class: 'btn-lien copier-lien', text: 'Copier pour Claude', onclick: clicCopie })
-        : h('button', { type: 'button', class: 'btn primaire', text: 'Copier pour Claude', onclick: clicCopie });
-      if (!lienCopie) zBoutons.appendChild(copie);
-      if (ecran.tertiaire) zBoutons.appendChild(h('button', { type: 'button', class: 'btn tertiaire', text: ecran.tertiaire.texte, onclick: function () {
+      // Rangée à une ligne dès 640 px : Aller en haut, Copier, [tertiaire], Envoyer (principal à droite). Sous 640 px
+      // colonne avec le principal en haut : l'ordre du DOM est inversé (et non column-reverse) pour que Tab suive l'ordre visuel.
+      var copie = h('button', { type: 'button', class: peutEnvoyer() ? 'btn' : 'btn primaire', text: 'Copier pour Claude', onclick: clicCopie }), suite = [lienHaut()], i;
+      if (b || peutEnvoyer()) suite.push(copie);
+      if (ecran.tertiaire) suite.push(h('button', { type: 'button', class: 'btn tertiaire', text: ecran.tertiaire.texte, onclick: function () {
         var msg = ecran.tertiaire.bloque ? ecran.tertiaire.bloque() : null;
         zResume.textContent = '';
         if (msg) { zStatut.textContent = msg; return; }
         if (peutEnvoyer() && !ctx.modeLots) lancer(enveloppe(onglet, ecran.tertiaire.valeurs));
         else copier(ecran.tertiaire.valeurs);
       } }));
-      // « Aller en haut » sur la ligne d'« Envoyer à Claude », à droite (demande de Stéphane, 1.2.9) ; le lien Copier passe dessous.
-      zBoutons.appendChild(lienHaut());
-      if (lienCopie) zBoutons.appendChild(copie);
+      if (b) suite.push(b);
+      else if (!peutEnvoyer()) suite.push(copie);
+      if (etroit.matches) suite.reverse();
+      else if (ecran.tertiaire) { // en large, le tertiaire passe en ligne propre sous la rangée : il ferme le DOM
+        i = suite.findIndex(function (n) { return n.classList.contains('tertiaire'); });
+        suite.push(suite.splice(i, 1)[0]);
+      }
+      for (i = 0; i < suite.length; i++) zBoutons.appendChild(suite[i]);
+      if (cleFocus) {
+        for (i = 0; i < suite.length; i++) {
+          if (suite[i].classList.contains('vers-haut') ? cleFocus === 'vers-haut' : suite[i].classList.contains('btn-envoi') ? cleFocus === 'btn-envoi' : suite[i].textContent === cleFocus) { suite[i].focus(); break; }
+        }
+      }
+      majOccupe(occupe);
       if (ctx.modeLots && peutEnvoyer()) {
         zNoteLots.textContent = 'Vos corrections dépassent la taille d’un seul envoi (' + pourcent(octets(enveloppe(onglet, ecran.approx()))) + ' % de la limite). Envoyez-les partie par partie avec les boutons « Envoyer cette partie » ci-dessous.';
         zNoteLots.hidden = false;
