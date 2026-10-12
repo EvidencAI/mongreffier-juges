@@ -149,7 +149,7 @@ Les pièces du dossier restent chez le juge, en papier. Elles ne sont pas transm
 
 À chaque dossier, produire une **liste courte et ciblée** de vérifications sur pièces : pas un inventaire, seulement ce qui change la décision ou le dispositif. Trois à six points.
 
-Corollaire de l'article 472 CPC : quand le défendeur ne comparaît pas, le juge ne fait droit à la demande que dans la mesure où il l'estime bien fondée, donc **sur pièces**. Cette vérification est toujours renvoyée au juge, sur l'original papier, par la liste des vérifications. Si un chef de demande ne repose sur rien de vérifiable, le dire.
+Corollaire de l'article 472 CPC : quand le défendeur ne comparaît pas, le juge ne fait droit à la demande que dans la mesure où il l'estime bien fondée, donc **sur pièces**. C'est la règle par défaut. Seule exception, facultative et soumise au juge : l'alinéa 3 de l'article 472, pour une instance introduite depuis le 01/10/2026 avec un acte délivré à personne (aiguillage dans `references/mode-non-comparant.md`). Cette vérification est toujours renvoyée au juge, sur l'original papier, par la liste des vérifications. Si un chef de demande ne repose sur rien de vérifiable, le dire.
 
 ---
 
@@ -312,8 +312,11 @@ Une référence « non vérifié » n'est pas une référence « introuvable » 
 - rupture brutale d'une relation commerciale établie (L.442-6, I, 5° ancien ; L.442-1, II actuel), responsabilité délictuelle : date de la rupture, jamais la date du contrat ;
 - autre responsabilité délictuelle : date du fait dommageable ;
 - articles du Code civil issus de l'ordonnance 2016-131 (droit des contrats et des obligations contractuelles) pour un contrat conclu avant le 01/10/2016 : date du contrat (art. 9 de l'ordonnance 2016-131). Cette règle ne vaut que pour eux ;
+- texte de procédure (Code de procédure civile, décret de procédure) : date d'introduction de l'instance (deux dates possibles au tribunal de commerce : délivrance et remise au greffe, voir `references/mode-non-comparant.md` ; à défaut de choix du juge, la plus ancienne), puis règle « Texte de procédure modifié » ci-dessous ;
 - sinon : date des faits ;
 - à défaut : date de l'assignation, et le dire au juge.
+
+**Texte de procédure modifié.** Si l'article rendu a une date de fin, ou une version dont la date de début est postérieure à la date utile (vérifier aussi à la date du jour), ne pas choisir seul entre l'ancienne et la nouvelle version : vérifier par `verifier_article` l'article d'entrée en vigueur du texte modificatif (`code` : « décret n° … », `numero` : l'article d'entrée en vigueur, `date_utile` : date de la décision) et appliquer ses dispositions transitoires. Selon le décret, la version applicable peut dépendre de la date d'introduction de l'instance, de celle de la décision, ou valoir pour les instances en cours. Exemple : l'alinéa 3 de l'article 472 (décret n° 2026-683, article 21, 2°, b) ne vaut que pour les instances introduites depuis le 01/10/2026. Faute d'avoir lu ce texte transitoire : Non vérifié, et le dire au juge.
 
 Si le champ `version_a_date_utile` vaut « aucune » (le connecteur rend alors la version courante), ou si l'article rendu est abrogé : consulter `references/renumerotations.md` avant de conclure, puis signaler au juge que le texte rendu n'est peut-être pas celui applicable à la date utile.
 
