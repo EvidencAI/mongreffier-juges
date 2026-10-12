@@ -85,6 +85,8 @@ N'hésitez pas à en discuter avec le relecteur si vous souhaitez en discuter.
 Relecture collégiale - [juridiction de la fiche du dossier, reprise telle quelle]
 ```
 
+Si le nom du rédacteur est absent de la réponse : écrire « Pour le juge rédacteur du projet », et le dire au juge dans la conversation (pas dans la fiche) ; ne rien inventer.
+
 ---
 
 ## Points de contrôle
@@ -100,6 +102,7 @@ Relecture collégiale - [juridiction de la fiche du dossier, reprise telle quell
 **Logique :**
 - Chef de dispositif sans motivation correspondante
 - Motivation sans conséquence au dispositif
+- Article 700 non motivé : motif sans formule d'équité, ou chiffre sans justification. Le relever (correction `a_surveiller` ou `mineur`) ; ne jamais le louer (« somme mesurée ») tant qu'il n'est pas motivé
 
 ### Vocabulaire et posture du juge (toujours signaler)
 
@@ -114,7 +117,9 @@ Quand un fondement juridique semble douteux mais qu'on n'a pas les conclusions :
 
 **Durées** : toute obligation limitée dans le temps citée par le projet (clause, bail, délai, interdiction) est-elle encore en vigueur à la date du prononcé ? Pour un texte de procédure modifié, voir la règle « Texte de procédure modifié » de SKILL.md.
 
-**Arrêt cité à l'appui d'un critère** : le confronter à sa solution (rejet ou cassation). Par `verifier_jurisprudence` : une cassation citée comme appui est à confronter à la partie qui l'a obtenue ; une cassation obtenue par la partie que le critère dessert est un signal fort. Si le sens n'est pas lisible (ni `solution` ni extrait de motivation ne le disent) : statut « Trouvé, portée non contrôlée ».
+**Arrêt cité à l'appui d'un critère** : le confronter à sa solution (rejet ou cassation). Par `verifier_jurisprudence` : une cassation citée comme appui est à confronter à la partie qui l'a obtenue ; une cassation obtenue par la partie que le critère dessert est un signal fort. Si le sens n'est pas lisible (ni `solution` ni extrait de motivation ne le disent), ou si l'arrêt est rendu sans comparaison avec ce que le projet en tire : statut « Trouvé, portée non contrôlée », jamais « Vérifié ».
+
+**Référence décisive « Non vérifié (hors couverture) »** : le recours web de SKILL.md (section « SOURCES DE VÉRIFICATION », paragraphe qui suit le tableau des statuts) s'applique aussi en RELECTURE : source secondaire sans nom de partie, puis revérification par le connecteur de ce qui est trouvé, et le dire au juge. Il n'est pas dispensé en relecture.
 
 ### Structure et forme (signaler comme « améliorations souhaitables »)
 
@@ -172,6 +177,8 @@ Le texte actuel dit :
 
 Pour le dispositif, proposer une version complète si plusieurs corrections sont nécessaires.
 
+Reformulation d'une clause du contrat : citer la clause en entier, entre guillemets, avec ses mots restrictifs ou ses alternatives (« notamment », « ou »). Jamais de paraphrase plus étroite que la clause. Trop longue pour la limite de `reformulation` : ne pas la résumer, dire dans `detail` de la lire au contrat.
+
 ---
 
 ## Output
@@ -184,4 +191,4 @@ Générer un document Word (.docx) :
 - Citations en retrait avec fond gris clair
 - Propositions de reformulation avec fond vert clair
 
-Le document doit être directement transmissible à son destinataire.
+Le document doit être directement transmissible à son destinataire. Il ne contient aucun code de correction (R1, R2…), qui n'existe que dans l'onglet de l'artefact : renvoyer par le lieu (« Dispositif, formule introductive », « Motifs, 3e paragraphe »).

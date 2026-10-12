@@ -31,6 +31,10 @@ Onglet libre : `id` `corrections`, titre « Corrections à intégrer », statut 
 | `reformulation` | 1 200 au plus : le passage corrigé, à poser à la place de la citation. Obligatoire. |
 | `lieu` | 80 au plus, facultatif : « Motifs, 3e paragraphe ». |
 
+**Fait non lu dans la reformulation.** Règle « Fait non lu » de SKILL.md : le repère `[à vérifier sur pièces : …]` reste à cet endroit et compte dans la limite de 1 200 caractères.
+
+**Citation présente plusieurs fois.** Une correction par occurrence, chacune avec son `lieu` (80 caractères au plus) : « Motifs, § sur la compétence », « Dispositif, 3e chef ». Jamais une seule correction pour deux endroits : le Word n'en remplace qu'un. Même règle quand une retouche du dispositif (visa, montant, mention « TTC ») se retrouve dans les motifs : l'occurrence des motifs a sa propre correction.
+
 La page trie par gravité puis par ordre de la liste. Elle ignore une entrée sans `citation` ou sans `reformulation` : ne la publiez pas. Elle ne coupe rien : respectez les limites. Dans les chaînes JSON, `<` s'écrit `\u003c` (six caractères : barre oblique inverse, u, 0, 0, 3, c), pour qu'aucune balise `</script` ne ferme le bloc.
 
 ## 3. Charge reçue
@@ -52,6 +56,7 @@ La page trie par gravité puis par ordre de la liste. Elle ignore une entrée sa
 - La fiche de relecture n'est pas touchée.
 - `source` = `word_depose` : modifiez le fichier Word du juge, jamais le recréer ; conservez sa mise en page. Retrouvez chaque citation dans le fichier. Si elle est introuvable, n'appliquez rien d'office pour cette correction et dites-le au juge.
 - Sans Word déposé : reconstruisez le projet en Word à partir du texte, puis portez-y les corrections en suivi. Dites-le au juge dans la réponse en conversation : « Vous n’avez pas déposé de fichier Word : j’ai reconstruit le projet en Word à partir du texte ; la mise en page peut différer de l’original. »
+- Avant de produire le Word, passe de cohérence motifs / visa / dispositif : chaque citation, montant ou qualification corrigés à un endroit sont corrigés, ou signalés, à chaque autre occurrence. Une incohérence née d'un choix du juge (correction écartée, texte modifié) est dite dans le compte rendu.
 - Vérifiez avant de rendre le fichier : nombre de modifications en suivi = nombre de corrections `retenir` + `modifier` appliquées ; `w:trackRevisions` présent ; aucun `w:trackChanges`.
-- Rendez le Word et un compte rendu en conversation : corrections appliquées, écartées, non retrouvées.
+- Rendez le Word et un compte rendu en conversation : corrections appliquées, écartées, non retrouvées, et incohérences laissées par les choix du juge.
 - Ensuite, passez l'onglet `corrections` à `fait` quand le Word est produit ; sa `saisie` n'est jamais retirée.

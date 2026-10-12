@@ -13,9 +13,8 @@
 
 | Section | Obligatoire | Contenu |
 |---------|-------------|---------|
-| EN-TÊTE | ✅ | Tribunal, type jugement, RG, date audience |
+| EN-TÊTE | ✅ | Tribunal, type jugement, RG, date audience, composition du délibéré (président, assesseurs), greffier |
 | PARTIES | ✅ | Dénomination, forme, capital, RCS, siège, activité, représentation |
-| COMPOSITION | ✅ | Président, juges, greffier |
 | FAITS | ✅ | Chronologie + renvois pièces |
 | ÉLÉMENTS DE PROCÉDURE | ✅ | Assignation, ordonnances. Clôture : "C'est en l'état..." |
 | PRÉTENTIONS | ✅ | Reprise VERBATIM des conclusions. Aucune analyse. |

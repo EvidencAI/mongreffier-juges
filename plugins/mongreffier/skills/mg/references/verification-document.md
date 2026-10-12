@@ -23,7 +23,7 @@ Une référence incomplète (numéro absent, juridiction seule) reste dans la li
 
 ## 2. Vérifier chaque référence par le connecteur
 
-Jamais par le web seul. Les statuts rendus au juge sont ceux de « SOURCES DE VÉRIFICATION » de SKILL.md : Vérifié, Divergent, Introuvable, Trouvé (portée non contrôlée), Non vérifié.
+Jamais par le web seul. Les statuts rendus au juge sont ceux de « SOURCES DE VÉRIFICATION » de SKILL.md : Vérifié, Divergent, Introuvable, Trouvé (portée non contrôlée), Trouvé (version non applicable à la date utile), Non vérifié. Aucun autre statut. « Vérifié » suppose une comparaison avec ce que cite le document ; un arrêt rendu sans comparaison reste « Trouvé, portée non contrôlée » ; une version « aucune » à la date utile est « Trouvé, version non applicable à la date utile », jamais « Vérifié », dit au juge. Divergent vaut aussi quand le texte rendu contredit un élément de ce que le document en tire.
 
 - **Articles** : `verifier_article`, avec `date_utile` choisie selon la règle de SKILL.md (à défaut de date dans le document : date des faits, sinon de l'assignation, et le dire). Comparer le texte rendu à ce que le document cite. `date_concordante: false` = Divergent. Si `version_a_date_utile` vaut « aucune » ou si l'article est abrogé : consulter `references/renumerotations.md` avant de conclure.
 - **Décisions** : arrêt de la Cour de cassation : `verifier_jurisprudence` avec `numero_pourvoi` et `date` ; référence incomplète : `rechercher` avec `fonds: "jurisprudence"`. Comparer juridiction, date, formation et portée. Arrêt d'appel ou décision de première instance : hors couverture du connecteur, statut « Non vérifié (hors couverture) ».
@@ -34,12 +34,12 @@ Jamais par le web seul. Les statuts rendus au juge sont ceux de « SOURCES DE V�
 
 ## 3. Rendu
 
-**« En bref »** dans la conversation, 5 phrases au plus, vouvoiement : nombre de références par catégorie, nombre de divergences, de non vérifiés et de références de portée non contrôlée, les divergences en tête (une ligne chacune), puis : « Détail : onglet Vérification des références de l'artefact MonGreffier ».
+**« En bref »** dans la conversation, 5 phrases au plus, hors la liste des divergences, vouvoiement : nombre de références par catégorie, nombre de divergences, de non vérifiés, de références de portée non contrôlée et de versions non applicables à la date utile, TOUTES les divergences en tête (une ligne chacune, sans plafond, aucune omise), puis : « Détail : onglet Vérification des références de l'artefact MonGreffier ».
 
 **« En détail »** dans l'artefact MonGreffier (mode d'emploi : `references/artefacts.md`, section « Modes à onglets libres ») :
 - onglet libre `id: verification`, titre « Vérification des références », sans `saisie` ;
 - un tableau par catégorie (Articles, Décisions, Sociétés), colonnes : Référence citée | Statut | Ce que dit la source | Commentaire ;
-- dans chaque tableau, les Divergent et Introuvable d'abord, puis les « Trouvé, portée non contrôlée », puis les Non vérifié (en précisant : source indisponible ou hors couverture), puis les Vérifié ;
+- dans chaque tableau, les Divergent et Introuvable d'abord, puis les « Trouvé, portée non contrôlée » et les « Trouvé, version non applicable à la date utile », puis les Non vérifié (en précisant : source indisponible ou hors couverture), puis les Vérifié ;
 - au moins deux sections `##` (la page les replie en accordéons) ;
 - si l'artefact ne peut pas être publié : mêmes tableaux dans la conversation, sous l'intertitre « En détail ».
 

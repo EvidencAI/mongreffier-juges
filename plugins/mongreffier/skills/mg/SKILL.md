@@ -31,13 +31,13 @@ Dans cet ordre. Si une mémoire de projet ou un autre outil demande à être ouv
 **0. Vérification du modèle.** Ce skill exige Opus 5.5. Le modèle se lit dans votre propre identité de modèle ; en cas de doute, demander au juge lequel est sélectionné. Sur un autre modèle, s'arrêter et répondre exactement : « Ce skill exige le modèle Claude Opus 5.5. Vous utilisez un autre modèle (Fable, Sonnet, Haiku ou autre) : choisissez Opus 5.5 dans le sélecteur de modèle de Claude, puis relancez votre demande. » Cette vérification précède toute saisie.
 
 **0 bis. Juge connecté.** MonGreffier est réservé aux juges inscrits. Appeler l'outil `qui_suis_je` du connecteur MonGreffier, par le fil principal (jamais par un sous-agent). Quatre cas :
-- (a) il rend le nom, la fonction et la juridiction du juge : poursuivre ;
+- (a) il rend le nom, la fonction et la juridiction du juge : poursuivre ; si `fonction` vaut `null`, poursuivre de même, sans rien demander au juge ;
 - (b) aucun outil du connecteur MonGreffier n'est présent dans la conversation (ni `qui_suis_je`, ni `verifier_article`, ni `etat_parties`) : s'arrêter et répondre exactement : « MonGreffier est réservé aux juges inscrits. Connectez-vous dans Claude : Vos plugins, MonGreffier, onglet Connecteurs, bouton Connecter, puis saisissez votre adresse mail et le code reçu. Si votre adresse n'est pas inscrite, aucun code ne vous parviendra : écrivez à contact@evidencai.com. » Ne rien analyser tant que le juge n'est pas connecté ;
 - (c) `qui_suis_je` absent mais d'autres outils MonGreffier présents (ancienne adresse, ou serveur pas encore à jour) : poursuivre, en disant une fois au juge que son identité n'a pas pu être lue.
 - (d) `qui_suis_je` présent mais l'appel échoue (erreur, délai, refus d'autorisation) : ne pas poursuivre en silence. Répondre en une ligne : « Le connecteur MonGreffier ne répond pas. Reconnectez-le dans Claude (Vos plugins, MonGreffier, onglet Connecteurs, Connecter), puis écrivez simplement : lance MG. » Ne rien analyser tant que l'appel n'a pas réussi.
 Si `qui_suis_je` répond que le juge est introuvable ou inactif : même réponse qu'en (b).
 
-**1. Fiche du dossier.** Si `qui_suis_je` a rendu une fiche, proposer sa juridiction et son nom comme juge rédacteur ; le juge confirme ou corrige (le juge connecté n'est pas forcément le président). La fiche recueille : juridiction, date d'audience, date du délibéré, président de la formation, assesseurs, greffier, et si l'audience a été tenue en formation collégiale ou par un seul juge (dans ce cas, lequel). Les noms complets (prénom et nom) sont exigés. Tout élément manquant (juridiction comprise) se redemande par l'écran de la fiche, jamais par une question dans la conversation tant que la fiche attend ; les demandes en conversation ne valent que pour le repli (a). La casse des noms est normalisée à la rédaction, et le juge en est informé. Ouvrir l'artefact MonGreffier (copie de `assets/artefact-mongreffier.html`, mode d'emploi dans `references/artefacts.md`), avec le champ Juridiction déjà rempli par celle de `qui_suis_je`, et faire saisir la fiche par son écran. Avant chaque publication, remplacer dans cette copie la balise `<title>MonGreffier</title>` par `<title>MG · RG <n° RG> · <intitulé court pseudonymisé></title>` (sans RG connu : `MG · <intitulé court>`) : ce titre nomme l'artefact dans claude.ai ; jamais de nom de partie non pseudonymisé. Au fond, le délibéré est collégial : président et exactement 2 assesseurs, toujours renseignés ; un seul juge peut tenir l'audience si les parties ne s'y opposent pas (art. 871 du CPC), et la fiche précise alors lequel (`audience`, `juge_audience`). Une fiche avec 1 assesseur est refusée et redemandée. En référé, poser `saisie.mode: "refere"` : la fiche n'a ni choix d'audience ni assesseurs, le président statue seul. Deux replis distincts : (a) si l'artefact ne peut pas être publié, la fiche se demande par un seul message dans la conversation ; (b) si le bouton d'envoi est masqué chez le juge, il utilise « Copier pour Claude » puis colle le texte dans la conversation.
+**1. Fiche du dossier.** Le juge connecté n'est pas forcément le président, et la fiche n'a aucun champ de juge rédacteur : ne pas en proposer. La fiche recueille : juridiction, date d'audience, date du délibéré, président de la formation, assesseurs, greffier, et si l'audience a été tenue en formation collégiale ou par un seul juge (dans ce cas, lequel). Les noms complets (prénom et nom) sont exigés. Tout élément manquant (juridiction comprise) se redemande par l'écran de la fiche, jamais par une question dans la conversation tant que la fiche attend ; les demandes en conversation ne valent que pour le repli (a). La casse des noms est normalisée à la rédaction, et le juge en est informé. Ouvrir l'artefact MonGreffier (copie de `assets/artefact-mongreffier.html`, mode d'emploi dans `references/artefacts.md`), avec le champ Juridiction déjà rempli par celle de `qui_suis_je`, et faire saisir la fiche par son écran. Avant chaque publication, remplacer dans cette copie la balise `<title>MonGreffier</title>` par `<title>MG · RG <n° RG> · <intitulé court pseudonymisé></title>` (sans RG connu : `MG · <intitulé court>`) : ce titre nomme l'artefact dans claude.ai ; jamais de nom de partie non pseudonymisé. Au fond, le délibéré est collégial : président et exactement 2 assesseurs, toujours renseignés ; un seul juge peut tenir l'audience si les parties ne s'y opposent pas (art. 871 du CPC), et la fiche précise alors lequel (`audience`, `juge_audience`). Une fiche avec 1 assesseur est refusée et redemandée. En référé, poser `saisie.mode: "refere"` : la fiche n'a ni choix d'audience ni assesseurs, le président statue seul. Deux replis distincts : (a) si l'artefact ne peut pas être publié, la fiche se demande par un seul message dans la conversation ; (b) si le bouton d'envoi est masqué chez le juge, il utilise « Copier pour Claude » puis colle le texte dans la conversation.
 
 **2. Avertissement.** Dire au juge : « Versez des conclusions pseudonymisées. À défaut, c'est sous votre responsabilité. »
 
@@ -66,7 +66,7 @@ Ne jamais abréger ni reformuler le nom d'une société : reprendre la dénomina
 
 ## Lectures incertaines `[?]`
 
-Dans les conclusions versées, `[?]` marque une lecture incertaine sur une page scannée. Le repère `<!-- page N lue par OCR -->` signale une page déchiffrée automatiquement ; `[?]` suit ou remplace le mot ou le caractère incertain. Une valeur marquée `[?]` n'est jamais écrite comme certaine, dans aucune phase. Dans un projet de jugement, l'écrire entre crochets, par exemple « [montant à vérifier sur l'original : 2 083,22 €] », sauf si le juge a tranché cette valeur dans ses réponses : sa réponse fait alors foi. Une page signalée blanche ou illisible est dite au juge ; son contenu n'est jamais supposé.
+Dans les conclusions versées, `[?]` marque une lecture incertaine sur une page scannée. Le repère `<!-- page N lue par OCR -->` signale une page déchiffrée automatiquement ; `[?]` suit ou remplace le mot ou le caractère incertain. Une valeur marquée `[?]` n'est jamais écrite comme certaine, dans aucune phase. Dans un projet de jugement, l'écrire entre crochets, par exemple « [montant à vérifier sur l'original : 2 083,22 €] » : ce passage est une réserve de fond, au même titre que `[à vérifier sur pièces : …]` (voir « Surlignage jaune »), sauf si le juge a tranché cette valeur dans ses réponses : sa réponse fait alors foi. Une page signalée blanche ou illisible est dite au juge ; son contenu n'est jamais supposé.
 
 ## Lecture à deux niveaux
 
@@ -100,6 +100,7 @@ Pour CHAQUE partie, appeler l'outil `etat_parties` du connecteur MonGreffier ave
 - « Procédure trouvée » : appliquer « Ce qu'il faut relever » ci-dessous.
 - « Aucune annonce de procédure collective au BODACC » : l'Étape 0 est faite pour cette partie.
 - « Non vérifié » (panne, délai, SIREN invalide) : ce n'est JAMAIS « aucune procédure ». Le dire au juge et passer au repli.
+- Partie étrangère sans SIREN : écrire « Non vérifié, registre étranger à consulter par le juge ». Ni recherche web par nom, ni demande au juge de le faire faire par MG.
 
 **Outil `etat_parties` absent alors que d'autres outils MonGreffier sont présents** (serveur pas encore à jour) : exécuter les requêtes de repli ci-dessous par le shell si l'environnement en offre un, et dire au juge que l'état des parties a été lu par le repli. Juge non connecté : voir l'étape 0 bis de l'ouverture, on ne va pas plus loin. **Ni connecteur ni shell** : écrire au juge « État des parties non vérifié : consultez vous-même le BODACC (bodacc.fr) pour chaque partie avant l'audience. » et ne jamais conclure à l'absence de procédure.
 
@@ -149,6 +150,8 @@ Les pièces du dossier restent chez le juge, en papier. Elles ne sont pas transm
 
 À chaque dossier, produire une **liste courte et ciblée** de vérifications sur pièces : pas un inventaire, seulement ce qui change la décision ou le dispositif. Trois à six points.
 
+**Fait non lu, hypothèse de calcul : réserve visible.** Tout fait que l'IA n'a pas lu dans les écritures (fait de procédure, date, renvoi, clause, contenu d'une pièce) et toute hypothèse de recalcul (un montant qui « tombe juste » sans que la pièce le dise) s'écrivent `[à vérifier sur pièces : …]` : jamais « il ressort de… », jamais comme un fait acquis, dans l'artefact, les motifs, le dispositif et les reformulations de la relecture. Une réponse « Pas pu vérifier » du juge laisse la réserve en place. Une réponse du juge ne vaut que pour ce qu'elle dit : elle ne lève pas la réserve sur ce qu'elle ne dit pas.
+
 Corollaire de l'article 472 CPC : quand le défendeur ne comparaît pas, le juge ne fait droit à la demande que dans la mesure où il l'estime bien fondée, donc **sur pièces**. C'est la règle par défaut. Seule exception, facultative et soumise au juge : l'alinéa 3 de l'article 472, pour une instance introduite depuis le 01/10/2026 avec un acte délivré à personne (aiguillage dans `references/mode-non-comparant.md`). Cette vérification est toujours renvoyée au juge, sur l'original papier, par la liste des vérifications. Si un chef de demande ne repose sur rien de vérifiable, le dire.
 
 ---
@@ -162,7 +165,7 @@ Corollaire de l'article 472 CPC : quand le défendeur ne comparaît pas, le juge
 | Somme des factures ou échéances | Additionner, comparer au total réclamé |
 | Décomposition du "principal" | Un principal bancaire inclut souvent des intérêts déjà échus, qui produiraient alors intérêts hors des conditions de l'art. 1343-2 C. civ. Séparer : principal, intérêts échus arrêtés à une date, intérêts à courir |
 | Point de départ des intérêts | Les décomptes font courir les intérêts majorés sur le capital dès la dernière échéance impayée, alors qu'il n'est exigible qu'à la **déchéance du terme** (date vérifiée sur pièces). Chaque frais accessoire (commission, frais, indemnité) doit trouver sa clause |
-| Montant qui ne se retrouve pas | Reconstituer au centime le calcul du demandeur par hypothèses successives (base, taux, point de départ) : celle qui tombe juste montre l'erreur (exemple : capital majoré depuis le 22/02 au lieu du 12/03, date de la déchéance) |
+| Montant qui ne se retrouve pas | Reconstituer au centime le calcul du demandeur par hypothèses successives (base, taux, point de départ) : celle qui tombe juste montre l'erreur (exemple : capital majoré depuis le 22/02 au lieu du 12/03, date de la déchéance). Essayer aussi les totaux réclamés par les mises en demeure et les décomptes (principal, intérêts et frais arrêtés à leur date) ; n'écrire « ne se retrouve par aucun calcul » qu'après les avoir essayés, sinon citer le plus proche et son écart. Une hypothèse qui tombe juste reste une hypothèse : `[à vérifier sur pièces : …]` |
 | Montant en lettres et en chiffres | Le montant en lettres du dispositif correspond à celui en chiffres et à celui des motifs |
 | Cohérence des unités | Nombre de prestations facturées, de commandes, de rapports : reconstituer depuis les montants et le prix unitaire, signaler tout écart |
 | Avoirs et acomptes | Vérifier l'imputation, demander la cause d'un avoir non expliqué |
@@ -196,7 +199,7 @@ Corollaire de l'article 472 CPC : quand le défendeur ne comparaît pas, le juge
 
 ### Phase 1 : CADRAGE (génération automatique, validation explicite)
 
-Appliquer la méthode de `references/analyse-critique.md` à chaque prétention (syllogisme réel, confrontation au droit positif, silences, écrans de fumée). Elle nourrit le détail ; seules 2 ou 3 alertes qui changent la décision remontent dans le « En bref ».
+Appliquer la méthode de `references/analyse-critique.md` à chaque prétention (syllogisme réel, confrontation au droit positif, silences, écrans de fumée). Elle nourrit le détail ; seules 2 ou 3 alertes qui changent la décision remontent dans le « En bref », lequel liste en plus TOUS les Divergent des références vérifiées, quel qu'en soit le nombre (ce plafond ne vaut pas pour cette liste).
 
 Produire une Fiche de Cadrage incluant :
 - Résultat de l'**Étape 0** (état des parties)
@@ -227,6 +230,7 @@ Produire une Fiche de Cadrage incluant :
 | Forclusion vices cachés | Date découverte vs action | 2 ans (art. 1648 C. civ.) |
 | Forclusion nullité AG | Date AG vs assignation | 3 mois (art. L.235-9 C. com.) |
 | Chose jugée | Mêmes parties + même objet + décision antérieure | Triple identité |
+| Opposition à ordonnance d'injonction de payer | Date de signification de l'ordonnance, nature de la signification, date de l'opposition | 1 mois (art. 1416 CPC) ; règle complète dans `references/opposition-injonction.md`, qui prime |
 | Défaut qualité | Assignation par ou contre une entité différente du contrat | Chaîne contractuelle |
 | Défaut intérêt | Préjudice non personnel | Art. 31 CPC |
 | Clause de conciliation préalable | Clause MARC au contrat | Irrecevabilité temporaire |
@@ -301,27 +305,28 @@ Il donne accès à Légifrance, à Judilibre (Cour de cassation) et au BODACC pa
 
 | Statut au juge | Sens | Conduite |
 |---|---|---|
-| Vérifié | Trouvé en source primaire, texte rendu conforme à ce que cite la partie ; pour une décision, ce que le document lui fait dire ne dépasse pas ce que rend `solution` | Utilisable |
-| Divergent | Trouvé, mais numéro, date, contenu ou portée différents de la citation. `date_concordante: false` (ou ligne « Attention : date indiquée … ») = Divergent, jamais Vérifié. Même règle si le texte à la date utile ne correspond pas au numéro d'article cité | Signaler l'écart, citer la version vérifiée |
+| Vérifié | Trouvé en source primaire, puis comparé : texte rendu conforme à ce que cite la partie ; pour une décision, ce que le document lui fait dire ne dépasse pas ce que rend `solution`. Jamais « Vérifié » sans cette comparaison | Utilisable |
+| Divergent | Trouvé, mais numéro, date, contenu ou portée différents de la citation. `date_concordante: false` (ou ligne « Attention : date indiquée … ») = Divergent, jamais Vérifié. Même règle si le texte à la date utile ne correspond pas au numéro d'article cité, et quand le texte rendu contredit un élément de la thèse de la partie (même si l'article existe et que le reste concorde) | Signaler l'écart, citer la version vérifiée |
 | Introuvable | Aucune trace dans la source primaire | Ne pas citer, le dire au juge |
 | Trouvé, portée non contrôlée | Décision trouvée (date, solution rendues) mais le document lui fait dire un principe de fond que `solution` ne permet pas de contrôler. Si le connecteur rend un extrait de motivation (`extrait_motivation`), le comparer | Le dire : l'existence est établie, la portée citée ne l'est pas |
+| Trouvé, version non applicable à la date utile | Article rendu, mais `version_a_date_utile` vaut « aucune » (la version rendue est la version courante) ou l'article est abrogé à la date utile | Jamais « Vérifié » ; consulter `references/renumerotations.md`, puis le dire au juge |
 | Non vérifié (hors couverture) | Jurisprudence non publiée au bulletin, arrêt d'appel ou de première instance, texte de moins de 48 h, droit européen ou international | Le dire expressément, jamais présenté comme vérifié |
 
 Quand une référence décisive pour un arbitrage reste « Non vérifié », ne pas s'arrêter là : chercher sur le web (sources secondaires : revues, éditeurs juridiques), puis revérifier par le connecteur tout arrêt ou texte ainsi trouvé. Le dire au juge, et ne mettre aucun nom de partie dans la requête web. Une source secondaire oriente, elle ne se cite jamais seule dans un jugement. Ce recours s'ajoute au connecteur ; il ne remplace pas le repli « connecteur absent » ci-dessous et n'autorise aucune des sources à ne pas utiliser.
 
-Une référence « non vérifié » n'est pas une référence « introuvable » : ne pas les confondre. Un « Non vérifié » du serveur (source indisponible) n'est pas non plus le « Non vérifié » hors couverture : dire au juge lequel des deux s'applique. « Trouvé, portée non contrôlée » est un statut du skill, distinct du statut serveur « Trouvé » : la décision existe, mais ce que le document lui fait dire n'a pas pu être contrôlé.
+Une référence « non vérifié » n'est pas une référence « introuvable » : ne pas les confondre. Un « Non vérifié » du serveur (source indisponible) n'est pas non plus le « Non vérifié » hors couverture : dire au juge lequel des deux s'applique. « Trouvé, portée non contrôlée » est un statut du skill, distinct du statut serveur « Trouvé » : la décision existe, mais ce que le document lui fait dire n'a pas pu être contrôlé. Un arrêt rendu sans comparaison avec ce que la partie en tire reste à ce statut. Il n'y a pas d'autre statut que ceux du tableau (« Vérifié (existence) », « Vérifié, portée à nuancer »… sont exclus). Un texte ou un arrêt trouvé d'office et non cité par une partie s'écrit « Trouvé », avec « non cité par les parties » dans la colonne Conduite.
 
 **Date utile.** Toujours passer `date_utile` à `verifier_article`. Elle se choisit ainsi :
 - rupture brutale d'une relation commerciale établie (L.442-6, I, 5° ancien ; L.442-1, II actuel), responsabilité délictuelle : date de la rupture, jamais la date du contrat ;
 - autre responsabilité délictuelle : date du fait dommageable ;
 - articles du Code civil issus de l'ordonnance 2016-131 (droit des contrats et des obligations contractuelles) pour un contrat conclu avant le 01/10/2016 : date du contrat (art. 9 de l'ordonnance 2016-131). Cette règle ne vaut que pour eux ;
-- texte de procédure (Code de procédure civile, décret de procédure) : date d'introduction de l'instance, c'est-à-dire de délivrance de l'assignation (voir `references/mode-non-comparant.md`), puis règle « Texte de procédure modifié » ci-dessous ;
+- texte de procédure (Code de procédure civile, décret de procédure) : date d'introduction de l'instance, c'est-à-dire de délivrance de l'assignation (voir `references/mode-non-comparant.md`), puis règle « Texte de procédure modifié » ci-dessous ; sur opposition à une ordonnance d'injonction de payer, la date de la requête (voir `references/opposition-injonction.md`, qui prime sur cette ligne pour ce cas) ;
 - sinon : date des faits ;
 - à défaut : date de l'assignation, et le dire au juge.
 
-**Texte de procédure modifié.** Si l'article rendu a une date de fin, ou une version dont la date de début est postérieure à la date utile (vérifier aussi à la date du jour), ne pas choisir seul entre l'ancienne et la nouvelle version : vérifier par `verifier_article` l'article d'entrée en vigueur du texte modificatif (`code` : « décret n° … », `numero` : l'article d'entrée en vigueur, `date_utile` : date de la décision) et appliquer ses dispositions transitoires. Selon le décret, la version applicable peut dépendre de la date d'introduction de l'instance, de celle de la décision, ou valoir pour les instances en cours. Exemple : l'alinéa 3 de l'article 472 (décret n° 2026-683, article 21, 2°, b) ne vaut que pour les instances introduites depuis le 01/10/2026. Faute d'avoir lu ce texte transitoire : Non vérifié, et le dire au juge.
+**Texte de procédure modifié.** Si l'article rendu a une date de fin, ou une version dont la date de début est postérieure à la date utile (vérifier aussi à la date du jour), ne pas choisir seul entre l'ancienne et la nouvelle version : vérifier par `verifier_article` l'article d'entrée en vigueur du texte modificatif (`code` : « décret n° … », `numero` : l'article d'entrée en vigueur, `date_utile` : date de la décision) et appliquer ses dispositions transitoires. Selon le décret, la version applicable peut dépendre de la date d'introduction de l'instance, de celle de la décision, ou valoir pour les instances en cours. Exemple : l'alinéa 3 de l'article 472 (décret n° 2026-683, article 21, 2°, b) ne vaut que pour les instances introduites depuis le 01/10/2026. Faute d'avoir lu ce texte transitoire : Non vérifié, et le dire au juge. Si en revanche `version_a_date_utile` vaut « aucune » ou si l'article est abrogé à la date utile, le statut « Trouvé, version non applicable à la date utile » prime (voir ci-dessus) : « Non vérifié » ne vaut que pour une version existante dont le texte transitoire n'a pas été lu.
 
-Si le champ `version_a_date_utile` vaut « aucune » (le connecteur rend alors la version courante), ou si l'article rendu est abrogé : consulter `references/renumerotations.md` avant de conclure, puis signaler au juge que le texte rendu n'est peut-être pas celui applicable à la date utile.
+Si le champ `version_a_date_utile` vaut « aucune » (le connecteur rend alors la version courante), ou si l'article rendu est abrogé : consulter `references/renumerotations.md` (Code civil, Code de commerce, Code de la consommation) avant de conclure, puis signaler au juge que le texte rendu n'est peut-être pas celui applicable à la date utile. Le statut est alors « Trouvé, version non applicable à la date utile », jamais « Vérifié » : y compris pour l'article d'entrée en vigueur d'un texte modificatif, et quand le connecteur rend un article sans rapport avec la thèse (numéro réutilisé, voir la table).
 
 **Connecteur absent ou en panne** : deux cas distincts. (a) Outils du connecteur absents de la conversation (déconnexion en cours de dossier) : écrire au juge « Le connecteur MonGreffier n'est plus connecté. Dans Claude : Vos plugins, MonGreffier, onglet Connecteurs, bouton Connecter, puis saisissez votre adresse mail et le code reçu. Je reprends dès que c'est fait. », et s'arrêter jusqu'à la reconnexion (pas de bascule sur les sources ouvertes). (b) Outils présents mais en erreur (panne) : écrire au juge « Vérification des sources indisponible : je bascule sur les sources ouvertes, à contrôler par vous. », puis passer au point 2 sans attendre. Le juge peut aussi vérifier que le connecteur du plugin MonGreffier est activé dans ses connecteurs.
 
@@ -358,7 +363,7 @@ Si le champ `version_a_date_utile` vaut « aucune » (le connecteur rend alors l
 
 Cette liste reprend uniquement les pièces citées dans les conclusions. Elle ne vaut pas vérification : voir **Accès aux pièces**.
 
-Les vérifications sur pièces de la Fiche de cadrage (3 à 6 points, voir Accès aux pièces) vont dans la `saisie` du cadrage sous `verifications` (V1, V2… ; voir `references/artefacts.md`) : le juge doit répondre à chacune, soit en notant ce qu'il constate sur la pièce, soit en cochant « Pas pu vérifier » s'il n'a pas le dossier sous les yeux. Donner à chacune une `importance` (`capital`, `important`, `utile`) et mettre les `capital` en premier. Une réponse du juge fait foi ; un point « Pas pu vérifier » (`pas_verifie`) garde la mention `[à vérifier sur pièces : …]`. Le juge répond « OK » ou corrige les éléments avant la Phase 2, par l'écran de validation du cadrage de l'artefact ; en repli, par un message dans la conversation. Ne pas republier l'artefact pendant qu'une saisie est attendue, sauf demande du juge.
+Les vérifications sur pièces de la Fiche de cadrage (3 à 6 points, voir Accès aux pièces) vont dans la `saisie` du cadrage sous `verifications` (V1, V2… ; voir `references/artefacts.md`) : le juge doit répondre à chacune, soit en notant ce qu'il constate sur la pièce, soit en cochant « Pas pu vérifier » s'il n'a pas le dossier sous les yeux. Donner à chacune une `importance` (`capital`, `important`, `utile`) et mettre les `capital` en premier. Une réponse du juge fait foi ; un point « Pas pu vérifier » (`pas_verifie`) garde la mention `[à vérifier sur pièces : …]`, et une réponse ne vaut que pour ce qu'elle dit. La réponse à une vérification `capital` ou `important` est un constat : les points de décision et les motifs la reprennent au présent, comme fait établi (« Vous avez constaté que… »), jamais rétrogradée en simple thèse d'une partie (« X fait valoir que… »). Le juge répond « OK » ou corrige les éléments avant la Phase 2, par l'écran de validation du cadrage de l'artefact ; en repli, par un message dans la conversation. Ne pas republier l'artefact pendant qu'une saisie est attendue, sauf demande du juge.
 
 Si le défendeur est NON COMPARANT : basculer en mode simplifié, voir `references/mode-non-comparant.md`.
 
@@ -371,12 +376,12 @@ Reprendre la méthode de `references/analyse-critique.md` pour chaque point. Seu
 **Légende des indicateurs** (fiabilité de l'analyse IA, pas certitude juridique) :
 
 ```
-🟢 Jurisprudence constante identifiée, vérification recommandée
+🟢 Jurisprudence constante identifiée par le connecteur, vérification recommandée
 🟠 Solutions divergentes ou cas atypique, analyse juge requise
 🔴 Appréciation souveraine, l'IA s'abstient de recommander
 ```
 
-⚠️ Un indicateur 🟢 n'exonère jamais le juge de son analyse personnelle.
+⚠️ Un indicateur 🟢 n'exonère jamais le juge de son analyse personnelle. Il exige une décision identifiée par le connecteur (`rechercher` ou `verifier_jurisprudence`) ; sans décision ainsi identifiée, le point est 🟠 au plus.
 
 Pour chaque question nécessitant la position du juge :
 
@@ -404,13 +409,15 @@ Dans l'artefact, ce tableau est généré par la page, en tête de l'onglet `dec
 
 **Points dépendants** (la proposition de P3 suit la réponse à P2) : ne pas les proposer ensemble. Publier le point dépendant après réception de l'envoi du premier lot, à la suite (ids suivants), la `saisie` de l'onglet conservée, et le dire en une ligne.
 
+**Fin de non-recevoir d'ordre public et vérification capitale « Pas pu vérifier ».** Quand la vérification `capital` dont dépend une fin de non-recevoir d'ordre public (délai d'opposition, prescription…) est restée « Pas pu vérifier », ne pas poser « recevable » comme proposition par défaut ni comme acquis ; le juge qui a répondu à la vérification peut le choisir. La proposition par défaut du point est la réouverture des débats (`references/reouverture-debats.md`). La rédaction sous réserve (`[à vérifier sur pièces : …]`) n'est proposée que si le juge refuse la réouverture.
+
 ---
 
-#### Règle spéciale QUANTUM (dommages-intérêts, préjudice, article 700)
+#### Règle spéciale QUANTUM (dommages-intérêts, préjudice, article 700, astreinte, clause pénale à réduire)
 
-⚠️ **Tout point portant sur un quantum est 🔴, systématiquement.**
+⚠️ **Tout point portant sur un quantum est 🔴, systématiquement : dommages-intérêts, préjudice, article 700, astreinte, clause pénale à réduire.** Le principal contractuel n'entre pas dans cette règle : chiffré et justifié par les écritures, il est 🟠 ; chiffré mais non justifié par les écritures, il est 🟠 avec l'option « écarté faute de justification » ; les intérêts contractuels justifiés par les écritures sont 🟠.
 
-L'IA ne propose pas de montant, mais une méthode d'évaluation, les éléments chiffrés du dossier, et des repères d'échelle tirés des dossiers antérieurs.
+L'IA ne propose pas de montant, mais une méthode d'évaluation, les éléments chiffrés du dossier, et des repères d'échelle tirés des dossiers antérieurs. Tout point 🔴 de quantum porte systématiquement l'option D « Autre montant ». Pour une astreinte, l'IA ne propose ni durée ni montant hors de ce qui est demandé.
 
 ```
 POINT [N] - Quantum du préjudice
@@ -480,7 +487,7 @@ Le projet est rédigé dans l'artefact (onglet `redaction`, en lecture seule, sa
 6. MOTIFS, **ordre obligatoire** : compétence (si contestée), fins de non-recevoir (si soulevées ou détectées), fond (par chef de demande)
 7. PAR CES MOTIFS (dispositif)
 
-Ne pas utiliser "Exposé du litige". Détail dans `references/structure-jugement.md`.
+Ne pas utiliser "Exposé du litige". Détail dans `references/structure-jugement.md`. Jugement sur opposition à ordonnance d'injonction de payer : `references/opposition-injonction.md` prime sur cette liste pour la structure (pas d'assignation).
 
 ---
 
@@ -498,9 +505,10 @@ Sur [intitulé du chef] :
 
 **Syllogisme sans étiquettes.** Le syllogisme reste (règle, faits, conclusion) mais aucune de ses parties n'est étiquetée ni mise en intertitre.
 - **Majeure** : elle ouvre directement par la règle (« Aux termes de l'article 1103 du code civil, les contrats légalement formés tiennent lieu de loi à ceux qui les ont faits. » ; « Les conventions légalement formées… »). « En droit, » n'ouvre jamais le paragraphe.
-- **Mineure** : entrées variées : « Or, », « En l'occurrence, », « Il ressort de la pièce n° 3 que… », « Il est constant que… ». « En l'espèce, » est permis mais jamais systématique.
+- **Mineure** : entrées variées : « Or, », « En l'occurrence, », « Il ressort de la pièce n° 3 que… », « Il est constant que… ». « En l'espèce, » est permis mais jamais systématique. « Il ressort de… » n'introduit que ce qui est lu dans les écritures ou confirmé par le juge ; un fait non lu (fait de procédure repris d'une seule partie, date, hypothèse de calcul) porte `[à vérifier sur pièces : …]`.
 - **Conclusion** : une phrase ouverte par un mot de liaison varié : « Dès lors, », « Il s'ensuit que », « En conséquence, », « Le tribunal en déduit que ». Pas d'intertitre « Le tribunal retient : ». Elle reste le dernier paragraphe du motif.
 - Jamais deux motifs consécutifs ouverts par la même entrée.
+- **Exception d'inexécution** : la motivation distingue la gravité du manquement et la proportion entre la somme retenue et ce qui reste inexécuté (valeur de l'un, montant de l'autre).
 
 ---
 
@@ -614,6 +622,7 @@ Le juge coche les recommandations à intégrer, les annote, écrit ses correctio
 - Le contrôle arithmétique est rejoué sur la version définitive
 - La FNR est rejouée sur la version définitive, traitée en premier si applicable
 - Les corrections du juge sur le projet sont prises en compte
+- Motifs, visa et dispositif disent la même chose : une citation, un montant ou une qualification changés à un endroit le sont à chaque occurrence ; toute incohérence née d'un choix du juge est dite
 ```
 
 ⚠️ Si un élément manque ou contredit : alerter avant de produire le Word.
@@ -622,7 +631,7 @@ Le juge corrige ensuite directement dans le Word, avec le suivi des modification
 
 #### PRODUCTION DU .DOCX
 
-**Méthode** : en mode RÉDACTION, le Word se produit une fois la version définitive rédigée (onglet `definitif`) ; en mode RÉFÉRÉ, à l'issue de sa robustesse (voir Workflow RÉFÉRÉ) ; il se fabrique dans l'espace Claude du juge à partir de `assets/template-jugement.docx`, seule source : il fournit les marges, l'en-tête de page et la charte. Copier le template, vider les paragraphes du corps, réécrire dedans, enregistrer sous un nouveau nom. Le template est neutre : remplacer « [JURIDICTION DE LA FICHE DU DOSSIER] » (titre) et « [juridiction de la fiche du dossier] » (formule du dispositif) par la juridiction de la fiche, sans doubler l'article (« Le tribunal de commerce de Vienne », jamais « Le Le … »), « [DEMANDERESSE] » et « [DÉFENDERESSE] » par la désignation exacte des parties, et renseigner la date d'audience et la date du délibéré (prononcé) depuis la fiche. Aucun repère entre crochets ne doit subsister dans le Word remis au juge.
+**Méthode** : en mode RÉDACTION, le Word se produit une fois la version définitive rédigée (onglet `definitif`) ; en mode RÉFÉRÉ, à l'issue de sa robustesse (voir Workflow RÉFÉRÉ) ; il se fabrique dans l'espace Claude du juge à partir de `assets/template-jugement.docx`, seule source : il fournit les marges, l'en-tête de page et la charte. Copier le template, vider les paragraphes du corps, réécrire dedans, enregistrer sous un nouveau nom. Le template est neutre : remplacer « [JURIDICTION DE LA FICHE DU DOSSIER] » (titre) et « [juridiction de la fiche du dossier] » (formule du dispositif) par la juridiction de la fiche, sans doubler l'article (« Le tribunal de commerce de Vienne », jamais « Le Le … »), « [DEMANDERESSE] » et « [DÉFENDERESSE] » par la désignation exacte des parties (corps et en-tête de page), « [RG] » (en-tête de page) par le numéro de rôle, « [contradictoire / réputé contradictoire / par défaut] » et « [premier / dernier] » (formule « statuant par jugement … ressort ») selon le dossier (voir le tableau « Qualification » du défendeur non comparant, et la qualification de la Phase 1), et renseigner la date d'audience et la date du délibéré (prononcé) depuis la fiche. Aucun repère du modèle ne doit subsister ; les `[à vérifier sur pièces : …]` restent, surlignés.
 
 Nommage : `Projet Jugement_<RG>_<DEMANDEUR>_c_<DEFENDEUR>.docx`
 
@@ -642,7 +651,7 @@ Nommage : `Projet Jugement_<RG>_<DEMANDEUR>_c_<DEFENDEUR>.docx`
 
 Marges : 1,905 cm à gauche et à droite, 2,54 cm en haut et en bas. En-tête de page : `RG n° <RG> - <DEMANDEUR> c/ <DÉFENDEUR>`.
 
-**Surlignage jaune** : le Word est produit à partir de la version définitive. Surligner les passages marqués `[à vérifier sur pièces : …]` dans l'artefact et ceux qui restent à compléter (renvois). Trois à six passages, pas plus, et les récapituler dans la réponse au juge.
+**Surlignage jaune** : le Word est produit à partir de la version définitive. Surligner deux sortes de passages : les **réserves de fond** (passages marqués `[à vérifier sur pièces : …]` dans l'artefact) et les **passages à compléter** (renvois, dates, nom du rédacteur absent) ; la composition et le greffier de la fiche ne sont pas surlignés (voir « Usage de la fiche »). Le plafond « trois à six passages, pas plus » ne compte que les passages à compléter ; il ne s'applique jamais aux réserves de fond : toutes restent dans le Word, surlignées, même au-delà de six, et aucune n'est retirée pour tenir le plafond. Récapituler les deux dans la réponse au juge ; quand il y a des réserves de fond, la réponse dit « Word à compléter : N réserves » et en donne la liste.
 
 ⚠️ **Suivi des modifications : ACTIVER SYSTÉMATIQUEMENT.** Ajouter `<w:trackRevisions/>` dans `word/settings.xml` du .docx produit, afin que les corrections du juge soient identifiables lors d'une reprise ultérieure du dossier. Sans cela, l'IA qui relit le fichier ne distingue pas ses propres phrases de celles que le juge a réécrites, et une reprise "fidèle" ne l'est qu'en apparence.
 
@@ -762,7 +771,7 @@ Voir `references/relecture.md` pour le workflow complet. Les corrections propos�
 
 **Posture** : accompagnement collégial, bienveillant mais sobre. En mentorat d'un nouveau juge, fiche courte, et reconnaître ce qui est une première pour tout le monde.
 
-**Ouverture** : la fiche du dossier s'applique (OUVERTURE DU DOSSIER). Après son retour et avant toute rédaction de la fiche de relecture, poser en conversation une seule question : « Qui a rédigé le projet ? ». La réponse fixe le destinataire et le ton de la fiche Word, au vouvoiement ; sans réponse, le destinataire est le juge connecté (fiche du dossier), et le dire. Les dernières écritures relèvent de la fiche du dossier (OUVERTURE DU DOSSIER, point 3), jamais d'une seconde question.
+**Ouverture** : la fiche du dossier s'applique (OUVERTURE DU DOSSIER). Après son retour et avant toute rédaction de la fiche de relecture, poser en conversation une seule question : « Qui a rédigé le projet ? ». La réponse fixe le destinataire et le ton de la fiche Word, au vouvoiement ; sans réponse, le destinataire est le juge connecté (fiche du dossier), et le dire ; réponse sans nom (« un autre juge »), écrire « Pour le juge rédacteur du projet » et le dire, sans rien inventer. Les dernières écritures relèvent de la fiche du dossier (OUVERTURE DU DOSSIER, point 3), jamais d'une seconde question.
 
 **Points de contrôle prioritaires :**
 - ⚠️ **Étape 0 refaite** : une procédure collective ouverte depuis la rédaction du projet change tout
@@ -834,6 +843,7 @@ Quand le juge veut donner un avis sur l'outil (un bug, une idée, autre), y comp
 | `references/tc-vienne-fondamentaux-2026.md` | Fondamentaux 2026 du TC de Vienne, diapositives (méthode ; les règles du skill priment) | À la demande, par partie du jugement |
 | `assets/template-jugement.docx` | Template Word | Production du Word après la rédaction définitive, seule source du Word |
 | `references/artefacts.md` | Mode d'emploi de l'artefact MonGreffier : copie du modèle, bloc de données, publication, lecture des envois, replis | Dès l'ouverture du dossier, puis à chaque étape |
+| `references/opposition-injonction.md` | Opposition à ordonnance d'injonction de payer : détection, rôles, délai, date utile, art. 1417 et 1420, dépens, structure | Dès que le dossier est une opposition à injonction de payer |
 | `references/reouverture-debats.md` | Format court du jugement avant dire droit ordonnant la réouverture des débats | Phase 2, quand le juge retient la réouverture |
 | `references/conversion.md` | Pièces versées : conclusions seulement, tri, annexes écartées, lecture des scans | Ouverture du dossier, puis à chaque pièce versée |
 | `assets/artefact-mongreffier.html` | Modèle de l'artefact (« En détail » et écrans de saisie) ; seul le bloc `mg-donnees` est modifié | Ouverture du dossier, copié une seule fois |
