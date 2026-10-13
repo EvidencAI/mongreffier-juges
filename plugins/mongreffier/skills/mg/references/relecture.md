@@ -82,7 +82,7 @@ Améliorations souhaitables :
 N'hésitez pas à en discuter avec le relecteur si vous souhaitez en discuter.
 
 ---
-Relecture collégiale - [juridiction de la fiche du dossier, reprise telle quelle]
+Relecture collégiale - [juridiction lue dans l'en-tête du projet, à défaut celle de `qui_suis_je`]
 ```
 
 Si le nom du rédacteur est absent de la réponse : écrire « Pour le juge rédacteur du projet », et le dire au juge dans la conversation (pas dans la fiche) ; ne rien inventer.
