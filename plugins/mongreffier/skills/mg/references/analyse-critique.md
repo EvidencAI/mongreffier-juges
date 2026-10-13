@@ -51,8 +51,8 @@ Vous n'êtes pas l'avocat de la partie qui invoque ces écrans. Vous êtes le co
 Trois alertes, qui deviennent chacune un point de décision ou une vérification (jamais un simple commentaire) :
 
 - **Fait ou pièce postérieur aux dernières écritures adverses** : la partie adverse n'a pas pu y répondre. Point de décision : réouverture des débats (art. 16 CPC), avec `references/reouverture-debats.md`. Le jugement ne s'appuie pas dessus sans ce point.
-- **Pièce citée absente du bordereau** (ou numérotation du corps différente de celle du bordereau) : vérification `capital` « pièce citée absente du bordereau ». Le projet écrit « (numérotation du bordereau) » quand il la cite.
-- **Pièce qui porte le raisonnement central** d'un point : elle a sa propre vérification, placée avant les vérifications `utile`. Un point dont le raisonnement repose sur une pièce qu'aucune vérification ne couvre n'est pas prêt.
+- **Pièce citée absente du bordereau** (ou numérotation du corps différente de celle du bordereau) : vérification `important` « pièce citée absente du bordereau » (une numérotation décalée ne bloque pas le dossier). Le projet écrit « (numérotation du bordereau) » quand il la cite.
+- **Pièce qui porte le raisonnement central** d'un point : elle a sa propre vérification, placée avant les vérifications `utile`. Une pièce centrale qui n'est pas un point `capital` reçoit une vérification `important` placée avant les `utile`. Un point dont le raisonnement repose sur une pièce qu'aucune vérification ne couvre n'est pas prêt.
 
 ## 6. Pas de biais de complaisance
 

@@ -38,7 +38,7 @@ L'engagement est disproportionné si, au moment de sa conclusion, il excède man
 - Charges et endettement existant
 - Montant cautionné
 
-**Sanction** : Le créancier ne peut se prévaloir du cautionnement (art. 2300 al. 2 C. civ.)
+**Sanction** : Le créancier ne peut se prévaloir du cautionnement (art. 2300 C. civ., à lire par `verifier_article`)
 
 ---
 
@@ -100,9 +100,7 @@ Critère : faute intentionnelle d'une particulière gravité incompatible avec l
 
 ### Texte applicable
 
-**Art. 1231-5 C. civ.** (ancien art. 1152)
-
-« Le juge peut, même d'office, modérer ou augmenter la pénalité ainsi convenue si elle est manifestement excessive ou dérisoire. »
+Art. 1231-5 C. civ. (à lire par `verifier_article`)
 
 ### Pouvoir modérateur du juge
 
@@ -118,8 +116,7 @@ Critère : faute intentionnelle d'une particulière gravité incompatible avec l
 ```
 Sur la clause pénale :
 
-Aux termes de l'article 1231-5 du Code civil, le juge peut, même d'office, 
-modérer la pénalité si elle est manifestement excessive.
+Aux termes de l'article 1231-5 du Code civil, [texte lu par `verifier_article`].
 
 Il ressort de la pièce n° 1 que la clause pénale prévue à l'article X des conditions générales stipule une 
 indemnité de [montant]. Le préjudice effectivement subi par le créancier 
@@ -152,7 +149,7 @@ Voir `vocabulaire-juge.md` section "Procédure collective".
 Conditions :
 - Créancier n'a pas été avisé personnellement de l'ouverture
 - Créance née régulièrement
-- Demande dans les 6 mois du jugement d'ouverture
+- Délai de la demande : art. L.622-26 C. com., à lire par `verifier_article`
 
 ---
 
@@ -170,9 +167,9 @@ Conditions :
 
 | Type | Taux |
 |------|------|
-| Intérêt légal | Taux BCE + 10 points (entre commerçants) |
+| Intérêt légal | Taux de l'art. L.441-10 C. com. entre commerçants, à lire par `verifier_article` |
 | Intérêt conventionnel | Selon contrat (vérifier l'usure) |
-| Pénalités de retard B2B | Taux BCE + 10 points minimum (art. L. 441-10 C. com.) |
+| Pénalités de retard B2B | Taux de l'art. L.441-10 C. com., à lire par `verifier_article` |
 
 ### Anatocisme (capitalisation)
 

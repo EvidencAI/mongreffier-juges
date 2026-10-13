@@ -101,7 +101,7 @@ Avant de générer le .docx, **vérifier** :
 ✅ PCM : verbes MAJUSCULES
 ✅ PCM : points-virgules entre chefs, point final au dernier
 ✅ Pas de mention exécution provisoire (sauf écartement demandé)
-✅ Tous les chefs de demande traités (pas d'omission de statuer)
+✅ Tous les chefs de demande traités (pas d'omission de statuer) : toute demande non accueillie en entier a son « déboute du surplus » ou son rejet
 ✅ Cohérence montants entre motifs et dispositif
 ```
 
@@ -127,10 +127,6 @@ Avant de générer le .docx, **vérifier** :
 
 ## Qualification de la décision (art. 473 CPC)
 
-| Type | Conditions |
-|------|------------|
-| CONTRADICTOIRE | Toutes parties ont comparu et conclu |
-| RÉPUTÉ CONTRADICTOIRE | Défendeur non comparant ET : cité à personne OU jugement susceptible d'appel |
-| PAR DÉFAUT | Défendeur non comparant ET : non cité à personne ET jugement en dernier ressort |
+Qualification (art. 473 et 474 CPC) : lire les articles par `verifier_article` et en tirer la qualification ; le motif cite le texte lu.
 
-**Ressort** : Premier ressort si enjeu > 5.000 € / Dernier ressort si ≤ 5.000 €
+**Ressort** : seuil de l'art. R.721-6 C. com., lu par `verifier_article`, appliqué au total des demandes.

@@ -8,18 +8,16 @@ Le dossier est une opposition à ordonnance d'injonction de payer quand les écr
 
 ## 2. Rôles des parties
 
-Avant toute analyse, relever et écrire au juge, pour chaque partie : son rôle dans la procédure d'injonction (qui a obtenu l'ordonnance, qui est le débiteur) et son rôle dans l'opposition (qui forme opposition). Les qualités « demandeur » et « défendeur » des écritures et des intitulés peuvent être croisées : ne pas les reprendre sans cette vérification. Les rôles se lisent dans les écritures ; un rôle non lu est une réserve (`[à vérifier sur pièces : …]`).
+Avant toute analyse, relever et écrire au juge, pour chaque partie : son rôle dans la procédure d'injonction (qui a obtenu l'ordonnance, qui est le débiteur) et son rôle dans l'opposition (qui forme opposition). Les qualités « demandeur » et « défendeur » des écritures et des intitulés peuvent être croisées : ne pas les reprendre sans cette vérification. Les rôles se lisent dans les écritures ; un rôle non lu est une réserve (`[à vérifier sur pièces : …]`). Les parties sont nommées dans cet ordre : l'opposant (le débiteur qui forme opposition), puis le créancier (qui a obtenu l'ordonnance), dans l'en-tête, les prétentions et les motifs.
 
 ## 3. Délai d'opposition (art. 1416 du CPC)
 
-Texte de l'article 1416 (LEGIARTI000006412571), lu au connecteur le 12/10/2026 à la date utile du 25/03/2025 :
-
-> « L'opposition est formée dans le mois qui suit la signification de l'ordonnance. Toutefois, si la signification n'a pas été faite à personne, l'opposition est recevable jusqu'à l'expiration du délai d'un mois suivant le premier acte signifié à personne ou, à défaut, suivant la première mesure d'exécution ayant pour effet de rendre indisponibles en tout ou partie les biens du débiteur. »
+Article 1416 du CPC (LEGIARTI000006412571) : le lire par `verifier_article` à la date de la requête avant d'en décrire le contenu.
 
 - Relever dans les écritures : la date de signification de l'ordonnance, si elle a été faite à personne, la date de l'opposition. Un élément non lu est une réserve, jamais un fait.
-- Une autre date utile que celle du 25/03/2025 impose de relire l'article par `verifier_article`.
+- Un article lu à une date autre que la date de la requête impose de le relire par `verifier_article` à la date de la requête.
 - Article 125 du CPC : le lire par `verifier_article` à la date utile avant d'appliquer ce que SKILL.md dit des fins de non-recevoir d'ordre public.
-- Vérification capitale « Pas pu vérifier » sur le délai d'opposition : la règle « Fin de non-recevoir d'ordre public et vérification capitale » de SKILL.md (Phase 2) s'applique. Ne pas poser « recevable » comme proposition par défaut ni comme acquis ; le juge qui a répondu à la vérification peut le choisir.
+- Vérification `capital` sur le délai d'opposition restée sans réponse complète (branche manquante, ou cochée « Pas pu vérifier ») : en rédaction, la règle générale de SKILL.md sur les vérifications capitales manquantes s'applique (le délai d'opposition en est un exemple) : MG ne pose ni « recevable » ni « irrecevable », ne complète jamais une branche d'après les écritures, ne rédige rien, le dossier reste au cadrage jusqu'à la lecture de l'original par le juge.
 
 ## 4. Date utile
 
@@ -27,13 +25,9 @@ Pour les textes de procédure de ce dossier : la date de la requête en injoncti
 
 ## 5. Office du tribunal et effet du jugement
 
-Article 1417 (LEGIARTI000034759783, en vigueur depuis le 01/09/2017), lu le 12/10/2026 à la date utile du 25/03/2025 :
+Article 1417 du CPC (LEGIARTI000034759783) : le lire par `verifier_article` à la date de la requête avant d'en décrire le contenu.
 
-> « Le tribunal statue sur la demande en recouvrement. Il connaît, dans les limites de sa compétence d'attribution, de la demande initiale et de toutes les demandes incidentes et défenses au fond. En cas de décision d'incompétence, ou dans le cas prévu à l'article 1408, l'affaire est renvoyée devant la juridiction compétente selon les règles prévues à l'article 82. »
-
-Article 1420 (LEGIARTI000006412577), lu le 12/10/2026 à la date utile du 25/03/2025 :
-
-> « Le jugement du tribunal se substitue à l'ordonnance portant injonction de payer. »
+Article 1420 du CPC (LEGIARTI000006412577) : le lire par `verifier_article` à la date de la requête avant d'en décrire le contenu.
 
 ## 6. Dispositif et dépens
 
