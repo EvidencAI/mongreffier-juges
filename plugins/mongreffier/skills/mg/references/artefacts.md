@@ -4,7 +4,7 @@ Cette fiche s'adresse à vous, Claude du juge. L'artefact porte le « En détail
 
 ## 1. Quand ouvrir l'artefact
 
-- À l'ouverture du dossier, juste après la vérification du modèle (étape 0 de l'ouverture) : premier affichage, onglet `fiche`, pour la saisie de la fiche du dossier.
+- À l'ouverture du dossier, juste après la vérification du modèle (étape 0 de l'ouverture) : premier affichage, onglet `fiche`, pour la saisie de la fiche du dossier. Exceptions : en modes RELECTURE et VÉRIFICATION, pas d'onglet `fiche` ; le premier affichage porte directement les onglets libres du mode : supprimer l'onglet `fiche` (et les autres onglets de démonstration) du bloc copié, et poser `onglet_actif` sur l'onglet libre du mode (`relecture` ou `verification`).
 - Un seul artefact par dossier. Un onglet par étape. `onglet_actif` désigne l'étape en cours.
 - L'artefact ne remplace pas le Word. Le projet se rédige dans l'artefact (phase 3) ; le Word est produit une seule fois, à la phase 5, après la version définitive, par `assets/template-jugement.docx`.
 
