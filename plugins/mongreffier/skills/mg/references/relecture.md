@@ -96,7 +96,7 @@ Si le nom du rédacteur est absent de la réponse : écrire « Pour le juge réd
 **Dispositif :**
 - Inversion créancier/débiteur
 - Incohérence de montant entre motifs et dispositif, et entre lettres et chiffres (« trois mille euros (2 000 €) »)
-- Ultra petita ou omission de statuer
+- Ultra petita ou omission de statuer : dresser le tableau demande → chef du dispositif → accordé, rejeté ou, dans un jugement avant dire droit de réouverture, réservé. Aucun chef qui excède ce qui est demandé ou n'est pas demandé (solidarité, plafond, condamnation non demandée : art. 5 du CPC) ; toute demande non accueillie en entier a son « déboute du surplus » ou son rejet exprès (dans un jugement avant dire droit : le chef « RÉSERVE les demandes des parties et les dépens ») ; un « constate » n'est pas un chef de décision : à supprimer du dispositif, son contenu peut rester en motifs. Toute demande a son chef (accueil, rejet exprès, « déboute du surplus » ou, dans le jugement avant dire droit, réserve) et aucun chef non demandé n'entre, même si le juge a écarté la recommandation qui le signalait. Seules exceptions : les mesures d'organisation du jugement avant dire droit (réouverture, invitation à produire, renvoi), marquées au tableau « non demandé : mesure d'organisation, motif ». Une notification ou une signification mise à la charge d'une partie n'est jamais une mesure d'organisation : elle est supprimée ou demandée au juge.
 - « Condamne » au lieu de « Fixe au passif » en procédure collective
 
 **Logique :**
@@ -133,6 +133,7 @@ Quand un fondement juridique semble douteux mais qu'on n'a pas les conclusions :
 - Vu en italique
 - Verbes en MAJUSCULES
 - Points-virgules entre chefs, point final
+- Dispositif borné par les demandes : chaque demande a son chef accordé ou son rejet, « déboute du surplus » quand elle n'est pas accueillie en entier, aucun « constate » parmi les chefs
 
 ---
 
@@ -152,8 +153,7 @@ Toujours vérifier l'adaptation du vocabulaire :
 
 Vérifications spécifiques :
 - Art. 472 CPC visé, dans la version applicable à la date d'introduction de l'instance
-- Si le projet applique l'alinéa 3 de l'art. 472 : instance introduite depuis le 01/10/2026, acte délivré à personne, première instance, pas d'opposition du demandeur, pas de motivation spéciale ni de moyen d'office (alinéa 4) ; sinon le signaler
-- Qualification correcte (réputé contradictoire / défaut selon art. 473)
+- Si le projet applique l'alinéa 3 de l'art. 472 : vérifier que les conditions de ce texte (version vérifiée dans references/mode-non-comparant.md) sont réunies.
 - Défendeur personne physique : voir `mode-non-comparant.md` (identification, compétence, hors champ du connecteur)
 - Aucune thèse défendeur attribuée
 - Pas de référence à des pièces défendeur
@@ -176,6 +176,8 @@ Le texte actuel dit :
 ```
 
 Pour le dispositif, proposer une version complète si plusieurs corrections sont nécessaires.
+
+Chronologie : avant d'écrire qu'une lettre (mise en demeure, courrier) vise une facture, vérifier que la facture lui est antérieure d'après les dates lues dans les écritures. Une lettre antérieure à la facture ne peut pas la viser : la reformulation ne l'affirme pas et le point est signalé à vérifier avec les conclusions.
 
 Reformulation d'une clause du contrat : citer la clause en entier, entre guillemets, avec ses mots restrictifs ou ses alternatives (« notamment », « ou »). Jamais de paraphrase plus étroite que la clause. Trop longue pour la limite de `reformulation` : ne pas la résumer, dire dans `detail` de la lire au contrat.
 

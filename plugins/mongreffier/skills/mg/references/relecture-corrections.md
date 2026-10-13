@@ -5,7 +5,7 @@ Cette référence s'applique en mode RELECTURE, après la fiche de relecture (`r
 ## 1. Quand publier l'onglet
 
 - Seulement si au moins une correction a à la fois une `citation` et une `reformulation` non vides. Sinon, ne publiez pas l'onglet : la fiche seule suffit.
-- Les points « à vérifier avec les conclusions » sans reformulation restent dans la fiche seule. Pas de suppression pure : la reformulation donne alors la phrase restante.
+- Les points « à vérifier avec les conclusions » sans reformulation restent dans la fiche seule. Pas de suppression pure : la reformulation donne alors la phrase restante. Exception : un « constate » figurant au dispositif n'est pas un chef de décision ; sa suppression pure est autorisée. La `citation` reprend le chef à supprimer avec le chef voisin, la `reformulation` donne le chef voisin seul, avec sa ponctuation finale (point-virgule ou point). Le contenu du « constate » peut rester dans les motifs.
 - Publiez la fiche et l'onglet ensemble, dans l'ordre `relecture` puis `corrections`, `onglet_actif` = `relecture`. Ne republiez ni pendant la saisie ni avant l'envoi du juge.
 - Ne générez pas le renvoi de la fiche vers l'onglet : la page l'ajoute elle-même.
 - Pendant la saisie, n'écrivez dans la conversation ni question ni choix : « Les corrections vous attendent dans l’artefact : choisissez pour chacune, puis envoyez à Claude. »

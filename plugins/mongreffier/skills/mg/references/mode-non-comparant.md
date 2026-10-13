@@ -9,7 +9,7 @@ Ce mode simplifié s'applique lorsque :
 
 ## Principe directeur
 
-**Article 472 CPC, alinéas 1 et 2** : « Si le défendeur ne comparaît pas, il est néanmoins statué sur le fond. Le juge ne fait droit à la demande que dans la mesure où il l'estime régulière, recevable et bien fondée. »
+**Article 472 CPC, alinéas 1 et 2** : les lire par `verifier_article` avant d'en citer le texte.
 
 → Le juge n'est pas lié par les demandes : il doit les vérifier.
 
@@ -36,6 +36,12 @@ Avant de citer l'article 472, le vérifier par `verifier_article` (`code` « CPC
 ---
 
 ## Workflow simplifié - Grille unique
+
+**Défendeur domicilié à l'étranger.** Avant la grille, relever l'adresse du défendeur dans l'assignation. Si elle est à l'étranger, lire par `verifier_article`, à la date d'introduction de l'instance, les articles 643 et 684 à 688 du CPC ainsi que le texte de compétence applicable (compétence internationale), et n'en rien paraphraser de mémoire. Un article non lu n'est jamais décrit. Puis, à vérifier, jamais à supposer :
+- la compétence, contrôlée d'office, y compris la compétence internationale ;
+- le mode de notification à l'étranger de l'assignation, tel que l'acte le dit ;
+- le délai de comparution, augmenté pour le défendeur à l'étranger : son calcul est celui du texte lu, pas une durée supposée.
+Un point non établi par les écritures est posé au juge en vérification, jamais tenu pour acquis dans la grille.
 
 ```
 ═══════════════════════════════════════════════════════════════════
@@ -86,7 +92,7 @@ Dossier [Demandeur] c/ [Défendeur]
    Observations :
    • [Montant conforme à l'assignation / écart identifié ; contrôle sur pièces par le juge, sur l'original papier]
    • [Calcul des intérêts vérifié / à recalculer]
-   • Chef reposant sur une pièce non vérifiable par Claude : option « écarté faute de justification » ajoutée au point de décision, jamais par défaut ; le juge tranche sur l'original papier
+   • Chef reposant sur une pièce non vérifiable par Claude : l'option « écarté faute de justification » ne s'offre que pour un chef dont la pièce est une vérification `important` ou `utile`, ou n'est couverte par aucune vérification ; si la pièce est une vérification `capital` restée sans réponse complète, le dossier est bloqué au cadrage (règle du blocage au cadrage de MonGreffier) et l'option n'est pas proposée. L'option est ajoutée au point de décision, jamais par défaut ; le juge tranche sur l'original papier
    • Indicateur : voir la règle spéciale QUANTUM de SKILL.md (niveaux 🟠 et 🔴, option D « Autre montant »)
    • Fait non lu, hypothèse de calcul : règle « Fait non lu » de SKILL.md (réserve `[à vérifier sur pièces : …]`)
 
@@ -110,7 +116,7 @@ SYNTHÈSE - DÉCISIONS À RENDRE
 │  5 │ Dépens              │ Défendeur  │ Défendeur   │
 └────┴─────────────────────┴────────────┴─────────────┘
 
-Si alinéa 3 possible : point de décision « Accueillir sur le fondement de l'art. 472 al. 3 (demande recevable, non contraire à l'ordre public, à une liberté protégée ni à un droit fondamental) » OU « Contrôle complet du bien-fondé » ; contrôle complet par défaut.
+Si alinéa 3 possible : point de décision « Accueillir sur le fondement de l'art. 472 al. 3 (conditions du texte lu) » OU « Contrôle complet du bien-fondé » ; contrôle complet par défaut.
 
 → Validation requise avant rédaction
 ═══════════════════════════════════════════════════════════════════
@@ -119,6 +125,8 @@ Si alinéa 3 possible : point de décision « Accueillir sur le fondement de l'a
 ---
 
 ## Formulations types
+
+**Qualification (réputé contradictoire / par défaut) : texte vérifié seulement.** Le motif qui justifie la qualification cite le texte lu par `verifier_article` (article 473 ou 474 du CPC selon le cas, à la date d'introduction), jamais une paraphrase de mémoire. La mention « susceptible d'appel » n'est écrite que si le texte vérifié le dit ; sinon le motif s'en tient à la citation.
 
 **Mention liminaire (après identification parties) :**
 > La société [DÉFENDEUR], régulièrement assignée par acte d'huissier du [date], n'a pas constitué avocat.
@@ -130,10 +138,7 @@ Si alinéa 3 possible : point de décision « Accueillir sur le fondement de l'a
 ```
 Sur la demande en paiement :
 
-Aux termes de l'article 472 du Code de procédure civile, si le défendeur 
-ne comparaît pas, il est néanmoins statué sur le fond ; le juge ne fait 
-droit à la demande que dans la mesure où il l'estime régulière, recevable 
-et bien fondée.
+Aux termes de l'article 472 du Code de procédure civile, [texte lu par `verifier_article`].
 
 Il ressort de la facture n°[X] en date du [date] 
 (pièce n°1 du demandeur), établie conformément au contrat du [date] 
