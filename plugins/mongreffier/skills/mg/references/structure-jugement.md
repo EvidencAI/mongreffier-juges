@@ -84,7 +84,7 @@ CONDAMNE la société Y aux dépens.
 | Verbes | **MAJUSCULES** : DÉBOUTE, CONDAMNE, DIT, ORDONNE, REJETTE, DÉCLARE |
 | Séparateurs | **Point-virgule** après chaque chef |
 | Dernier chef | **Point final** (pas point-virgule) |
-| Exécution provisoire | **SILENCE** (de droit). Mentionner seulement si demande d'écartement. |
+| Exécution provisoire | **SILENCE** (de droit), ni dans les motifs ni dans le dispositif. Mentionner seulement si demande d'écartement. |
 
 ---
 
@@ -100,7 +100,7 @@ Avant de générer le .docx, **vérifier** :
 ✅ PCM : Vu en italique
 ✅ PCM : verbes MAJUSCULES
 ✅ PCM : points-virgules entre chefs, point final au dernier
-✅ Pas de mention exécution provisoire (sauf écartement demandé)
+✅ Pas de mention exécution provisoire, ni dans les motifs ni dans le dispositif (sauf écartement demandé)
 ✅ Tous les chefs de demande traités (pas d'omission de statuer) : toute demande non accueillie en entier a son « déboute du surplus » ou son rejet
 ✅ Cohérence montants entre motifs et dispositif
 ```
@@ -120,7 +120,7 @@ Avant de générer le .docx, **vérifier** :
 | "Vu" en romain | *Vu* en italique |
 | Verbes minuscules | VERBES MAJUSCULES |
 | Point après chaque chef | Point-virgule (sauf dernier) |
-| Mention exécution provisoire | Silence (sauf écartement demandé) |
+| Mention exécution provisoire, motifs ou dispositif | Silence (sauf écartement demandé) |
 | "Attendu que" | Style direct |
 
 ---
