@@ -186,7 +186,7 @@ Reformulation d'une clause du contrat : citer la clause en entier, entre guillem
 ## Output
 
 Générer un document Word (.docx) :
-- Ce .docx se fabrique dans l'espace Claude du juge, de la même façon que le jugement : à partir de `assets/template-jugement.docx`
+- Ce .docx se fabrique dans l'espace Claude du juge, de la même façon que le jugement : à partir de `assets/template-jugement.docx`, avec la typographie française du Word et sa commande de contrôle (SKILL.md, PRODUCTION DU .DOCX)
 - Police : Arial 11pt
 - Sections avec filets verts (sobre)
 - Tableaux pour les comparatifs
