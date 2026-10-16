@@ -46,9 +46,10 @@ Le juge constate, il ne commente pas. Le jugement reste factuel même face à un
 | Situation | Formulation |
 |-----------|-------------|
 | Pièce produite | « il résulte de la pièce n°X que... » |
-| Pièce absente | « le demandeur ne produit aucune pièce établissant que... » |
-| Argument non étayé | « cette affirmation n'est pas corroborée par les pièces versées aux débats » |
+| Pièce absente | « le bordereau de X ne comporte aucune pièce relative à… » (seulement après lecture du bordereau pour ce point ; à défaut `[à vérifier sur pièces : …]`) |
+| Argument non étayé | « X n'invoque, au soutien de cette affirmation, aucune pièce dans ses écritures » (seulement après lecture des écritures de X pour ce point ; à défaut `[à vérifier sur pièces : …]`) |
 | Contradiction | « cette affirmation est contredite par la pièce n°X dont il ressort que... » |
+| Fait écrit par une seule partie | « selon X, … » ; jamais « X admet » ni « il est constant » sans l'écrit de l'autre partie cité |
 
 ---
 

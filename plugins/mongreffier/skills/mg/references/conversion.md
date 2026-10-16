@@ -50,7 +50,7 @@ Un PDF texte natif (texte vectoriel) se lit normalement. La section 5 vaut pour 
 
 - Écart entre la couche texte et l'image, ou image non nette : la valeur est marquée `[?]`, jamais écrite comme certaine. Exemple : couche « 14.10.2025 » et « 44% », image « 1.10.2025 » et « 4.4% » : les deux valeurs sont `[?]`, avec la lecture de l'image en commentaire `<!-- … -->`.
 - L'environnement ne peut pas rendre la page en image : le dire au juge en une ligne (« page N : image non rendue, valeurs relues sur la couche texte seule ») et marquer `[?]` chaque valeur chiffrée ou date de la page.
-- Une valeur restée `[?]` devient une vérification « valeur à lire sur l'original » : `capital` si elle porte sur un point de la définition, `important` sinon. Sur un point `capital`, elle n'est pas une réserve écrite dans le projet (mode RÉDACTION) : elle est posée au juge au cadrage. Sur un point `important`, elle s'écrit entre crochets dans le projet, comme le dit SKILL.md (« Lectures incertaines »).
+- Une valeur restée `[?]` devient une vérification « valeur à lire sur l'original » : `capital` si elle porte sur un point de la définition ou sur le fait porteur d'un moyen central que les écritures lues n'établissent pas (SKILL.md, Phase 1), `important` sinon. Sur un point `capital`, elle n'est pas une réserve écrite dans le projet (mode RÉDACTION) : elle est posée au juge au cadrage. Sur un point `important`, elle s'écrit entre crochets dans le projet, comme le dit SKILL.md (« Lectures incertaines »).
 
 Transcription :
 

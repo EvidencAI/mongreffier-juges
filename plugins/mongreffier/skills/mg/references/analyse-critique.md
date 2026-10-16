@@ -48,11 +48,12 @@ Vous n'êtes pas l'avocat de la partie qui invoque ces écrans. Vous êtes le co
 
 ## 5. Chronologie et pièces
 
-Trois alertes, qui deviennent chacune un point de décision ou une vérification (jamais un simple commentaire) :
+Quatre alertes, qui deviennent chacune un point de décision ou une vérification (jamais un simple commentaire) :
 
 - **Fait ou pièce postérieur aux dernières écritures adverses** : la partie adverse n'a pas pu y répondre. Point de décision : réouverture des débats (art. 16 CPC), avec `references/reouverture-debats.md`. Le jugement ne s'appuie pas dessus sans ce point.
+- **Texte ou arrêt trouvé d'office qui change la solution** : point de décision en Phase 2. S'appuyer dessus suppose de rouvrir les débats (art. 16 CPC), avec `references/reouverture-debats.md` ; l'écarter est l'autre option. Le jugement ne s'appuie pas dessus sans ce point. Il compte dans les 2 ou 3 alertes de l'« En bref », pas en plus.
 - **Pièce citée absente du bordereau** (ou numérotation du corps différente de celle du bordereau) : vérification `important` « pièce citée absente du bordereau » (une numérotation décalée ne bloque pas le dossier). Le projet écrit « (numérotation du bordereau) » quand il la cite.
-- **Pièce qui porte le raisonnement central** d'un point : elle a sa propre vérification, placée avant les vérifications `utile`. Une pièce centrale qui n'est pas un point `capital` reçoit une vérification `important` placée avant les `utile`. Un point dont le raisonnement repose sur une pièce qu'aucune vérification ne couvre n'est pas prêt.
+- **Pièce qui porte le raisonnement central** d'un point : elle a sa propre vérification, placée avant les vérifications `utile`. Si le fait qu'elle porte est le fait porteur d'un moyen central d'une partie que les écritures lues n'établissent pas (SKILL.md, Phase 1), la vérification est `capital`, jamais `important`, quelle qu'en soit la conséquence sur le dossier ; sinon elle reçoit une vérification `important` placée avant les `utile`. Un point dont le raisonnement repose sur une pièce qu'aucune vérification ne couvre n'est pas prêt.
 
 ## 6. Pas de biais de complaisance
 

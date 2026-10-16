@@ -24,7 +24,7 @@ Onglet libre : `id` `corrections`, titre « Corrections à intégrer », statut 
 |---|---|
 | `source` | Obligatoire à chaque publication. `word_depose` : le juge a déposé le projet en Word. `reconstruit` : pas de Word déposé. Absent ou inconnu, la page dit prudemment que le projet sera reconstruit. |
 | `id` | `R1`, `R2`… numérotés dans l'ordre d'apparition dans le projet. Ne changent pas d'une publication à l'autre. |
-| `gravite` | `critique` (fiche : « À corriger »), `a_surveiller` (« À vérifier avec les conclusions »), `mineur` (« Améliorations souhaitables »). |
+| `gravite` | `critique` (fiche : « À corriger »), `a_surveiller` (« À vérifier avec les conclusions »), `mineur` (« Améliorations souhaitables »). Une correction qui rappelle une règle dure de SKILL.md (« Priorité des règles », règles PCM) est `a_surveiller` au moins, jamais `mineur`. |
 | `intitule` | 200 caractères au plus. |
 | `detail` | 400 au plus : le pourquoi, une ou deux phrases. |
 | `citation` | 600 au plus : le passage du projet, recopié tel quel. Obligatoire. |
