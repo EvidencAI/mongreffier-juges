@@ -621,7 +621,7 @@ fieldset.choix-point { margin-top: 12px; }
   function etatInitial(onglet) {
     var type = onglet.saisie.type, v = onglet.saisie.valeurs || {}, e;
     if (type === 'fiche') {
-      e = { juridiction: String(v.juridiction || ''), date_audience: String(v.date_audience || ''), date_delibere: String(v.date_delibere || ''), president: String(v.president || ''), audience: v.audience === 'collegiale' || v.audience === 'juge_unique' ? v.audience : '', juge: v.juge_audience === 'president' || v.juge_audience === 'assesseur_1' || v.juge_audience === 'assesseur_2' ? v.juge_audience : '', assesseurs: [String((v.assesseurs || [])[0] || ''), String((v.assesseurs || [])[1] || '')], greffier: String(v.greffier || ''), dernieres: v.dernieres_ecritures === true ? 'oui' : v.dernieres_ecritures === false ? 'non' : '' };
+      e = { juridiction: String(v.juridiction || ''), date_audience: String(v.date_audience || ''), date_delibere: String(v.date_delibere || ''), date_assignation: String(v.date_assignation || ''), president: String(v.president || ''), audience: v.audience === 'collegiale' || v.audience === 'juge_unique' ? v.audience : '', juge: v.juge_audience === 'president' || v.juge_audience === 'assesseur_1' || v.juge_audience === 'assesseur_2' ? v.juge_audience : '', assesseurs: [String((v.assesseurs || [])[0] || ''), String((v.assesseurs || [])[1] || '')], greffier: String(v.greffier || ''), dernieres: v.dernieres_ecritures === true ? 'oui' : v.dernieres_ecritures === false ? 'non' : '' };
     } else if (type === 'corrections_jugement') e = { textes: {}, envoyees: {}, sansCorr: false };
     else if (type === 'validation_cadrage') e = { choix: null, textes: {}, verifs: {}, pasVerifie: {} };
     else if (type === 'points_decision') e = { positions: {} };
@@ -702,6 +702,12 @@ fieldset.choix-point { margin-top: 12px; }
       return c.wrap;
     }
     var refere = onglet.saisie.mode === 'refere';
+    /* Aide de la date d'assignation, choisie une fois à l'ouverture d'après les valeurs reçues. */
+    var partiesAss = (onglet.saisie.valeurs || {}).assignation_dates_parties, aideAss;
+    partiesAss = Array.isArray(partiesAss) && partiesAss.length === 2 && partiesAss.every(function (d) { return typeof d === 'string' && parseDate(d); }) ? partiesAss.map(function (d) { return parseDate(d).txt; }) : null;
+    if (partiesAss) aideAss = 'Les parties ne donnent pas la même date : le ' + partiesAss[0] + ' et le ' + partiesAss[1] + '. Choisissez celle que vous retenez, ou laissez le champ vide.';
+    else if (isoDepuisFr((onglet.saisie.valeurs || {}).date_assignation)) aideAss = 'Date relevée dans les conclusions. Vérifiez-la, ou corrigez-la.';
+    else aideAss = 'Si vous la connaissez. Sans elle, le Word la signale comme à compléter.';
     function dessinerAss() {
       zoneAss.textContent = '';
       lignes = [];
@@ -758,6 +764,7 @@ fieldset.choix-point { margin-top: 12px; }
       ch('date_audience', 'Date de l’audience', null, { date: true }),
       ch('date_delibere', 'Date du délibéré', null, { date: true })
     ]));
+    corps.appendChild(ch('date_assignation', 'Date de l’assignation (facultatif)', aideAss, { date: true }));
     if (refere) {
       corps.appendChild(ch('president', 'Juge des référés', 'Prénom et nom du président.', { nom: true }));
       corps.appendChild(h('p', { class: 'aide', text: 'Ordonnance de référé : le président statue seul (art. 872 et 873 du CPC).' }));
@@ -795,6 +802,14 @@ fieldset.choix-point { margin-top: 12px; }
         else if (!pd) err.push({ ctrl: champs.date_delibere.input, msg: invalide });
         else if (pa && pd.t < pa.t) err.push({ ctrl: champs.date_delibere.input, msg: 'La date du délibéré précède celle de l’audience.' });
         v.date_audience = pa ? pa.txt : da; v.date_delibere = pd ? pd.txt : dd;
+        var dsa = nettoyer(etat.date_assignation), psa = parseDate(dsa);
+        if (dsa) {
+          if (!psa) err.push({ ctrl: champs.date_assignation.input, msg: invalide });
+          else {
+            if (pa && psa.t > pa.t) err.push({ ctrl: champs.date_assignation.input, msg: 'La date de l’assignation suit celle de l’audience.' });
+            v.date_assignation = psa.txt;
+          }
+        }
         v.president = nettoyer(etat.president);
         if (!v.president) err.push({ ctrl: champs.president.input, msg: refere ? 'Indiquez le juge des référés.' : 'Indiquez le président de la formation.' });
         else if (nbMots(v.president) < 2) err.push({ ctrl: champs.president.input, msg: nomInc });
