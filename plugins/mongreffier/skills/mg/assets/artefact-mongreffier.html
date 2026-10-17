@@ -153,8 +153,18 @@ textarea { resize: vertical; }
 .resume { margin: 12px 0; padding: 12px 16px; border-left: 3px solid var(--erreur); background: color-mix(in srgb, var(--erreur) 8%, transparent); }
 .resume ul { margin: 6px 0 0; padding-left: 1.2em; }
 .resume a { color: var(--erreur); }
-.deux-col { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 12px; align-items: start; }
-.deux-col > * { min-width: 0; }
+.fiche .champ, .fiche fieldset { margin: 10px 0; }
+.fiche fieldset { padding: 0; margin-inline: 0; min-inline-size: 0; }
+.fiche .grille { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0 12px; align-items: start; }
+.fiche .grille > * { min-width: 0; }
+.fiche .enligne { display: flex; flex-wrap: wrap; gap: 0 24px; }
+.fiche .case-der { display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 8px 12px; border: 1px solid var(--bordure-champ); border-radius: 8px; background: var(--fond); line-height: 1.4; overflow-wrap: anywhere; cursor: pointer; }
+.fiche .case-der input { width: 22px; height: 22px; margin: 0; flex: none; accent-color: var(--accent-aplat); }
+.fiche .cellule-case { align-self: end; margin: 10px 0; }
+@media (min-width: 400px) { .fiche .grille.g2, .fiche .grille.g3 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 560px) { .fiche .grille.g3 { grid-template-columns: repeat(3, minmax(0, 1fr)); } .fiche .grille.g12 { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); } }
+@media (min-width: 700px) { .fiche .grille.g21 { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); } }
+@media (min-width: 900px) { .fiche .grille.g21 { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); } }
 .choix { display: flex; align-items: flex-start; gap: 10px; min-height: 48px; padding: 8px 4px; cursor: pointer; }
 .choix input { width: 22px; height: 22px; margin: 2px 0 0; flex: none; accent-color: var(--accent-aplat); }
 .choix input[type="radio"] { appearance: none; -webkit-appearance: none; border: 2px solid var(--bordure-champ); border-radius: 50%; background: var(--fond); }
@@ -599,18 +609,18 @@ fieldset.choix-point { margin-top: 12px; }
   }
   function creerSlot() { return h('div', { class: 'erreur-champ', role: 'alert', id: uid('err'), hidden: true }); }
   function champTexte(o) {
-    var id = uid('c'), aideId = o.aide ? id + '-aide' : null, slot = creerSlot();
+    var id = uid('c'), aideId = o.aide ? id + '-aide' : (o.aideExt || null), slot = creerSlot();
     var input = h('input', { type: o.date ? 'date' : 'text', id: id, autocomplete: 'off', spellcheck: o.nom ? 'false' : null, autocapitalize: o.nom ? 'words' : null, maxlength: o.date ? null : '200', 'aria-describedby': aideId, value: o.valeur || '' });
     input.value = o.valeur || '';
     input.addEventListener('keydown', function (ev) { if (ev.key === 'Enter') ev.preventDefault(); });
     lierErreur(input, slot, aideId);
-    return { input: input, wrap: h('div', { class: 'champ' }, [h('label', { for: id, text: o.libelle }), o.aide ? h('p', { class: 'aide', id: aideId, text: o.aide }) : null, input, slot]) };
+    return { input: input, wrap: h('div', { class: 'champ' }, [h('label', { for: id }, [o.libelle, o.libelleSr ? h('span', { class: 'sr', text: o.libelleSr }) : null]), o.aide ? h('p', { class: 'aide', id: aideId, text: o.aide }) : null, input, slot]) };
   }
   function zoneTexte(o) {
-    var id = uid('t'), aideId = o.aide ? id + '-aide' : null, slot = creerSlot(), cpt = h('p', { class: 'compteur-zone', 'aria-hidden': 'true' });
-    var ta = h('textarea', { id: id, rows: String(o.lignes || 3), maxlength: String(MAX_TEXTE), 'aria-describedby': aideId });
+    var id = uid('t'), aideId = o.aide ? id + '-aide' : null, max = o.max || MAX_TEXTE, slot = creerSlot(), cpt = h('p', { class: 'compteur-zone', 'aria-hidden': 'true' });
+    var ta = h('textarea', { id: id, rows: String(o.lignes || 3), maxlength: String(max), 'aria-describedby': aideId });
     ta.value = o.valeur || '';
-    function maj() { cpt.textContent = nombre(ta.value.length) + ' sur ' + nombre(MAX_TEXTE) + ' caractères'; }
+    function maj() { cpt.textContent = nombre(ta.value.length) + ' sur ' + nombre(max) + ' caractères'; }
     ta.addEventListener('input', maj);
     maj();
     lierErreur(ta, slot, aideId);
@@ -621,7 +631,7 @@ fieldset.choix-point { margin-top: 12px; }
   function etatInitial(onglet) {
     var type = onglet.saisie.type, v = onglet.saisie.valeurs || {}, e;
     if (type === 'fiche') {
-      e = { juridiction: String(v.juridiction || ''), date_audience: String(v.date_audience || ''), date_delibere: String(v.date_delibere || ''), date_assignation: String(v.date_assignation || ''), president: String(v.president || ''), audience: v.audience === 'collegiale' || v.audience === 'juge_unique' ? v.audience : '', juge: v.juge_audience === 'president' || v.juge_audience === 'assesseur_1' || v.juge_audience === 'assesseur_2' ? v.juge_audience : '', assesseurs: [String((v.assesseurs || [])[0] || ''), String((v.assesseurs || [])[1] || '')], greffier: String(v.greffier || ''), dernieres: v.dernieres_ecritures === true ? 'oui' : v.dernieres_ecritures === false ? 'non' : '' };
+      e = { juridiction: String(v.juridiction || ''), date_audience: String(v.date_audience || ''), date_delibere: String(v.date_delibere || ''), date_assignation: String(v.date_assignation || ''), president: String(v.president || ''), audience: v.audience === 'collegiale' || v.audience === 'juge_unique' ? v.audience : '', juge: v.juge_audience === 'president' || v.juge_audience === 'assesseur_1' || v.juge_audience === 'assesseur_2' ? v.juge_audience : '', assesseurs: [String((v.assesseurs || [])[0] || ''), String((v.assesseurs || [])[1] || '')], greffier: String(v.greffier || ''), decision: String(v.decision_delibere || ''), dernieres: v.dernieres_ecritures === true ? 'oui' : v.dernieres_ecritures === false ? 'non' : '' };
     } else if (type === 'corrections_jugement') e = { textes: {}, envoyees: {}, sansCorr: false };
     else if (type === 'validation_cadrage') e = { choix: null, textes: {}, verifs: {}, pasVerifie: {} };
     else if (type === 'points_decision') e = { positions: {} };
@@ -692,37 +702,23 @@ fieldset.choix-point { margin-top: 12px; }
 
   /* --- fiche --- */
   function ecranFiche(onglet, etat, ctx) {
-    var corps = h('div'), champs = {}, zoneAss = h('fieldset'), lignes = [];
-    function ch(cle, libelle, aide, extra) {
+    var corps = h('div', { class: 'fiche' }), champs = {}, lignes = [];
+    function ch(cle, libelle, extra) {
       var date = !!(extra && extra.date), c;
       if (date) etat[cle] = frDepuisIso(isoDepuisFr(etat[cle]));
-      c = champTexte({ libelle: libelle, aide: aide, valeur: date ? isoDepuisFr(etat[cle]) : etat[cle], nom: extra && extra.nom, date: date });
+      c = champTexte({ libelle: libelle, aideExt: extra && extra.aideExt, libelleSr: date ? ' (date)' : null, valeur: date ? isoDepuisFr(etat[cle]) : etat[cle], nom: extra && extra.nom, date: date });
       c.input.addEventListener('input', function () { etat[cle] = date ? frDepuisIso(c.input.value) : c.input.value; ctx.change(); });
       champs[cle] = c;
       return c.wrap;
     }
+    function grille(classe, enfants) { return h('div', { class: 'grille ' + classe }, enfants); }
     var refere = onglet.saisie.mode === 'refere';
-    /* Aide de la date d'assignation, choisie une fois à l'ouverture d'après les valeurs reçues. */
-    var partiesAss = (onglet.saisie.valeurs || {}).assignation_dates_parties, aideAss;
+    /* Aide de la date d'assignation, choisie une fois à l'ouverture d'après les valeurs reçues ; aucune ligne si aucune date n'est connue. */
+    var partiesAss = (onglet.saisie.valeurs || {}).assignation_dates_parties, aideAss = null, aideAssId = uid('aide');
     partiesAss = Array.isArray(partiesAss) && partiesAss.length === 2 && partiesAss.every(function (d) { return typeof d === 'string' && parseDate(d); }) ? partiesAss.map(function (d) { return parseDate(d).txt; }) : null;
-    if (partiesAss) aideAss = 'Les parties ne donnent pas la même date : le ' + partiesAss[0] + ' et le ' + partiesAss[1] + '. Choisissez celle que vous retenez, ou laissez le champ vide.';
-    else if (isoDepuisFr((onglet.saisie.valeurs || {}).date_assignation)) aideAss = 'Date relevée dans les conclusions. Vérifiez-la, ou corrigez-la.';
-    else aideAss = 'Si vous la connaissez. Sans elle, le Word la signale comme à compléter.';
-    function dessinerAss() {
-      zoneAss.textContent = '';
-      lignes = [];
-      zoneAss.appendChild(h('legend', { text: 'Assesseurs' }));
-      zoneAss.appendChild(h('p', { class: 'aide', text: 'Prénom et nom de chacun des deux assesseurs.' }));
-      var grille = h('div', { class: 'deux-col' });
-      etat.assesseurs.forEach(function (val, i) {
-        var c = champTexte({ libelle: 'Assesseur ' + (i + 1), valeur: val, nom: true });
-        c.input.addEventListener('input', function () { etat.assesseurs[i] = c.input.value; ctx.change(); });
-        grille.appendChild(c.wrap);
-        lignes.push(c);
-      });
-      zoneAss.appendChild(grille);
-    }
-    var groupeAud = h('fieldset'), nomAud = uid('a'), radiosAud = {}, slotAud = creerSlot();
+    if (partiesAss) aideAss = 'Les parties donnent deux dates d’assignation : le ' + partiesAss[0] + ' et le ' + partiesAss[1] + '. Choisissez-en une, ou laissez le champ vide.';
+    else if (isoDepuisFr((onglet.saisie.valeurs || {}).date_assignation)) aideAss = 'Assignation relevée dans les conclusions : vérifiez-la.';
+    var groupeAud = h('fieldset'), nomAud = uid('a'), radiosAud = {};
     var groupeJuge = h('fieldset'), nomJuge = uid('j'), radiosJuge = {}, slotJuge = creerSlot();
     function radioDe(nom, reg, val, texte, coche) {
       var id = uid('rf'), inp = h('input', { type: 'radio', name: nom, id: id, value: val });
@@ -731,19 +727,21 @@ fieldset.choix-point { margin-top: 12px; }
       return h('label', { class: 'choix', for: id }, [inp, h('span', { class: 'corps', text: texte })]);
     }
     if (!refere) {
-      groupeAud.appendChild(h('legend', { text: 'Audience' }));
-      groupeAud.appendChild(h('p', { class: 'aide', text: 'Au fond, le délibéré est collégial ; un seul juge peut tenir l’audience si les parties ne s’y opposent pas (art. 871 du CPC).' }));
-      groupeAud.appendChild(radioDe(nomAud, radiosAud, 'collegiale', 'Audience collégiale (président et 2 assesseurs)', etat.audience === 'collegiale'));
-      groupeAud.appendChild(radioDe(nomAud, radiosAud, 'juge_unique', 'Audience tenue par un seul juge', etat.audience === 'juge_unique'));
-      groupeAud.appendChild(slotAud);
-      lierErreur(radiosAud.collegiale, slotAud, null, groupeAud);
+      groupeAud.appendChild(h('legend', { text: 'Audience tenue' }));
+      groupeAud.appendChild(h('div', { class: 'enligne' }, [
+        radioDe(nomAud, radiosAud, 'collegiale', 'Collégiale', etat.audience === 'collegiale'),
+        radioDe(nomAud, radiosAud, 'juge_unique', 'Par un seul juge', etat.audience === 'juge_unique')
+      ]));
       groupeJuge.hidden = etat.audience !== 'juge_unique';
       groupeJuge.appendChild(h('legend', { text: 'Juge qui a tenu l’audience' }));
-      groupeJuge.appendChild(radioDe(nomJuge, radiosJuge, 'president', 'Le président', etat.juge === 'president'));
-      groupeJuge.appendChild(radioDe(nomJuge, radiosJuge, 'assesseur_1', 'L’assesseur 1', etat.juge === 'assesseur_1'));
-      groupeJuge.appendChild(radioDe(nomJuge, radiosJuge, 'assesseur_2', 'L’assesseur 2', etat.juge === 'assesseur_2'));
+      groupeJuge.appendChild(h('div', { class: 'enligne' }, [
+        radioDe(nomJuge, radiosJuge, 'president', 'Le président', etat.juge === 'president'),
+        radioDe(nomJuge, radiosJuge, 'assesseur_1', 'L’assesseur 1', etat.juge === 'assesseur_1'),
+        radioDe(nomJuge, radiosJuge, 'assesseur_2', 'L’assesseur 2', etat.juge === 'assesseur_2')
+      ]));
       groupeJuge.appendChild(slotJuge);
       lierErreur(radiosJuge.president, slotJuge, null, groupeJuge);
+      groupeAud.appendChild(groupeJuge);
       groupeAud.addEventListener('change', function (ev) {
         if (ev.target && ev.target.name === nomAud) {
           var avant = etat.audience;
@@ -758,50 +756,64 @@ fieldset.choix-point { margin-top: 12px; }
         if (ev.target && ev.target.name === nomJuge) { etat.juge = ev.target.value; ctx.change(); }
       });
     }
-    corps.appendChild(h('p', { text: 'Renseignez la fiche du dossier. Elle alimente l’en-tête du jugement et celui du Word. Indiquez le prénom et le nom complets de chaque personne : Claude normalisera la casse des noms à la rédaction.' }));
-    corps.appendChild(ch('juridiction', 'Juridiction', 'Par exemple : Tribunal de commerce de Lyon.'));
-    corps.appendChild(h('div', { class: 'deux-col' }, [
-      ch('date_audience', 'Date de l’audience', null, { date: true }),
-      ch('date_delibere', 'Date du délibéré', null, { date: true })
+    /* Case « dernières écritures » : cochée = true, non cochée = false, jamais d'erreur. */
+    var caseDer = h('input', { type: 'checkbox', id: uid('cd') });
+    caseDer.checked = etat.dernieres === 'oui';
+    caseDer.addEventListener('change', function () { etat.dernieres = caseDer.checked ? 'oui' : 'non'; ctx.change(); });
+    var decision = zoneTexte({ libelle: 'Décision du délibéré', aide: 'Collez ici le texte de la décision, ou déposez le fichier (PDF, Word ou MD) dans la conversation.', lignes: 3, max: 1000, valeur: etat.decision });
+    decision.input.addEventListener('input', function () { etat.decision = decision.input.value; ctx.change(); });
+    corps.appendChild(h('p', { class: 'aide', text: 'Prénom et nom complets pour chaque personne.' }));
+    corps.appendChild(grille('g21', [
+      ch('juridiction', 'Juridiction'),
+      h('div', { class: 'cellule-case' }, [h('label', { class: 'case-der', for: caseDer.id }, [caseDer, h('span', { text: 'J’ai vérifié que ce sont les dernières écritures' })])])
     ]));
-    corps.appendChild(ch('date_assignation', 'Date de l’assignation (facultatif)', aideAss, { date: true }));
+    corps.appendChild(grille('g3', [
+      ch('date_assignation', 'Assignation', { date: true, aideExt: aideAss ? aideAssId : null }),
+      ch('date_audience', 'Audience', { date: true }),
+      ch('date_delibere', 'Délibéré', { date: true })
+    ]));
+    if (aideAss) corps.appendChild(h('p', { class: 'aide', id: aideAssId, text: aideAss }));
+    corps.appendChild(decision.wrap);
     if (refere) {
-      corps.appendChild(ch('president', 'Juge des référés', 'Prénom et nom du président.', { nom: true }));
-      corps.appendChild(h('p', { class: 'aide', text: 'Ordonnance de référé : le président statue seul (art. 872 et 873 du CPC).' }));
+      corps.appendChild(grille('g2', [ch('president', 'Juge des référés', { nom: true }), ch('greffier', 'Greffier', { nom: true })]));
     } else {
-      corps.appendChild(ch('president', 'Président de la formation', 'Prénom et nom.', { nom: true }));
-      corps.appendChild(groupeAud);
-      corps.appendChild(groupeJuge);
-      dessinerAss();
-      corps.appendChild(zoneAss);
+      etat.assesseurs.forEach(function (val, i) {
+        var c = champTexte({ libelle: 'Assesseur ' + (i + 1), valeur: val, nom: true });
+        c.input.addEventListener('input', function () { etat.assesseurs[i] = c.input.value; ctx.change(); });
+        lignes.push(c);
+      });
+      corps.appendChild(grille('g3', [ch('president', 'Président', { nom: true }), lignes[0].wrap, lignes[1].wrap]));
+      corps.appendChild(grille('g12', [ch('greffier', 'Greffier', { nom: true }), groupeAud]));
     }
-    corps.appendChild(ch('greffier', 'Greffier', 'Prénom et nom.', { nom: true }));
-    var groupeDer = h('fieldset'), nomDer = uid('d'), radiosDer = {}, slotDer = creerSlot();
-    groupeDer.appendChild(h('legend', { text: 'Dernières écritures' }));
-    groupeDer.appendChild(h('p', { class: 'aide', text: 'Les conclusions versées sont-elles les dernières écritures de chaque partie ? En cas de doute, répondez Non.' }));
-    groupeDer.appendChild(radioDe(nomDer, radiosDer, 'oui', 'Oui, ce sont les dernières écritures de chaque partie', etat.dernieres === 'oui'));
-    groupeDer.appendChild(radioDe(nomDer, radiosDer, 'non', 'Non, au moins une partie a déposé des écritures plus récentes', etat.dernieres === 'non'));
-    groupeDer.appendChild(slotDer);
-    lierErreur(radiosDer.oui, slotDer, null, groupeDer);
-    groupeDer.addEventListener('change', function (ev) {
-      if (ev.target && ev.target.name === nomDer) { etat.dernieres = ev.target.value; ctx.change(); }
-    });
-    corps.appendChild(groupeDer);
     return {
-      statutApres: function (v) { return v.dernieres_ecritures === false ? 'Envoyé. Claude vous demandera de verser les dernières écritures avant d’analyser.' : null; },
+      /* Un champ vide s'envoie quand même : le Word en fera un repère. Phrase après l'envoi, sans bloquer. */
+      statutApres: function (v) {
+        var n = 0;
+        ['juridiction', 'date_assignation', 'date_audience', 'date_delibere', 'president', 'greffier'].forEach(function (k) { if (!v[k]) n++; });
+        if (!refere) {
+          (v.assesseurs || []).forEach(function (a) { if (!a) n++; });
+        }
+        if (!n) return null;
+        return 'Envoyé. ' + (n === 1 ? '1 champ vide : il sera à compléter dans le Word.' : n + ' champs vides : ils seront à compléter dans le Word.') + ' Regardez la conversation : confirmez l’envoi dans la fenêtre de Claude si elle s’affiche.';
+      },
       corps: corps,
       collecter: function () {
-        var err = [], v = {}, da, dd, ass = [], nomInc = 'Nom incomplet : indiquez le prénom et le nom (au moins deux mots).';
+        var err = [], v = {}, da, dd, nomInc = 'Nom incomplet : indiquez le prénom et le nom (au moins deux mots).';
+        /* Un nom rempli doit être complet ; un vide passe. Rend la valeur nettoyée. */
+        function nom(valeur, ctrl) {
+          var n = nettoyer(valeur);
+          if (n && nbMots(n) < 2) err.push({ ctrl: ctrl, msg: nomInc });
+          return n;
+        }
         v.juridiction = nettoyer(etat.juridiction);
-        if (!v.juridiction) err.push({ ctrl: champs.juridiction.input, msg: 'Indiquez la juridiction.' });
+        if (!v.juridiction) delete v.juridiction;
         da = nettoyer(etat.date_audience); dd = nettoyer(etat.date_delibere);
         var pa = parseDate(da), pd = parseDate(dd), invalide = 'Cette date n’existe pas. Choisissez-la dans le calendrier.';
-        if (!da) err.push({ ctrl: champs.date_audience.input, msg: 'Indiquez la date de l’audience.' });
-        else if (!pa) err.push({ ctrl: champs.date_audience.input, msg: invalide });
-        if (!dd) err.push({ ctrl: champs.date_delibere.input, msg: 'Indiquez la date du délibéré.' });
-        else if (!pd) err.push({ ctrl: champs.date_delibere.input, msg: invalide });
-        else if (pa && pd.t < pa.t) err.push({ ctrl: champs.date_delibere.input, msg: 'La date du délibéré précède celle de l’audience.' });
-        v.date_audience = pa ? pa.txt : da; v.date_delibere = pd ? pd.txt : dd;
+        if (da && !pa) err.push({ ctrl: champs.date_audience.input, msg: invalide });
+        if (dd && !pd) err.push({ ctrl: champs.date_delibere.input, msg: invalide });
+        else if (dd && pa && pd.t < pa.t) err.push({ ctrl: champs.date_delibere.input, msg: 'La date du délibéré précède celle de l’audience.' });
+        if (da) v.date_audience = pa ? pa.txt : da;
+        if (dd) v.date_delibere = pd ? pd.txt : dd;
         var dsa = nettoyer(etat.date_assignation), psa = parseDate(dsa);
         if (dsa) {
           if (!psa) err.push({ ctrl: champs.date_assignation.input, msg: invalide });
@@ -810,33 +822,22 @@ fieldset.choix-point { margin-top: 12px; }
             v.date_assignation = psa.txt;
           }
         }
-        v.president = nettoyer(etat.president);
-        if (!v.president) err.push({ ctrl: champs.president.input, msg: refere ? 'Indiquez le juge des référés.' : 'Indiquez le président de la formation.' });
-        else if (nbMots(v.president) < 2) err.push({ ctrl: champs.president.input, msg: nomInc });
+        v.president = nom(etat.president, champs.president.input);
+        if (!v.president) delete v.president;
         if (!refere) {
-          if (etat.audience !== 'juge_unique' && etat.audience !== 'collegiale') err.push({ ctrl: radiosAud.collegiale, msg: 'Choisissez comment l’audience s’est tenue : collégiale, ou par un seul juge.' });
-          else if (etat.audience === 'juge_unique' && !etat.juge) err.push({ ctrl: radiosJuge.president, msg: 'Indiquez quel juge a tenu l’audience.' });
-          etat.assesseurs.forEach(function (a, i) {
-            var n = nettoyer(a);
-            if (!n) err.push({ ctrl: lignes[i].input, msg: 'Indiquez l’assesseur ' + (i + 1) + '.' });
-            else if (nbMots(n) < 2) err.push({ ctrl: lignes[i].input, msg: nomInc });
-            else ass.push(n);
-          });
-          v.audience = etat.audience;
+          if (etat.audience === 'juge_unique' && !etat.juge) err.push({ ctrl: radiosJuge.president, msg: 'Indiquez quel juge a tenu l’audience.' });
+          if (etat.audience === 'juge_unique' || etat.audience === 'collegiale') v.audience = etat.audience;
           if (etat.audience === 'juge_unique' && etat.juge) v.juge_audience = etat.juge;
         }
         v.formation = refere ? 'juge_unique' : 'collegiale';
-        v.assesseurs = ass;
-        v.greffier = nettoyer(etat.greffier);
-        if (!v.greffier) err.push({ ctrl: champs.greffier.input, msg: 'Indiquez le greffier.' });
-        else if (nbMots(v.greffier) < 2) err.push({ ctrl: champs.greffier.input, msg: nomInc });
-        if (etat.dernieres !== 'oui' && etat.dernieres !== 'non') err.push({ ctrl: radiosDer.oui, msg: 'Indiquez si les conclusions versées sont les dernières écritures de chaque partie.' });
-        else {
-          v.dernieres_ecritures = etat.dernieres === 'oui';
-          if (!v.dernieres_ecritures) v.note = 'Le juge indique que les conclusions versées ne sont pas les dernières écritures. Ne lancez pas l’analyse : demandez-lui, dans la conversation, de verser les dernières écritures de chaque partie.';
-        }
+        /* Au fond, toujours deux positions (chaîne vide admise) pour que juge_audience garde son sens ; en référé, aucune. */
+        v.assesseurs = refere ? [] : [nom(etat.assesseurs[0], lignes[0].input), nom(etat.assesseurs[1], lignes[1].input)];
+        v.greffier = nom(etat.greffier, champs.greffier.input);
+        if (!v.greffier) delete v.greffier;
+        v.dernieres_ecritures = etat.dernieres === 'oui';
+        v.decision_delibere = nettoyer(etat.decision);
+        if (!v.decision_delibere) delete v.decision_delibere;
         err.sort(function (a, b) { return a.ctrl.compareDocumentPosition(b.ctrl) & 4 ? -1 : 1; });
-        if (!err.length && !refere && ass.length !== 2) err.push({ ctrl: lignes[0].input, msg: 'Une formation collégiale compte exactement deux assesseurs.' });
         return { erreurs: err, valeurs: v };
       },
       lots: null, compteur: false
@@ -1626,7 +1627,7 @@ fieldset.choix-point { margin-top: 12px; }
 
     function libelleErreur(e) {
       if (e.lib) return e.lib;
-      var c = e.ctrl, l = c.id && (c.tagName === 'TEXTAREA' || c.type === 'text') ? $('label[for="' + c.id + '"]', racine) : null;
+      var c = e.ctrl, l = c.id && (c.tagName === 'TEXTAREA' || c.type === 'text' || c.type === 'date') ? $('label[for="' + c.id + '"]', racine) : null;
       return l ? (e.msg.indexOf(' : ') >= 0 ? l.textContent + ', ' + e.msg.charAt(0).toLowerCase() + e.msg.slice(1) : l.textContent + ' : ' + e.msg) : e.msg;
     }
     function valider() {
