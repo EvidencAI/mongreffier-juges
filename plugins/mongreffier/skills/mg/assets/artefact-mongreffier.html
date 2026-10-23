@@ -392,6 +392,7 @@ fieldset.choix-point { margin-top: 12px; }
     var k = String(v && v.importance).trim().toLowerCase();
     return Object.prototype.hasOwnProperty.call(IMPORTANCES, k) ? k : 'important';
   }
+  function estCapital(v) { return importanceDe(v) === 'capital'; }
   function pastilleImportance(v) {
     var k = importanceDe(v), d = IMPORTANCES[k];
     // Indicateur discret (décision de Stéphane, 1.2.9) : petit texte gris, sans fond ni bordure, jamais l'allure d'une alerte.
@@ -655,7 +656,8 @@ fieldset.choix-point { margin-top: 12px; }
   function empreinte(onglet) {
     var s = onglet.saisie, pts = Array.isArray(s.points) ? s.points : [];
     if (s.type === 'validation_cadrage') return pts.map(function (p) { return p.id; }).join('|') + '#' + verificationsDe(s).map(function (v) { return v.id; }).join('|');
-    if (s.type === 'points_decision') return pts.map(function (p) { return p.id + ':' + (p.options || []).map(function (o) { return o.code; }).join(','); }).join('|');
+    // Constante : le choix de chaque point est gardé ou jeté d'après sa propre signature (sigPoint), pas d'après la liste des points.
+    if (s.type === 'points_decision') return 'pd2';
     if (s.type === 'fiche') return s.mode === 'refere' ? 'refere' : '';
     if (s.type === 'corrections_relecture') {
       // Les ids R1, R2… restent stables d'une publication à l'autre : le contenu entre dans l'empreinte, sinon un brouillon périmé s'appliquerait à une autre correction.
@@ -666,26 +668,63 @@ fieldset.choix-point { margin-top: 12px; }
     }
     return '';
   }
+  /** Signature d'un point de décision : ses codes d'options. Un choix n'est repris que si elle n'a pas changé. */
+  function sigPoint(p) { return (Array.isArray(p.options) ? p.options : []).map(function (o) { return String(o && o.code); }).join(','); }
+  function optionValide(p, option) {
+    return option === 'AUTRE' || (Array.isArray(p.options) ? p.options : []).some(function (o) { return o && String(o.code) === option; });
+  }
+  /** Reprend du brouillon les choix des points dont la signature est inchangée ; vrai si au moins un point est repris. */
+  function restaurerPositions(onglet, e, v) {
+    var pts = Array.isArray(onglet.saisie.points) ? onglet.saisie.points : [], bp = v.positions, repris = false;
+    if (!bp || typeof bp !== 'object') return false;
+    pts.forEach(function (p) {
+      var b = bp[p.id], sig = sigPoint(p);
+      if (!b || typeof b !== 'object' || b.sig !== sig || typeof b.option !== 'string' || (b.option && !optionValide(p, b.option))) return;
+      e.positions[p.id] = { option: b.option, reserve: typeof b.reserve === 'string' ? b.reserve : '', sig: sig };
+      repris = true;
+    });
+    return repris;
+  }
+  /** Points déjà envoyés (`saisie.positions_recues`) : marqués « envoyés », et pré-remplis si le brouillon n'a rien pour eux. */
+  function appliquerRecues(onglet, e) {
+    var pts = Array.isArray(onglet.saisie.points) ? onglet.saisie.points : [], rc = onglet.saisie.positions_recues, par = {};
+    e.recus = {};
+    if (!Array.isArray(rc)) return;
+    rc.forEach(function (x) { if (x && typeof x === 'object' && typeof x.point === 'string') par[x.point] = x; });
+    pts.forEach(function (p) {
+      var x = par[p.id], r, dej = e.positions[p.id];
+      if (!x || typeof x.option !== 'string' || !optionValide(p, x.option)) return;
+      r = typeof x.reserve === 'string' ? x.reserve : '';
+      if (x.option === 'AUTRE' && !r.replace(/\s/g, '')) return;
+      e.recus[p.id] = { option: x.option, reserve: r };
+      if (!dej || !dej.option) e.positions[p.id] = { option: x.option, reserve: r, sig: sigPoint(p) };
+    });
+  }
   function etatPour(onglet) {
     var id = onglet.id, e, br;
     if (etats[id]) return etats[id];
     e = etatInitial(onglet);
     br = lire(cleBrouillon(id));
     if (br && br.e === empreinte(onglet) && br.v && typeof br.v === 'object') {
-      // Un brouillon vide n'efface pas une valeur pré-remplie par Claude (juridiction du juge connecté).
-      Object.keys(br.v).forEach(function (k) { if (!(br.v[k] === '' && typeof e[k] === 'string' && e[k] !== '')) e[k] = br.v[k]; });
-      if (onglet.saisie.type === 'fiche') {
-        if (!Array.isArray(e.assesseurs) || e.assesseurs.length !== 2) e.assesseurs = ['', ''];
-        delete e.formation;
+      if (onglet.saisie.type === 'points_decision') {
+        if (restaurerPositions(onglet, e, br.v)) e.restaure = true;
+      } else {
+        // Un brouillon vide n'efface pas une valeur pré-remplie par Claude (juridiction du juge connecté).
+        Object.keys(br.v).forEach(function (k) { if (!(br.v[k] === '' && typeof e[k] === 'string' && e[k] !== '')) e[k] = br.v[k]; });
+        if (onglet.saisie.type === 'fiche') {
+          if (!Array.isArray(e.assesseurs) || e.assesseurs.length !== 2) e.assesseurs = ['', ''];
+          delete e.formation;
+        }
+        e.restaure = true;
       }
-      e.restaure = true;
     }
+    if (onglet.saisie.type === 'points_decision') appliquerRecues(onglet, e);
     etats[id] = e;
     return e;
   }
   function sauverBrouillon(onglet, etat) {
     var copie = {}, restaure = etat.restaure;
-    Object.keys(etat).forEach(function (k) { if (k !== 'restaure' && k !== 'envoye') copie[k] = etat[k]; });
+    Object.keys(etat).forEach(function (k) { if (k !== 'restaure' && k !== 'envoye' && k !== 'recus') copie[k] = etat[k]; });
     if (onglet.saisie.type === 'corrections_jugement') {
       copie.textes = {};
       Object.keys(etat.textes).forEach(function (k) { if (!etat.envoyees[k]) copie.textes[k] = etat.textes[k]; });
@@ -872,19 +911,26 @@ fieldset.choix-point { margin-top: 12px; }
     za.input.addEventListener('input', function () { etat.textes.autre = za.input.value; ctx.change(); });
     zones.autre = za; detail.appendChild(za.wrap);
     corps.appendChild(detail);
-    // Vérifications sur pièces : obligatoires (réponse écrite ou « Pas pu vérifier »), visibles quel que soit le choix Oui / Non.
+    // Vérifications sur pièces : seule une `capital` est obligatoire (réponse écrite ou « Pas pu vérifier ») ; les autres sont facultatives, vides = « pas vérifié ». Visibles quel que soit le choix Oui / Non.
     var verifs = verificationsDe(onglet.saisie), zonesV = {};
     if (!etat.verifs || typeof etat.verifs !== 'object') etat.verifs = {};
     if (!etat.pasVerifie || typeof etat.pasVerifie !== 'object') etat.pasVerifie = {};
     if (verifs.length) {
       var zv = h('fieldset', { class: 'verifications' });
       zv.appendChild(h('legend', { text: 'Vérifications sur pièces' }));
-      zv.appendChild(h('p', { class: 'aide', text: 'Claude a besoin de ces réponses. Pour chaque vérification, notez ce que vous constatez, ou cochez « Pas pu vérifier » si vous n’avez pas le dossier sous les yeux.' }));
-      zv.appendChild(h('p', { class: 'aide', text: 'Importance fixée par Claude : Capital (décisif), Important, Utile (à confirmer si vous le pouvez).' }));
+      if (verifs.some(estCapital)) {
+        zv.appendChild(h('p', { class: 'aide', text: 'Seules les vérifications marquées capital sont à remplir. Pour chacune, notez ce que vous constatez, ou cochez « Pas pu vérifier » si vous n’avez pas le dossier sous les yeux. Les autres sont facultatives.' }));
+        zv.appendChild(h('p', { class: 'aide', text: 'Importance fixée par Claude : Capital (décisif, à remplir), Important et Utile (facultatifs).' }));
+      } else {
+        zv.appendChild(h('p', { class: 'aide', text: 'Ces vérifications sont facultatives. Remplissez celles que vous pouvez ; laissez vide les autres.' }));
+        zv.appendChild(h('p', { class: 'aide', text: 'Importance fixée par Claude : Important, Utile.' }));
+      }
       verifs.forEach(function (v) {
-        var z = zoneTexte({ etiquette: [v.id + ' : ' + v.intitule, pastilleImportance(v)], aide: 'Notez ce que vous constatez sur la pièce.', valeur: etat.verifs[v.id] });
+        var cap = estCapital(v);
+        var z = zoneTexte({ etiquette: [v.id + ' : ' + v.intitule + (cap ? '' : ' (facultatif)'), pastilleImportance(v)], aide: cap ? 'Notez ce que vous constatez sur la pièce, ou cochez « Pas pu vérifier » si vous n’avez pas le dossier sous les yeux.' : 'Notez ce que vous constatez sur la pièce. Laissez vide si vous ne pouvez pas la vérifier : Claude gardera une réserve.', valeur: etat.verifs[v.id] });
         var idCase = uid('pv'), cb = h('input', { type: 'checkbox', id: idCase });
-        cb.checked = etat.pasVerifie[v.id] === true;
+        // Pas de case hors `capital` : un ancien « pasVerifie » sur une facultative est ignoré.
+        cb.checked = cap && etat.pasVerifie[v.id] === true;
         z.input.disabled = cb.checked;
         z.input.addEventListener('input', function () { etat.verifs[v.id] = z.input.value; ctx.change(); });
         cb.addEventListener('change', function () {
@@ -895,7 +941,7 @@ fieldset.choix-point { margin-top: 12px; }
         });
         zonesV[v.id] = z;
         zv.appendChild(z.wrap);
-        zv.appendChild(h('label', { class: 'choix', for: idCase }, [cb, h('span', { class: 'corps' }, ['Pas pu vérifier', h('span', { class: 'sr', text: ' ' + v.id })])]));
+        if (cap) zv.appendChild(h('label', { class: 'choix', for: idCase }, [cb, h('span', { class: 'corps' }, ['Pas pu vérifier', h('span', { class: 'sr', text: ' ' + v.id })])]));
       });
       corps.appendChild(zv);
     }
@@ -913,9 +959,9 @@ fieldset.choix-point { margin-top: 12px; }
       var out = [];
       verifs.forEach(function (v) {
         var t;
-        if (etat.pasVerifie[v.id] === true) { out.push({ id: v.id, pas_verifie: true }); return; }
+        if (estCapital(v) && etat.pasVerifie[v.id] === true) { out.push({ id: v.id, pas_verifie: true }); return; }
         t = nettoyer(etat.verifs[v.id]);
-        if (t) out.push({ id: v.id, reponse: t });
+        out.push(t ? { id: v.id, reponse: t } : { id: v.id, pas_verifie: true });
       });
       return out;
     }
@@ -932,7 +978,7 @@ fieldset.choix-point { margin-top: 12px; }
         }
         // Toutes les vérifications sans réponse sont listées d'un coup, dans l'ordre de l'écran.
         verifs.forEach(function (x) {
-          if (etat.pasVerifie[x.id] === true || nettoyer(etat.verifs[x.id])) return;
+          if (!estCapital(x) || etat.pasVerifie[x.id] === true || nettoyer(etat.verifs[x.id])) return;
           err.push({ ctrl: zonesV[x.id].input, msg: 'Répondez à cette vérification, ou cochez « Pas pu vérifier ».', lib: x.id + ' : ' + x.intitule + ', répondez à cette vérification, ou cochez « Pas pu vérifier ».' });
         });
         if (err.length) return { erreurs: err, valeurs: null };
@@ -970,26 +1016,41 @@ fieldset.choix-point { margin-top: 12px; }
       corps.appendChild(h('p', { text: 'Aucun point de décision n’est à trancher pour le moment.' }));
       return { corps: corps, collecter: function () { return { erreurs: [], valeurs: { positions: [] } }; }, lots: null, compteur: false, sansBoutons: true };
     }
-    function pos(id) { if (!etat.positions[id]) etat.positions[id] = { option: '', reserve: '' }; return etat.positions[id]; }
-    function etatTexte(p, court) {
-      var s = pos(p.id), r = nettoyer(s.reserve);
-      if (!s.option) return 'À trancher';
-      if (s.option === 'AUTRE') return r ? (court ? 'Autre solution' : 'Retenu : autre solution') : 'Autre solution : à décrire';
-      return (court ? 'Option ' : 'Retenu : option ') + s.option + (r ? ', avec réserve' : '');
+    var sigs = {};
+    pts.forEach(function (p) { sigs[p.id] = sigPoint(p); });
+    if (!etat.recus) etat.recus = {};
+    function pos(id) { if (!etat.positions[id]) etat.positions[id] = { option: '', reserve: '', sig: sigs[id] }; return etat.positions[id]; }
+    /* Un point est « envoyé » s'il figure dans les choix reçus ; modifié depuis, il est « à renvoyer ». */
+    function envoye(p) { return !!etat.recus[p.id]; }
+    function inchange(p) {
+      var s = pos(p.id), rc = etat.recus[p.id];
+      return !!rc && rc.option === s.option && nettoyer(rc.reserve) === nettoyer(s.reserve);
     }
+    function etatTexte(p, court) {
+      var s = pos(p.id), r = nettoyer(s.reserve), pre = '', suf = '', opt;
+      if (!s.option) return 'À trancher';
+      if (envoye(p)) pre = inchange(p) ? 'Envoyé : ' : 'À renvoyer : ';
+      if (s.option === 'AUTRE') {
+        if (!r) return (pre || '') + (pre ? 'autre solution, à décrire' : 'Autre solution : à décrire');
+        opt = 'autre solution';
+      } else { opt = 'option ' + s.option; suf = r ? ', avec réserve' : ''; }
+      if (pre) return pre + opt + suf;
+      return court ? opt.charAt(0).toUpperCase() + opt.slice(1) + suf : 'Retenu : ' + opt + suf;
+    }
+    function fait(p) { return tranche(p) && (!envoye(p) || inchange(p)); }
     function tranche(p) { var s = pos(p.id); return !!s.option && (s.option !== 'AUTRE' || !!nettoyer(s.reserve)); }
     function maj() {
       var n = pts.filter(tranche).length, txt;
       txt = n + ' point' + (n > 1 ? 's' : '') + ' sur ' + pts.length + ' tranché' + (n > 1 ? 's' : '') + '.';
       if (avancement.textContent !== txt) avancement.textContent = txt;
       pts.forEach(function (p) {
-        var fait = tranche(p);
+        var ok = fait(p);
         cellules[p.id].textContent = etatTexte(p, true);
         var e = sections[p.id].etat;
         e.textContent = '';
-        e.appendChild(icone(fait ? 'coche' : 'cercle'));
+        e.appendChild(icone(ok ? 'coche' : 'cercle'));
         e.appendChild(document.createTextNode(etatTexte(p, false)));
-        e.className = 'etat-point' + (fait ? ' fait' : '');
+        e.className = 'etat-point' + (ok ? ' fait' : '');
       });
     }
     function ouvrirPoint(id) {
@@ -1000,7 +1061,15 @@ fieldset.choix-point { margin-top: 12px; }
       s.resume.focus();
     }
 
-    corps.appendChild(h('p', { text: 'Le tableau résume vos choix. Ouvrez un point pour lire l’analyse et choisir une option ; vous pouvez ajouter une réserve.' }));
+    // Phrase d'en-tête et bouton d'aller-à : fixés à l'ouverture d'après les points déjà envoyés.
+    var dejaEnvoyes = pts.filter(envoye), nouveaux = pts.filter(function (p) { return !envoye(p); }), E = dejaEnvoyes.length, N = nouveaux.length, phrase;
+    if (!E) phrase = 'Le tableau résume vos choix. Ouvrez un point pour lire l’analyse et choisir une option ; vous pouvez ajouter une réserve.';
+    else if (!N) phrase = 'Tous vos points ont été envoyés. Pour en changer un, ouvrez-le : il sera renvoyé.';
+    else phrase = (N === 1 ? '1 nouveau point est à trancher.' : N + ' nouveaux points sont à trancher.')
+      + (E === 1 ? ' Le point déjà envoyé est replié, avec votre choix. Pour le changer, ouvrez-le : il sera renvoyé avec ' : ' Les ' + E + ' points déjà envoyés sont repliés, avec votre choix. Pour en changer un, ouvrez-le : il sera renvoyé avec ')
+      + (N === 1 ? 'le nouveau.' : 'les nouveaux.');
+    corps.appendChild(h('p', { text: phrase }));
+    if (E && N) corps.appendChild(h('button', { type: 'button', class: 'vers-saisie', text: 'Aller au point ' + nouveaux[0].id, onclick: function () { ouvrirPoint(nouveaux[0].id); } }));
     corps.appendChild(avancement);
 
     // Tableau de synthèse, mis à jour en direct ; la question ouvre le point.
@@ -1036,6 +1105,7 @@ fieldset.choix-point { margin-top: 12px; }
       var fs = h('fieldset', { class: 'choix-point' }), nom = uid('p'), radios = {}, slot = creerSlot(), opts = (p.options || []).map(function (o) { return { code: String(o.code), libelle: String(o.libelle) }; });
       var prop, suivant = pts[i + 1];
       d.appendChild(resume);
+      if (envoye(p)) d.appendChild(h('p', { class: 'aide', text: 'Ce point a déjà été envoyé à Claude. Si vous changez votre choix, il sera renvoyé avec le prochain envoi.' }));
       if (detailPts[p.id] && detailPts[p.id].length) d.appendChild(h('div', { class: 'md' }, detailPts[p.id]));
       if (INDIC[p.indicateur]) d.appendChild(h('p', {}, [pastille(p.indicateur)]));
       if (p.prop_ia === 'ABSTENTION') d.appendChild(h('p', { text: 'L’IA s’abstient de recommander : appréciation souveraine du juge.' }));
@@ -1070,9 +1140,19 @@ fieldset.choix-point { margin-top: 12px; }
       majAideReserve(p);
       corps.appendChild(d);
     });
-    // Au départ : seul le premier point à trancher est ouvert (tous tranchés : tout fermé).
-    var premier = pts.filter(function (p) { return !pos(p.id).option; })[0];
-    if (premier) sections[premier.id].details.open = true;
+    // Au départ : premier lot, seul le premier point à trancher est ouvert (tous tranchés : tout fermé) ;
+    // lot suivant, les points envoyés sont repliés et tous les nouveaux sont ouverts.
+    if (E) nouveaux.forEach(function (p) { sections[p.id].details.open = true; });
+    else {
+      var premier = pts.filter(function (p) { return !pos(p.id).option; })[0];
+      if (premier) sections[premier.id].details.open = true;
+    }
+    // Envoi complet réussi : tous les points tranchés passent à « Envoyé », sans se replier.
+    ctx.envoyeOk = function () {
+      etat.recus = {};
+      pts.forEach(function (p) { if (tranche(p)) etat.recus[p.id] = { option: pos(p.id).option, reserve: pos(p.id).reserve }; });
+      maj();
+    };
     maj();
     function positions() {
       var out = [];
@@ -1649,6 +1729,11 @@ fieldset.choix-point { margin-top: 12px; }
       if (premier) { try { premier.scrollIntoView({ block: 'center' }); } catch (e) { /* ignoré */ } premier.focus({ preventScroll: true }); }
       return null;
     }
+    /* Envoi complet réussi : brouillon effacé ; l'écran peut marquer ce qui est parti (points de décision). */
+    function envoiComplet() {
+      effacer(cleBrouillon(onglet.id));
+      if (ctx.envoyeOk) ctx.envoyeOk();
+    }
     function lancer(charge, apres, aucunReste) {
       var mode, p, n;
       if (occupe) return;
@@ -1667,8 +1752,7 @@ fieldset.choix-point { margin-top: 12px; }
         etat.envoye = heure();
         zEnvoye.textContent = 'Envoyé à ' + etat.envoye; zEnvoye.hidden = false;
         zStatut.textContent = mode === 'stage' ? 'Votre réponse est déposée dans la zone de message de la conversation. Appuyez sur Entrée pour l’envoyer.' + (msgApres ? ' ' + msgApres.replace(/^Envoyé\.\s*/, '') : '') : msgApres || 'Envoyé. Regardez la conversation : confirmez l’envoi dans la fenêtre de Claude si elle s’affiche.';
-        if (apres) apres(); else effacer(cleBrouillon(onglet.id));
-        if (!apres) { /* envoi complet : brouillon effacé */ }
+        if (apres) apres(); else envoiComplet();
         majOccupe(false);
       }, function (e) {
         var code = codeErreur(e);
@@ -1684,7 +1768,7 @@ fieldset.choix-point { margin-top: 12px; }
               try { Promise.resolve(room.sendToClaudeSession(charge, { deliver: 'stage' })).then(function () {
                 zStatut.textContent = 'Votre réponse est déposée dans la zone de message de la conversation. Appuyez sur Entrée pour l’envoyer.';
                 etat.envoye = heure(); zEnvoye.textContent = 'Envoyé à ' + etat.envoye; zEnvoye.hidden = false;
-                if (apres) apres(); else effacer(cleBrouillon(onglet.id));
+                if (apres) apres(); else envoiComplet();
               }, function () { /* message déjà affiché */ }); } catch (e2) { /* message déjà affiché */ }
             }
             ctx.boutons();
@@ -1713,7 +1797,7 @@ fieldset.choix-point { margin-top: 12px; }
           lots.lots.forEach(function (l) {
             zLots.appendChild(h('button', { type: 'button', class: 'btn primaire', text: l.libelle, onclick: function (ev) {
               var b = ev.currentTarget;
-              lancer(l.charge, function () { restants -= 1; b._clos = true; b.setAttribute('disabled', ''); b.textContent = 'Lot envoyé : ' + l.libelle; if (restants <= 0) effacer(cleBrouillon(onglet.id)); });
+              lancer(l.charge, function () { restants -= 1; b._clos = true; b.setAttribute('disabled', ''); b.textContent = 'Lot envoyé : ' + l.libelle; if (restants <= 0) envoiComplet(); });
             } }));
           });
         } else if (lots && lots.trop) {
