@@ -205,6 +205,7 @@ textarea { resize: vertical; }
 .pied .avertissement { max-width: 62ch; margin: 0 auto 16px; padding-top: 16px; border-top: 1px solid var(--bordure); font-size: 14px; line-height: 1.5; color: var(--texte-2); font-style: italic; }
 .pied .avertissement strong { color: var(--texte); }
 .pied .invitation { max-width: 62ch; margin: 0 auto 16px; font-size: 14px; line-height: 1.5; color: var(--texte-2); }
+span.repere.touche { font-weight: 600; }
 details.section { border-top: 1px solid var(--bordure); padding: 4px 0; }
 details.section:last-of-type { border-bottom: 1px solid var(--bordure); }
 summary.section-titre { cursor: pointer; min-height: 48px; display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.05rem; color: var(--texte); list-style: none; }
@@ -231,7 +232,7 @@ table.synthese td, table.synthese th { vertical-align: middle; }
 }
 .replier { display: inline-flex; align-items: center; min-height: 44px; background: none; border: 0; padding: 4px 0; color: var(--accent-texte); text-decoration: underline; font: inherit; text-align: left; cursor: pointer; }
 details.section > .replier { margin: 4px 0 8px; }
-@media print { .replier, details.section > .replier, .lecture-seule, .vers-haut, details.section > .vers-haut, .fin-panneau { display: none !important; } }
+@media print { .replier, .passer, details.section > .replier, .lecture-seule, .vers-haut, details.section > .vers-haut, .fin-panneau { display: none !important; } }
 .lecture-seule { margin: 0 0 16px; }
 .lecture-seule .vers-saisie { font-size: inherit; }
 .lecture-seule p { margin: 0 0 4px; }
@@ -249,6 +250,7 @@ blockquote.bloc-reformule { background: var(--surface); border-left: 3px solid v
 .importance .jauge { letter-spacing: 1px; font-size: 11px; }
 textarea:disabled { opacity: .6; cursor: not-allowed; }
 .lien-point { background: none; border: 0; padding: 4px 0; min-height: 44px; color: var(--accent-texte); text-decoration: underline; font: inherit; text-align: left; cursor: pointer; }
+.avancement .btn-lien { display: inline; background: none; border: 0; padding: 12px 0; min-height: 44px; color: var(--accent-texte); text-decoration: underline; font: inherit; text-align: left; cursor: pointer; }
 .passer { display: block; background: none; border: 0; padding: 8px 0; min-height: 44px; margin: 8px 0 12px; color: var(--accent-texte); text-decoration: underline; font: inherit; cursor: pointer; }
 fieldset.verifications { margin-top: 24px; }
 fieldset.choix-point { margin-top: 12px; }
@@ -276,7 +278,7 @@ fieldset.choix-point { margin-top: 12px; }
   "onglets": [
     {"id": "fiche", "titre": "Fiche du dossier", "statut": "a_saisir", "contenu_md": "", "saisie": {"type": "fiche", "valeurs": {}}},
     {"id": "etape0", "titre": "État des parties", "statut": "fait", "contenu_md": "## État des parties\n\n| Partie | Qualité | Représentation | Position |\n|---|---|---|---|\n| [Demanderesse] | Demanderesse | Avocat | Comparante |\n| [Défenderesse] | Défenderesse | Avocat | Comparante |\n\nLes deux parties ont conclu. Les pièces communiquées sont numérotées de 1 à 12 par la demanderesse et de 1 à 5 par la défenderesse.\n\n> Ces données sont des exemples : elles sont remplacées par celles du dossier."},
-    {"id": "cadrage", "titre": "Cadrage", "statut": "en_cours", "contenu_md": "## Fiche de cadrage\n\n### Office du juge\n\nLe juge tranche le litige conformément aux règles de droit qui lui sont applicables (art. 12 du code de procédure civile).\n\n### Demandes identifiées\n\n- La demanderesse sollicite le paiement d’une somme de 12 000 euros au titre d’une facture impayée.\n- La défenderesse conteste la créance et demande reconventionnellement des dommages et intérêts.\n\n### Pièces clés\n\n1. Contrat de prestation (pièce n° 1).\n2. Facture contestée (pièce n° 4).", "saisie": {"type": "validation_cadrage", "points": [
+    {"id": "cadrage", "titre": "Cadrage", "statut": "en_cours", "contenu_md": "Fiche de cadrage du dossier.\n\n## C1 : État des parties (Étape 0)\n\nLes deux parties ont conclu ; elles sont représentées par avocat.\n\n## C2 : Office du juge\n\nLe juge tranche le litige conformément aux règles de droit qui lui sont applicables (art. 12 du code de procédure civile).\n\n### Principe dispositif\n\nLe juge se prononce sur ce qui est demandé (art. 4 et 5 du code de procédure civile).\n\n## C3 : Limites de l’IA\n\nL’IA ne vérifie pas les pièces originales : le juge confirme les montants et les dates décisifs.\n\n## C4 : Identification des parties\n\nLa demanderesse et la défenderesse sont identifiées sans ambiguïté.\n\n## C5 : Régularité de l’assignation et qualification de la décision\n\nL’assignation du 3 mars 2025 est régulière ; la décision sera contradictoire et en premier ressort.\n\n## C6 : Fins de non-recevoir\n\nAucune fin de non-recevoir n’est soulevée.\n\n## C7 : Demandes identifiées\n\n- La demanderesse sollicite le paiement d’une somme de 12 000 euros au titre d’une facture impayée.\n- La défenderesse conteste la créance et demande reconventionnellement des dommages et intérêts.\n\n## C8 : Ordre d’examen proposé\n\n1. Exigibilité de la facture.\n2. Demande reconventionnelle.\n\n## C9 : Articles et jurisprudences cités\n\nArt. 1103 et 1217 du code civil.\n\n## C10 : Pièces clés et points à contrôler\n\n1. Contrat de prestation (pièce n° 1).\n2. Facture contestée (pièce n° 4).", "saisie": {"type": "validation_cadrage", "points": [
       {"id": "C1", "intitule": "État des parties (Étape 0)"},
       {"id": "C2", "intitule": "Office du juge"},
       {"id": "C3", "intitule": "Limites de l’IA"},
@@ -288,7 +290,7 @@ fieldset.choix-point { margin-top: 12px; }
       {"id": "C9", "intitule": "Articles et jurisprudences cités"},
       {"id": "C10", "intitule": "Pièces clés et points à contrôler"}
     ], "verifications": [
-      {"id": "V1", "intitule": "Montant de la facture n° 12 sur l’original (pièce 3 de la demanderesse)", "importance": "capital"},
+      {"id": "V1", "intitule": "Montant de la facture n° 12 sur l’original (pièce 3 de la demanderesse)", "importance": "capital", "rubrique": "C3"},
       {"id": "V2", "intitule": "Date de réception de la mise en demeure (pièce 7)", "importance": "utile"}
     ]}},
     {"id": "decision", "titre": "Points de décision", "statut": "a_saisir", "contenu_md": "## POINT 1 : Exigibilité de la facture\n\n**Thèse de la demanderesse :** la prestation a été livrée sans réserve.\n\n**Thèse de la défenderesse :** la prestation est incomplète.\n\n## POINT 2 : Montant de l’indemnisation\n\nTrois méthodes de calcul sont possibles ; le juge apprécie souverainement.\n\n## POINT 3 : Frais irrépétibles\n\nApplication de l’article 700 du code de procédure civile.", "saisie": {"type": "points_decision", "points": [
@@ -298,10 +300,10 @@ fieldset.choix-point { margin-top: 12px; }
     ]}},
     {"id": "redaction", "titre": "Projet de jugement", "statut": "a_saisir", "contenu_md": "## Projet de jugement\n\n### Faits\n\nPar contrat du 10 janvier 2025, les parties ont convenu d’une prestation de services.\n\n### Procédure\n\nLa demanderesse a assigné la défenderesse par acte du 3 mars 2025.\n\n### Dispositif\n\nPAR CES MOTIFS, le tribunal condamne la défenderesse au paiement de la somme de 12 000 euros."},
     {"id": "robustesse", "titre": "Robustesse", "statut": "a_saisir", "contenu_md": "## Robustesse de la solution\n\n| Point | Indicateur | Commentaire |\n|---|---|---|\n| P1 | 🟢 | Solution stable en jurisprudence. |\n| P2 | 🟠 | Les juridictions divergent sur la méthode de calcul. |\n| P3 | 🔴 | Pur pouvoir d’appréciation du juge. |\n", "saisie": {"type": "selection_robustesse", "recommandations": [
-      {"id": "R1", "gravite": "a_surveiller", "origine": "relecture", "intitule": "Réponse à l’argument sur la livraison partielle", "detail": "Le projet n’écarte pas expressément l’argument tiré de la livraison partielle."},
-      {"id": "R2", "gravite": "critique", "origine": "relecture", "intitule": "Motivation du quantum insuffisante", "detail": "Le montant retenu n’est pas rattaché aux pièces."},
-      {"id": "R3", "gravite": "mineur", "origine": "relecture", "intitule": "Rappel de la date de l’assignation", "detail": "La date figure dans la procédure mais pas dans les motifs."},
-      {"id": "R4", "gravite": "a_surveiller", "origine": "appel", "intitule": "Moyen d’appel sur les frais irrépétibles", "detail": "L’absence de motivation propre à l’article 700 expose le jugement à la réformation."}
+      {"id": "R1", "gravite": "a_surveiller", "origine": "relecture", "intitule": "Réponse à l’argument sur la livraison partielle"},
+      {"id": "R2", "gravite": "critique", "origine": "relecture", "intitule": "Motivation du quantum insuffisante", "touche_decision": ["P2"]},
+      {"id": "R3", "gravite": "mineur", "origine": "relecture", "intitule": "Rappel de la date de l’assignation"},
+      {"id": "R4", "gravite": "a_surveiller", "origine": "appel", "intitule": "Moyen d’appel sur les frais irrépétibles"}
     ]}},
     {"id": "definitif", "titre": "Jugement définitif", "statut": "en_cours", "contenu_md": "## Jugement définitif\n\n### Dispositif\n\nPAR CES MOTIFS, le tribunal condamne la défenderesse au paiement de la somme de 9 000 euros, après examen des pièces n° 1 et n° 4.\n\n> Ce texte est un exemple : la version définitive du dossier le remplace."}
   ]
@@ -634,7 +636,7 @@ fieldset.choix-point { margin-top: 12px; }
     if (type === 'fiche') {
       e = { juridiction: String(v.juridiction || ''), date_audience: String(v.date_audience || ''), date_delibere: String(v.date_delibere || ''), date_assignation: String(v.date_assignation || ''), president: String(v.president || ''), audience: v.audience === 'collegiale' || v.audience === 'juge_unique' ? v.audience : '', juge: v.juge_audience === 'president' || v.juge_audience === 'assesseur_1' || v.juge_audience === 'assesseur_2' ? v.juge_audience : '', assesseurs: [String((v.assesseurs || [])[0] || ''), String((v.assesseurs || [])[1] || '')], greffier: String(v.greffier || ''), decision: String(v.decision_delibere || ''), dernieres: v.dernieres_ecritures === true ? 'oui' : v.dernieres_ecritures === false ? 'non' : '' };
     } else if (type === 'corrections_jugement') e = { textes: {}, envoyees: {}, sansCorr: false };
-    else if (type === 'validation_cadrage') e = { choix: null, textes: {}, verifs: {}, pasVerifie: {} };
+    else if (type === 'validation_cadrage') e = { choix: null, confirme: false, textes: {}, verifs: {}, pasVerifie: {} };
     else if (type === 'points_decision') e = { positions: {} };
     else if (type === 'selection_robustesse') e = { coches: {}, annots: {}, obs: '' };
     else if (type === 'corrections_relecture') e = { choix: {}, textes: {} };
@@ -645,6 +647,12 @@ fieldset.choix-point { margin-top: 12px; }
   function verificationsDe(s) {
     return (Array.isArray(s.verifications) ? s.verifications : []).filter(function (v) {
       return v && typeof v.id === 'string' && v.id && typeof v.intitule === 'string' && v.intitule.trim();
+    }).map(function (v) {
+      // Copie : `rubrique` (rattachement à une rubrique Cn) sert à l'affichage seulement, hors empreinte et hors charge.
+      var c = {}, k;
+      for (k in v) if (Object.prototype.hasOwnProperty.call(v, k)) c[k] = v[k];
+      c.rubrique = typeof v.rubrique === 'string' ? v.rubrique : '';
+      return c;
     });
   }
   /** Hachage court (FNV-1a 32 bits) d'un texte : sert à reconnaître un contenu inchangé, pas à protéger. */
@@ -715,6 +723,8 @@ fieldset.choix-point { margin-top: 12px; }
           if (!Array.isArray(e.assesseurs) || e.assesseurs.length !== 2) e.assesseurs = ['', ''];
           delete e.formation;
         }
+        // Brouillon 1.2.27 (radios Oui / Non) : « oui » = cadrage confirmé, « non » = non confirmé ; les textes sont gardés, `choix` reste dans le brouillon.
+        if (onglet.saisie.type === 'validation_cadrage' && typeof br.v.confirme !== 'boolean') e.confirme = br.v.choix === 'oui';
         e.restaure = true;
       }
     }
@@ -885,76 +895,203 @@ fieldset.choix-point { margin-top: 12px; }
 
   /* --- cadrage --- */
   function ecranCadrage(onglet, etat, ctx) {
-    var corps = h('div'), pts = Array.isArray(onglet.saisie.points) ? onglet.saisie.points : [], zones = {}, radios = {}, detail = h('fieldset'), slotGroupe = creerSlot();
-    var groupe = h('fieldset'), nom = uid('r');
-    function radio(val, texte) {
-      var id = uid('rd'), inp = h('input', { type: 'radio', name: nom, id: id, value: val });
-      inp.checked = etat.choix === val;
-      radios[val] = inp;
-      return h('label', { class: 'choix', for: id }, [inp, h('span', { class: 'corps', text: texte })]);
-    }
-    corps.appendChild(h('p', { text: 'Relisez le cadrage ci-dessus. Est-il correct ?' }));
-    groupe.appendChild(h('legend', { text: 'Votre réponse' }));
-    groupe.appendChild(radio('oui', 'Oui, le cadrage est correct'));
-    groupe.appendChild(radio('non', 'Non, j’ai des corrections à apporter'));
-    groupe.appendChild(slotGroupe);
-    lierErreur(radios.oui, slotGroupe, null, groupe);
-    corps.appendChild(groupe);
-    detail.hidden = etat.choix !== 'non';
-    detail.appendChild(h('legend', { text: 'Vos corrections, point par point' }));
-    pts.forEach(function (p) {
-      var z = zoneTexte({ libelle: p.id + ' : ' + p.intitule, aide: 'Laissez vide si ce point est correct.', valeur: etat.textes[p.id] });
-      z.input.addEventListener('input', function () { etat.textes[p.id] = z.input.value; ctx.change(); });
-      zones[p.id] = z; detail.appendChild(z.wrap);
-    });
-    var za = zoneTexte({ libelle: 'Autre remarque', aide: 'Pour tout ce que la liste ne couvre pas.', valeur: etat.textes.autre });
-    za.input.addEventListener('input', function () { etat.textes.autre = za.input.value; ctx.change(); });
-    zones.autre = za; detail.appendChild(za.wrap);
-    corps.appendChild(detail);
-    // Vérifications sur pièces : seule une `capital` est obligatoire (réponse écrite ou « Pas pu vérifier ») ; les autres sont facultatives, vides = « pas vérifié ». Visibles quel que soit le choix Oui / Non.
-    var verifs = verificationsDe(onglet.saisie), zonesV = {};
+    var corps = h('div'), pts = Array.isArray(onglet.saisie.points) ? onglet.saisie.points : [], zones = {}, sections = {}, ordre = [], cellules = {}, AUTRES = '__autres';
+    var detailR = onglet._detailCadrage || {}, intro = onglet._introCadrage || [];
+    var slotConfirme = creerSlot(), phraseEtat = h('p', { class: 'aide', role: 'status' }), cbConfirme, legende = null, majDeplier = function () { /* remplacée si le tableau existe */ };
+    if (typeof etat.confirme !== 'boolean') etat.confirme = false;
+    if (!etat.textes || typeof etat.textes !== 'object') etat.textes = {};
     if (!etat.verifs || typeof etat.verifs !== 'object') etat.verifs = {};
     if (!etat.pasVerifie || typeof etat.pasVerifie !== 'object') etat.pasVerifie = {};
-    if (verifs.length) {
+    // Vérifications sur pièces : chacune va sous la correction de sa rubrique ; sans rubrique valide, dans « Autres vérifications ». Seule une `capital` est obligatoire (réponse écrite ou « Pas pu vérifier »).
+    var verifs = verificationsDe(onglet.saisie), zonesV = {}, parBloc = {}, autres = [], verifsEcran = [], idsPts = {};
+    pts.forEach(function (p) { idsPts[p.id] = true; parBloc[p.id] = []; });
+    verifs.forEach(function (v) { if (typeof v.rubrique === 'string' && idsPts[v.rubrique] === true) parBloc[v.rubrique].push(v); else autres.push(v); });
+    pts.forEach(function (p) { verifsEcran = verifsEcran.concat(parBloc[p.id]); });
+    verifsEcran = verifsEcran.concat(autres);
+    var blocs = pts.map(function (p) { return p.id; });
+    if (autres.length) blocs.push(AUTRES);
+    function blocDe(v) { return typeof v.rubrique === 'string' && idsPts[v.rubrique] === true ? v.rubrique : AUTRES; }
+    function listeDe(id) { return id === AUTRES ? autres : parBloc[id]; }
+    function texteDe(id) { return nettoyer(etat.textes[id]); }
+    function sansReponse(v) { return estCapital(v) && etat.pasVerifie[v.id] !== true && !nettoyer(etat.verifs[v.id]); }
+    function resteDe(id) { return listeDe(id).filter(sansReponse).length; }
+    function capitalesDe(id) { return listeDe(id).filter(estCapital).length; }
+    function phraseCapitale(n) { return n + ' vérification' + (n > 1 ? 's' : '') + ' capitale' + (n > 1 ? 's' : '') + ' à remplir'; }
+    // Texte d'état (replié et tableau) : capitales à remplir en premier, puis la correction.
+    function etatBloc(id) {
+      var reste = resteDe(id), parts = [];
+      if (reste) parts.push(phraseCapitale(reste));
+      if (id !== AUTRES && texteDe(id)) parts.push('Correction notée');
+      if (!parts.length) parts.push(id === AUTRES ? 'Rien d’obligatoire' : 'Correct');
+      return { texte: parts.join(' · '), ok: !reste };
+    }
+    function corrections() {
+      var out = [];
+      pts.forEach(function (p) { var t = texteDe(p.id); if (t) out.push({ point: p.id, texte: t }); });
+      var a = nettoyer(etat.textes.autre);
+      if (a) out.push({ point: 'autre', texte: a });
+      return out;
+    }
+    // Compteur des capitales sans réponse : une occurrence en haut (annoncée), une près des boutons d'envoi.
+    var compteurHaut = h('p', { class: 'aide avancement', role: 'status' }), compteurBas = h('p', { class: 'aide avancement' }), sigCompteur = null, aCapitale = verifs.some(estCapital);
+    function allerVerif(v) {
+      var s = sections[blocDe(v)];
+      if (s) s.details.open = true;
+      majDeplier();
+      try { zonesV[v.id].input.scrollIntoView({ block: 'center' }); } catch (e) { /* ignoré */ }
+      zonesV[v.id].input.focus();
+    }
+    function remplirCompteur(p, restes) {
+      var s = restes.length > 1 ? 's' : '';
+      p.textContent = '';
+      if (!restes.length) { p.appendChild(document.createTextNode('Toutes les vérifications capitales ont une réponse.')); return; }
+      p.appendChild(document.createTextNode(restes.length + ' vérification' + s + ' capitale' + s + ' sans réponse :'));
+      restes.forEach(function (v) {
+        var b = h('button', { type: 'button', class: 'btn-lien', text: v.id + ' : ' + v.intitule });
+        b.addEventListener('click', function () { allerVerif(v); });
+        p.appendChild(document.createTextNode(' '));
+        p.appendChild(b);
+      });
+    }
+    function maj() {
+      var n = corrections().length, txt, restes, sig;
+      blocs.forEach(function (id) {
+        var e = etatBloc(id), s = sections[id], c = cellules[id], tot = capitalesDe(id);
+        if (c) { c.cap.textContent = tot ? resteDe(id) + ' sur ' + tot : 'Aucune'; c.etat.textContent = e.texte; }
+        s.etat.textContent = '';
+        s.etat.appendChild(icone(e.ok ? 'coche' : 'cercle'));
+        s.etat.appendChild(document.createTextNode(e.texte));
+        s.etat.className = 'etat-point' + (e.ok ? ' fait' : '');
+      });
+      if (aCapitale) {
+        restes = verifsEcran.filter(sansReponse);
+        sig = restes.map(function (v) { return v.id; }).join('|');
+        if (sig !== sigCompteur) { sigCompteur = sig; remplirCompteur(compteurHaut, restes); remplirCompteur(compteurBas, restes); }
+      }
+      txt = n ? 'Vous avez écrit ' + n + ' correction' + (n > 1 ? 's' : '') + ' : le cadrage sera envoyé avec ' + (n > 1 ? 'vos corrections.' : 'votre correction.') + ' La case ci-dessous n’est pas nécessaire.' : 'Vous n’avez écrit aucune correction : le cadrage sera envoyé comme correct. Cochez la case ci-dessous pour confirmer que vous l’avez relu.';
+      if (phraseEtat.textContent !== txt) phraseEtat.textContent = txt;
+      // La case n'est exigée que sans correction : une erreur affichée disparaît dès qu'une correction est écrite.
+      if (n) retirerErreur(cbConfirme);
+    }
+    function ouvrirPoint(id) {
+      var s = sections[id];
+      if (!s) return;
+      s.details.open = true;
+      try { s.details.scrollIntoView({ block: 'start' }); } catch (e) { /* ignoré */ }
+      s.resume.focus();
+    }
+    // Bloc des vérifications d'une rubrique (ou de « Autres vérifications ») : blocs existants, textes inchangés.
+    function fieldsetVerifs(liste) {
       var zv = h('fieldset', { class: 'verifications' });
       zv.appendChild(h('legend', { text: 'Vérifications sur pièces' }));
-      if (verifs.some(estCapital)) {
-        zv.appendChild(h('p', { class: 'aide', text: 'Seules les vérifications marquées capital sont à remplir. Pour chacune, notez ce que vous constatez, ou cochez « Pas pu vérifier » si vous n’avez pas le dossier sous les yeux. Les autres sont facultatives.' }));
-        zv.appendChild(h('p', { class: 'aide', text: 'Importance fixée par Claude : Capital (décisif, à remplir), Important et Utile (facultatifs).' }));
-      } else {
-        zv.appendChild(h('p', { class: 'aide', text: 'Ces vérifications sont facultatives. Remplissez celles que vous pouvez ; laissez vide les autres.' }));
-        zv.appendChild(h('p', { class: 'aide', text: 'Importance fixée par Claude : Important, Utile.' }));
-      }
-      verifs.forEach(function (v) {
+      liste.forEach(function (v) {
         var cap = estCapital(v);
         var z = zoneTexte({ etiquette: [v.id + ' : ' + v.intitule + (cap ? '' : ' (facultatif)'), pastilleImportance(v)], aide: cap ? 'Notez ce que vous constatez sur la pièce, ou cochez « Pas pu vérifier » si vous n’avez pas le dossier sous les yeux.' : 'Notez ce que vous constatez sur la pièce. Laissez vide si vous ne pouvez pas la vérifier : Claude gardera une réserve.', valeur: etat.verifs[v.id] });
         var idCase = uid('pv'), cb = h('input', { type: 'checkbox', id: idCase });
         // Pas de case hors `capital` : un ancien « pasVerifie » sur une facultative est ignoré.
         cb.checked = cap && etat.pasVerifie[v.id] === true;
         z.input.disabled = cb.checked;
-        z.input.addEventListener('input', function () { etat.verifs[v.id] = z.input.value; ctx.change(); });
+        z.input.addEventListener('input', function () { etat.verifs[v.id] = z.input.value; maj(); ctx.change(); });
         cb.addEventListener('change', function () {
           etat.pasVerifie[v.id] = cb.checked;
           z.input.disabled = cb.checked;
           if (cb.checked) retirerErreur(z.input);
+          maj();
           ctx.change();
         });
         zonesV[v.id] = z;
         zv.appendChild(z.wrap);
         if (cap) zv.appendChild(h('label', { class: 'choix', for: idCase }, [cb, h('span', { class: 'corps' }, ['Pas pu vérifier', h('span', { class: 'sr', text: ' ' + v.id })])]));
       });
-      corps.appendChild(zv);
+      return zv;
     }
-    groupe.addEventListener('change', function (ev) {
-      if (ev.target && ev.target.name === nom) { etat.choix = ev.target.value; detail.hidden = etat.choix !== 'non'; ctx.change(); }
-    });
-    function corrections() {
-      var out = [];
-      pts.forEach(function (p) { var t = nettoyer(etat.textes[p.id]); if (t) out.push({ point: p.id, texte: t }); });
-      var a = nettoyer(etat.textes.autre);
-      if (a) out.push({ point: 'autre', texte: a });
-      return out;
+    if (intro.length) corps.appendChild(h('div', { class: 'md intro-points' }, intro));
+    if (!pts.length) corps.appendChild(h('p', { text: 'Aucune rubrique n’est à relire séparément pour le moment.' }));
+    else corps.appendChild(h('p', { text: 'Relisez le cadrage rubrique par rubrique. Laissez vide la correction d’une rubrique qui est correcte.' }));
+    // Aide des vérifications : dite une seule fois, en tête.
+    if (verifs.length) {
+      if (aCapitale) {
+        corps.appendChild(h('p', { class: 'aide', text: 'Seules les vérifications marquées capital sont à remplir. Pour chacune, notez ce que vous constatez, ou cochez « Pas pu vérifier » si vous n’avez pas le dossier sous les yeux. Les autres sont facultatives.' }));
+        corps.appendChild(h('p', { class: 'aide', text: 'Importance fixée par Claude : Capital (décisif, à remplir), Important et Utile (facultatifs).' }));
+      } else {
+        corps.appendChild(h('p', { class: 'aide', text: 'Ces vérifications sont facultatives. Remplissez celles que vous pouvez ; laissez vide les autres.' }));
+        corps.appendChild(h('p', { class: 'aide', text: 'Importance fixée par Claude : Important, Utile.' }));
+      }
     }
+    if (aCapitale) corps.appendChild(compteurHaut);
+    if (pts.length) {
+      // Tableau de synthèse, mis à jour en direct ; l'intitulé ouvre la rubrique.
+      var t = h('table', { class: 'synthese' }), tb = h('tbody');
+      legende = h('caption', { text: 'Synthèse du cadrage', tabindex: '-1' });
+      t.appendChild(legende);
+      t.appendChild(h('thead', {}, [h('tr', {}, ['N°', 'Rubrique', 'Capitales à remplir', 'État'].map(function (x) { return h('th', { scope: 'col', text: x }); }))]));
+      blocs.forEach(function (id) {
+        var p = pts.filter(function (q) { return q.id === id; })[0], lib = p ? String(p.intitule) : 'Autres vérifications';
+        var cap = h('td'), c = h('td', { class: 'votre-choix' }), b = h('button', { type: 'button', class: 'btn-lien lien-point', text: lib });
+        b.addEventListener('click', function () { ouvrirPoint(id); });
+        cellules[id] = { cap: cap, etat: c };
+        tb.appendChild(h('tr', {}, [h('td', { text: p ? String(p.id) : 'Autres' }), h('td', {}, [b]), cap, c]));
+      });
+      t.appendChild(tb);
+      corps.appendChild(h('div', { class: 'tableau', role: 'region', tabindex: '0', 'aria-label': 'Tableau, défilement horizontal' }, [t]));
+      var deplier = h('button', { type: 'button', class: 'btn-lien tout-deplier', text: 'Tout déplier' });
+      majDeplier = function () { deplier.textContent = ordre.some(function (id) { return !sections[id].details.open; }) ? 'Tout déplier' : 'Tout replier'; };
+      deplier.addEventListener('click', function () {
+        var ouvrir = ordre.some(function (id) { return !sections[id].details.open; });
+        ordre.forEach(function (id) { sections[id].details.open = ouvrir; });
+        majDeplier();
+      });
+      corps.appendChild(deplier);
+      pts.forEach(function (p, i) {
+        var d = h('details', { class: 'section point' }), titre = h('span', { class: 'titre-point', text: p.id + ' : ' + p.intitule }), et = h('span', { class: 'etat-point' });
+        var resume = h('summary', { class: 'section-titre' }, [titre, et]), suivant = pts[i + 1];
+        d.appendChild(resume);
+        if (detailR[p.id] && detailR[p.id].length) d.appendChild(h('div', { class: 'md' }, detailR[p.id]));
+        var z = zoneTexte({ libelle: 'Votre correction pour ' + p.id + ' (facultatif)', aide: 'Laissez vide si cette rubrique est correcte.', valeur: etat.textes[p.id] });
+        z.input.addEventListener('input', function () { etat.textes[p.id] = z.input.value; maj(); ctx.change(); });
+        zones[p.id] = z; d.appendChild(z.wrap);
+        if (parBloc[p.id].length) d.appendChild(fieldsetVerifs(parBloc[p.id]));
+        var passer = h('button', { type: 'button', class: 'btn-lien passer', text: suivant ? 'Passer à la rubrique ' + suivant.id : 'Revenir au tableau' });
+        passer.addEventListener('click', function () {
+          if (suivant) { d.open = false; ouvrirPoint(suivant.id); }
+          else { try { legende.scrollIntoView({ block: 'start' }); } catch (e) { /* ignoré */ } legende.focus(); }
+        });
+        d.appendChild(h('div', { class: 'actions-point' }, [passer, boutonReplier(d, 'Replier cette rubrique')]));
+        d.addEventListener('toggle', majDeplier);
+        sections[p.id] = { details: d, resume: resume, etat: et };
+        ordre.push(p.id);
+        corps.appendChild(d);
+      });
+    }
+    if (autres.length) {
+      var da = h('details', { class: 'section point' }), ea = h('span', { class: 'etat-point' });
+      var ra = h('summary', { class: 'section-titre' }, [h('span', { class: 'titre-point', text: 'Autres vérifications' }), ea]);
+      da.appendChild(ra);
+      da.appendChild(fieldsetVerifs(autres));
+      da.appendChild(h('div', { class: 'actions-point' }, [boutonReplier(da, 'Replier cette rubrique')]));
+      da.addEventListener('toggle', majDeplier);
+      sections[AUTRES] = { details: da, resume: ra, etat: ea };
+      ordre.push(AUTRES);
+      corps.appendChild(da);
+    }
+    // Ouverture initiale : la première rubrique qui a une capitale sans réponse, sinon la première.
+    if (pts.length) {
+      var premiere = pts.filter(function (p) { return resteDe(p.id) > 0; })[0] || pts[0];
+      sections[premiere.id].details.open = true;
+    } else if (autres.length) sections[AUTRES].details.open = true;
+    var za = zoneTexte({ libelle: 'Autre remarque', aide: 'Pour tout ce que la liste ne couvre pas.', valeur: etat.textes.autre });
+    za.input.addEventListener('input', function () { etat.textes.autre = za.input.value; maj(); ctx.change(); });
+    zones.autre = za; corps.appendChild(za.wrap);
+    // Confirmation de relecture : exigée seulement quand aucune correction n'est écrite ; remplace les radios Oui / Non.
+    var idConfirme = uid('cf');
+    cbConfirme = h('input', { type: 'checkbox', id: idConfirme });
+    cbConfirme.checked = etat.confirme === true;
+    cbConfirme.addEventListener('change', function () { etat.confirme = cbConfirme.checked; ctx.change(); });
+    lierErreur(cbConfirme, slotConfirme, null);
+    corps.appendChild(phraseEtat);
+    corps.appendChild(h('div', { class: 'sans-correction' }, [h('label', { class: 'choix', for: idConfirme }, [cbConfirme, h('span', { class: 'corps', text: 'J’ai relu le cadrage, rubrique par rubrique' })]), slotConfirme]));
+    maj();
+    majDeplier();
     function reponsesVerifs() {
       var out = [];
       verifs.forEach(function (v) {
@@ -966,24 +1103,22 @@ fieldset.choix-point { margin-top: 12px; }
       return out;
     }
     function avecVerifs(val) { var r = reponsesVerifs(); if (r.length) val.verifications = r; return val; }
+    // ok est déduit : aucune correction (ni rubrique ni remarque) = cadrage correct.
+    function charge() { var c = corrections(); return c.length ? { ok: false, corrections: c } : { ok: true }; }
     return {
       corps: corps,
       collecter: function () {
         var err = [], c;
-        if (etat.choix !== 'oui' && etat.choix !== 'non') {
-          err.push({ ctrl: radios.oui, msg: 'Choisissez une réponse : le cadrage est correct, ou vous avez des corrections.' });
-        } else if (etat.choix === 'non') {
-          c = corrections();
-          if (!c.length) err.push({ ctrl: (pts.length ? zones[pts[0].id] : zones.autre).input, msg: 'Écrivez au moins une correction, ou répondez « Oui ».' });
-        }
         // Toutes les vérifications sans réponse sont listées d'un coup, dans l'ordre de l'écran.
-        verifs.forEach(function (x) {
-          if (!estCapital(x) || etat.pasVerifie[x.id] === true || nettoyer(etat.verifs[x.id])) return;
+        verifsEcran.forEach(function (x) {
+          if (!sansReponse(x)) return;
+          // Rubrique repliée : l'ouvrir, pour que l'erreur en ligne soit visible (comme les points de décision).
+          if (sections[blocDe(x)] && sections[blocDe(x)].details) sections[blocDe(x)].details.open = true;
           err.push({ ctrl: zonesV[x.id].input, msg: 'Répondez à cette vérification, ou cochez « Pas pu vérifier ».', lib: x.id + ' : ' + x.intitule + ', répondez à cette vérification, ou cochez « Pas pu vérifier ».' });
         });
+        if (!etat.confirme && !corrections().length) err.push({ ctrl: cbConfirme, msg: 'Cochez cette case pour confirmer que vous avez relu le cadrage.' });
         if (err.length) return { erreurs: err, valeurs: null };
-        if (etat.choix === 'oui') return { erreurs: [], valeurs: avecVerifs({ ok: true }) };
-        return { erreurs: [], valeurs: avecVerifs({ ok: false, corrections: c }) };
+        return { erreurs: [], valeurs: avecVerifs(charge()) };
       },
       lots: function (v) {
         var items = (v.ok ? [] : v.corrections.map(function (x) { return { k: 'c', x: x }; }))
@@ -1003,7 +1138,8 @@ fieldset.choix-point { margin-top: 12px; }
         }, function (it) { return it.k === 'c' ? 'La correction ' + it.x.point : 'La vérification ' + it.x.id; });
       },
       compteur: true,
-      approx: function () { return avecVerifs(etat.choix === 'oui' ? { ok: true } : { ok: false, corrections: corrections() }); }
+      avantBoutons: aCapitale ? compteurBas : null,
+      approx: function () { return avecVerifs(charge()); }
     };
   }
 
@@ -1256,9 +1392,14 @@ fieldset.choix-point { margin-top: 12px; }
   var GRAVITES = { critique: ['Critique', 'carre', 'rouge', 0], a_surveiller: ['À surveiller', 'triangle', 'orange', 1], mineur: ['Mineur', 'cercle', 'neutre', 2] };
   var ORIGINES = { relecture: 'relecture critique', appel: 'simulation d’appel', ombre: 'relecture critique', dissident: 'simulation d’appel' }; // ombre et dissident : anciens artefacts
   function graviteDe(r) { return GRAVITES[r.gravite] ? r.gravite : 'mineur'; }
+  function touchesDe(v) {
+    var brut = Array.isArray(v) ? v : typeof v === 'string' ? v.split(',') : [], out = [];
+    brut.forEach(function (x) { var t = typeof x === 'string' ? x.trim() : ''; if (/^P[0-9]+$/.test(t) && out.indexOf(t) < 0) out.push(t); });
+    return out;
+  }
   function ecranRobustesse(onglet, etat, ctx) {
     var corps = h('div'), liste = Array.isArray(onglet.saisie.recommandations) ? onglet.saisie.recommandations : [], cases = {}, annots = {}, avancement = h('p', { class: 'aide', role: 'status' });
-    var vus = {}, recos = liste.filter(function (r) { if (!r || typeof r !== 'object' || !r.id || vus[String(r.id)]) return false; vus[String(r.id)] = true; return true; }).map(function (r) { return { id: String(r.id), gravite: graviteDe(r), origine: r.origine, intitule: String(r.intitule || ''), detail: String(r.detail || '') }; });
+    var vus = {}, recos = liste.filter(function (r) { if (!r || typeof r !== 'object' || !r.id || vus[String(r.id)]) return false; vus[String(r.id)] = true; return true; }).map(function (r) { return { id: String(r.id), gravite: graviteDe(r), origine: r.origine, intitule: String(r.intitule || ''), touches: touchesDe(r.touche_decision) }; });
     var affichage = recos.map(function (r, i) { return { r: r, i: i }; }).sort(function (a, b) { return GRAVITES[a.r.gravite][3] - GRAVITES[b.r.gravite][3] || a.i - b.i; }).map(function (x) { return x.r; });
     var slotTop = creerSlot(), premiere = null, slotPremiere = null, obs;
     if (!etat.coches || typeof etat.coches !== 'object') etat.coches = {};
@@ -1289,8 +1430,9 @@ fieldset.choix-point { margin-top: 12px; }
     }
     if (!recos.length) corps.appendChild(h('p', { text: 'Aucune recommandation n’a été formulée. Vous pouvez demander la rédaction de la version définitive.' }));
     else {
-      corps.appendChild(h('p', { text: 'Cochez les corrections que vous voulez voir intégrées dans la version définitive. Vous pouvez préciser chacune par une annotation.' }));
+      corps.appendChild(h('p', { text: 'Lisez d’abord toute la relecture ci-dessus : les recommandations se répondent entre elles. Cochez ensuite celles que vous voulez voir intégrées dans la version définitive, et précisez chacune par une annotation si besoin.' }));
       corps.appendChild(h('p', { class: 'aide', text: 'Les recommandations critiques sont présentées en premier. Rien n’est coché d’office. Dans une annotation, dites comment intégrer la correction : Claude s’y conformera.' }));
+      if (recos.some(function (r) { return r.touches.length; })) corps.appendChild(h('p', { class: 'aide', text: 'La mention « Touche votre décision » signale une recommandation qui revient sur un point que vous avez déjà tranché : c’est à vous d’en juger.' }));
       corps.appendChild(slotTop);
       if (recos.some(function (r) { return r.gravite === 'critique'; })) {
         corps.appendChild(h('div', {}, [
@@ -1316,8 +1458,7 @@ fieldset.choix-point { margin-top: 12px; }
       lierErreur(cb, slotCase, null, lab);
       cb.addEventListener('change', function () { etat.coches[r.id] = cb.checked; majAvancement(); ctx.change(); });
       fs.appendChild(h('legend', {}, [h('span', { class: 'id', text: r.id }), ' : ', h('span', { text: r.intitule })]));
-      fs.appendChild(h('div', { class: 'reperes' }, [h('span', { class: 'pastille ' + G[2] }, [icone(G[1]), G[0]]), ORIGINES[r.origine] ? h('span', { class: 'repere', text: 'Origine : ' + ORIGINES[r.origine] }) : null]));
-      if (r.detail) fs.appendChild(h('p', { text: r.detail }));
+      fs.appendChild(h('div', { class: 'reperes' }, [h('span', { class: 'pastille ' + G[2] }, [icone(G[1]), G[0]]), ORIGINES[r.origine] ? h('span', { class: 'repere', text: 'Origine : ' + ORIGINES[r.origine] }) : null, r.touches.length ? h('span', { class: 'repere touche', text: (r.touches.length > 1 ? 'Touche vos décisions ' : 'Touche votre décision ') + r.touches.join(', ') }) : null]));
       fs.appendChild(lab);
       fs.appendChild(slotCase);
       z = zone('Annotation (facultative)', ' pour ' + r.id, null, etat.annots[r.id], 3, function (v) { etat.annots[r.id] = v; ctx.change(); }, r.id + ' : l’annotation');
@@ -1866,31 +2007,41 @@ fieldset.choix-point { margin-top: 12px; }
         if (!noteLotsAnnoncee) { noteLotsAnnoncee = true; zAnnonce.textContent = 'Envoi en plusieurs parties nécessaire : envoyez vos corrections partie par partie.'; }
       } else { zNoteLots.hidden = true; noteLotsAnnoncee = false; }
     };
-    [titre, zRestaure, zStockage, zEnvoye, zResume, ecran.corps, zTaille, zNoteLots, zAnnonce, zBoutons, zStatut, zLots, zCopie].forEach(function (n) { racine.appendChild(n); });
+    [titre, zRestaure, zStockage, zEnvoye, zResume, ecran.corps, zTaille, zNoteLots, zAnnonce, ecran.avantBoutons, zBoutons, zStatut, zLots, zCopie].forEach(function (n) { if (n) racine.appendChild(n); });
     ctx.racine = racine;
     ctxCourant = ctx;
     if (ecran.majLots) ecran.majLots(); else { ctx.majTaille(); ctx.boutons(); }
     return racine;
   }
 
-  /* Découpe le détail des points de décision : nœuds rendus rangés par id de point (P1, P2…). */
-  function decouperPoints(o, md) {
+  /* Découpe un contenu_md par bloc numéroté : nœuds rendus rangés par id (P1, P2… ou C1, C2…).
+     `motif` reconnaît le titre d'un bloc et rend son id ; un titre de rang inférieur ou égal ferme le bloc. */
+  function decouperBlocs(o, md, motif, cleDetail, cleIntro) {
     var zone = h('div'), par = {}, intro = [], courant = null, rangCourant = 99;
     if (md) rendreMarkdown(md, zone, true);
     Array.prototype.slice.call(zone.childNodes).forEach(function (n) {
-      var tag = n.tagName || '', r = /^H[1-6]$/.test(tag) ? +tag.charAt(1) : 99, m;
+      var tag = n.tagName || '', r = /^H[1-6]$/.test(tag) ? +tag.charAt(1) : 99, id;
       if (r < 99) {
-        m = /^\s*POINT\s+(\d+)/i.exec(n.textContent || '');
-        if (m) { courant = 'P' + m[1]; rangCourant = r; if (!par[courant]) par[courant] = []; return; }
+        id = motif(n.textContent || '');
+        if (id) { courant = id; rangCourant = r; if (!par[courant]) par[courant] = []; return; }
         if (r <= rangCourant) { courant = null; rangCourant = 99; }
       }
       if (courant) par[courant].push(n); else if (!(n.nodeType === 3 && !n.textContent.trim())) intro.push(n);
     });
-    // Un bloc POINT sans point correspondant reste visible sous le tableau (rien ne se perd).
+    // Un bloc sans point correspondant reste visible dans l'introduction (rien ne se perd).
     var ids = (o.saisie.points || []).map(function (p) { return String(p.id); });
     Object.keys(par).forEach(function (k) { if (ids.indexOf(k) < 0) intro = intro.concat(par[k]); });
-    o._detailPoints = par;
-    o._introPoints = intro;
+    o[cleDetail] = par;
+    o[cleIntro] = intro;
+    return ids.filter(function (k) { return par[k]; }).length;
+  }
+  /* Points de décision : « POINT n » → Pn. */
+  function decouperPoints(o, md) {
+    return decouperBlocs(o, md, function (t) { var m = /^\s*POINT\s+(\d+)/i.exec(t); return m ? 'P' + m[1] : null; }, '_detailPoints', '_introPoints');
+  }
+  /* Cadrage : « Cn : intitulé » ou « RUBRIQUE n » → Cn. Rend le nombre de rubriques reconnues (0 = ancien cadrage, repli). */
+  function decouperRubriques(o, md) {
+    return decouperBlocs(o, md, function (t) { var m = /^\s*(?:C(\d+)\b|RUBRIQUE\s+(\d+))/i.exec(t); return m ? 'C' + (m[1] || m[2]) : null; }, '_detailCadrage', '_introCadrage');
   }
 
   /* ---------- onglets ---------- */
@@ -1985,6 +2136,12 @@ fieldset.choix-point { margin-top: 12px; }
       // le reste (sans correspondance) s'affiche sous le tableau. Plus de lecture séparée.
       decouperPoints(o, md);
       md = '';
+    }
+    // Cadrage : le texte de chaque Cn va dans son accordéon. 0 rubrique reconnue = ancien cadrage : le contenu_md reste affiché en entier (« À lire »), sans rien perdre.
+    o._detailCadrage = {}; o._introCadrage = [];
+    if (md && saisieValide(o) && o.saisie.type === 'validation_cadrage' && Array.isArray(o.saisie.points) && o.saisie.points.length) {
+      if (decouperRubriques(o, md) > 0) md = '';
+      else { o._detailCadrage = {}; o._introCadrage = []; }
     }
     avecLecture = !!md;
     if (saisieValide(o)) saisie = construireSaisie(o);
