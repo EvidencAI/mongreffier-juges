@@ -221,6 +221,7 @@ summary.section-titre .etat-point { flex: 0 0 auto; display: inline-flex; align-
 summary.section-titre .etat-point.fait { color: var(--ok); }
 summary.section-titre .etat-point svg { width: 16px; height: 16px; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 table.synthese td, table.synthese th { vertical-align: middle; }
+.tableau table.synthese td:first-child, .tableau table.synthese th:first-child { white-space: normal; }
 .sans-correction { margin-top: 20px; }
 @media (max-width: 480px) {
   summary.section-titre { flex-wrap: wrap; }
@@ -353,6 +354,20 @@ fieldset.choix-point { margin-top: 12px; }
     });
     return e;
   }
+  /* Affichage des codes au juge (D4) : les ids internes (C1, V1, P1, R1) restent dans les données ; l'écran montre des mots.
+     Forme longue (titres, légendes, messages), courte (colonnes N°), numéro seul (phrases qui portent déjà le nom). Id hors motif : tel quel. */
+  var NOMS_CODES = { C: ['Rubrique', 'Rubrique'], V: ['Vérification', 'Vérif.'], P: ['Point de décision', 'Point'], R: ['Recommandation', 'Reco'] };
+  function nomCode(id, court) {
+    var m = /^([CVPR])([0-9]+)$/.exec(String(id));
+    return m ? NOMS_CODES[m[1]][court ? 1 : 0] + ' ' + m[2] : String(id);
+  }
+  function numeroDe(id) { var m = /^[CVPR]([0-9]+)$/.exec(String(id)); return m ? m[1] : String(id); }
+  function listeNumeros(ids) {
+    var n = ids.map(numeroDe);
+    return n.length < 2 ? n.join('') : n.slice(0, -1).join(', ') + ' et ' + n[n.length - 1];
+  }
+  /* Minuscule initiale en milieu de phrase, pour les noms de codes seulement : un id hors motif reste tel quel. */
+  function bas(s) { s = String(s); return /^(Rubrique|Vérification|Point|Recommandation) /.test(s) ? s.charAt(0).toLowerCase() + s.slice(1) : s; }
   function icone(nom) {
     var s = document.createElementNS(NS, 'svg');
     s.setAttribute('viewBox', '0 0 16 16');
@@ -922,8 +937,9 @@ fieldset.choix-point { margin-top: 12px; }
       var reste = resteDe(id), parts = [];
       if (reste) parts.push(phraseCapitale(reste));
       if (id !== AUTRES && texteDe(id)) parts.push('Correction notée');
-      if (!parts.length) parts.push(id === AUTRES ? 'Rien d’obligatoire' : 'Correct');
-      return { texte: parts.join(' · '), ok: !reste };
+      // « À relire » est une invitation, pas un verdict : cercle, jamais la coche (la charge d'envoi, elle, ne change pas).
+      if (!parts.length) parts.push(id === AUTRES ? 'Rien d’obligatoire' : 'À relire');
+      return { texte: parts.join(' · '), ok: !reste && (id === AUTRES || !!texteDe(id)) };
     }
     function corrections() {
       var out = [];
@@ -947,7 +963,7 @@ fieldset.choix-point { margin-top: 12px; }
       if (!restes.length) { p.appendChild(document.createTextNode('Toutes les vérifications capitales ont une réponse.')); return; }
       p.appendChild(document.createTextNode(restes.length + ' vérification' + s + ' capitale' + s + ' sans réponse :'));
       restes.forEach(function (v) {
-        var b = h('button', { type: 'button', class: 'btn-lien', text: v.id + ' : ' + v.intitule });
+        var b = h('button', { type: 'button', class: 'btn-lien', text: nomCode(v.id) + ' : ' + v.intitule });
         b.addEventListener('click', function () { allerVerif(v); });
         p.appendChild(document.createTextNode(' '));
         p.appendChild(b);
@@ -956,8 +972,8 @@ fieldset.choix-point { margin-top: 12px; }
     function maj() {
       var n = corrections().length, txt, restes, sig;
       blocs.forEach(function (id) {
-        var e = etatBloc(id), s = sections[id], c = cellules[id], tot = capitalesDe(id);
-        if (c) { c.cap.textContent = tot ? resteDe(id) + ' sur ' + tot : 'Aucune'; c.etat.textContent = e.texte; }
+        var e = etatBloc(id), s = sections[id], c = cellules[id];
+        if (c) c.etat.textContent = e.texte;
         s.etat.textContent = '';
         s.etat.appendChild(icone(e.ok ? 'coche' : 'cercle'));
         s.etat.appendChild(document.createTextNode(e.texte));
@@ -968,7 +984,7 @@ fieldset.choix-point { margin-top: 12px; }
         sig = restes.map(function (v) { return v.id; }).join('|');
         if (sig !== sigCompteur) { sigCompteur = sig; remplirCompteur(compteurHaut, restes); remplirCompteur(compteurBas, restes); }
       }
-      txt = n ? 'Vous avez écrit ' + n + ' correction' + (n > 1 ? 's' : '') + ' : le cadrage sera envoyé avec ' + (n > 1 ? 'vos corrections.' : 'votre correction.') + ' La case ci-dessous n’est pas nécessaire.' : 'Vous n’avez écrit aucune correction : le cadrage sera envoyé comme correct. Cochez la case ci-dessous pour confirmer que vous l’avez relu.';
+      txt = n ? 'Vous avez écrit ' + n + ' correction' + (n > 1 ? 's' : '') + ' : le cadrage sera envoyé avec ' + (n > 1 ? 'vos corrections.' : 'votre correction.') + ' La case ci-dessous n’est pas nécessaire.' : 'Vous n’avez écrit aucune correction : le cadrage sera envoyé sans modification. Cochez la case ci-dessous pour confirmer que vous l’avez relu.';
       if (phraseEtat.textContent !== txt) phraseEtat.textContent = txt;
       // La case n'est exigée que sans correction : une erreur affichée disparaît dès qu'une correction est écrite.
       if (n) retirerErreur(cbConfirme);
@@ -986,7 +1002,7 @@ fieldset.choix-point { margin-top: 12px; }
       zv.appendChild(h('legend', { text: 'Vérifications sur pièces' }));
       liste.forEach(function (v) {
         var cap = estCapital(v);
-        var z = zoneTexte({ etiquette: [v.id + ' : ' + v.intitule + (cap ? '' : ' (facultatif)'), pastilleImportance(v)], aide: cap ? 'Notez ce que vous constatez sur la pièce, ou cochez « Pas pu vérifier » si vous n’avez pas le dossier sous les yeux.' : 'Notez ce que vous constatez sur la pièce. Laissez vide si vous ne pouvez pas la vérifier : Claude gardera une réserve.', valeur: etat.verifs[v.id] });
+        var z = zoneTexte({ etiquette: [nomCode(v.id) + ' : ' + v.intitule + (cap ? '' : ' (facultatif)'), pastilleImportance(v)], aide: cap ? 'Notez ce que vous constatez sur la pièce, ou cochez « Pas pu vérifier » si vous n’avez pas le dossier sous les yeux.' : 'Notez ce que vous constatez sur la pièce. Laissez vide si vous ne pouvez pas la vérifier : Claude la traitera comme non vérifiée.', valeur: etat.verifs[v.id] });
         var idCase = uid('pv'), cb = h('input', { type: 'checkbox', id: idCase });
         // Pas de case hors `capital` : un ancien « pasVerifie » sur une facultative est ignoré.
         cb.checked = cap && etat.pasVerifie[v.id] === true;
@@ -1001,17 +1017,17 @@ fieldset.choix-point { margin-top: 12px; }
         });
         zonesV[v.id] = z;
         zv.appendChild(z.wrap);
-        if (cap) zv.appendChild(h('label', { class: 'choix', for: idCase }, [cb, h('span', { class: 'corps' }, ['Pas pu vérifier', h('span', { class: 'sr', text: ' ' + v.id })])]));
+        if (cap) zv.appendChild(h('label', { class: 'choix', for: idCase }, [cb, h('span', { class: 'corps' }, ['Pas pu vérifier', h('span', { class: 'sr', text: ' pour la ' + bas(nomCode(v.id)) })])]));
       });
       return zv;
     }
     if (intro.length) corps.appendChild(h('div', { class: 'md intro-points' }, intro));
     if (!pts.length) corps.appendChild(h('p', { text: 'Aucune rubrique n’est à relire séparément pour le moment.' }));
-    else corps.appendChild(h('p', { text: 'Relisez le cadrage rubrique par rubrique. Laissez vide la correction d’une rubrique qui est correcte.' }));
+    else corps.appendChild(h('p', { text: 'Relisez le cadrage rubrique par rubrique. N’écrivez une correction que là où le cadrage ne vous convient pas.' }));
     // Aide des vérifications : dite une seule fois, en tête.
     if (verifs.length) {
       if (aCapitale) {
-        corps.appendChild(h('p', { class: 'aide', text: 'Seules les vérifications marquées capital sont à remplir. Pour chacune, notez ce que vous constatez, ou cochez « Pas pu vérifier » si vous n’avez pas le dossier sous les yeux. Les autres sont facultatives.' }));
+        corps.appendChild(h('p', { class: 'aide', text: 'Seules les vérifications marquées capital sont à remplir. Pour chacune, notez ce que vous constatez, ou cochez « Pas pu vérifier » si vous n’avez pas le dossier sous les yeux. Les autres sont facultatives. Les rubriques qui en contiennent sont ouvertes.' }));
         corps.appendChild(h('p', { class: 'aide', text: 'Importance fixée par Claude : Capital (décisif, à remplir), Important et Utile (facultatifs).' }));
       } else {
         corps.appendChild(h('p', { class: 'aide', text: 'Ces vérifications sont facultatives. Remplissez celles que vous pouvez ; laissez vide les autres.' }));
@@ -1024,13 +1040,13 @@ fieldset.choix-point { margin-top: 12px; }
       var t = h('table', { class: 'synthese' }), tb = h('tbody');
       legende = h('caption', { text: 'Synthèse du cadrage', tabindex: '-1' });
       t.appendChild(legende);
-      t.appendChild(h('thead', {}, [h('tr', {}, ['N°', 'Rubrique', 'Capitales à remplir', 'État'].map(function (x) { return h('th', { scope: 'col', text: x }); }))]));
+      t.appendChild(h('thead', {}, [h('tr', {}, ['Rubrique', 'État'].map(function (x) { return h('th', { scope: 'col', text: x }); }))]));
       blocs.forEach(function (id) {
         var p = pts.filter(function (q) { return q.id === id; })[0], lib = p ? String(p.intitule) : 'Autres vérifications';
-        var cap = h('td'), c = h('td', { class: 'votre-choix' }), b = h('button', { type: 'button', class: 'btn-lien lien-point', text: lib });
+        var c = h('td', { class: 'votre-choix' }), b = h('button', { type: 'button', class: 'btn-lien lien-point', text: lib });
         b.addEventListener('click', function () { ouvrirPoint(id); });
-        cellules[id] = { cap: cap, etat: c };
-        tb.appendChild(h('tr', {}, [h('td', { text: p ? String(p.id) : 'Autres' }), h('td', {}, [b]), cap, c]));
+        cellules[id] = { etat: c };
+        tb.appendChild(h('tr', {}, [h('td', {}, [p ? numeroDe(p.id) + '. ' : null, b]), c]));
       });
       t.appendChild(tb);
       corps.appendChild(h('div', { class: 'tableau', role: 'region', tabindex: '0', 'aria-label': 'Tableau, défilement horizontal' }, [t]));
@@ -1043,15 +1059,15 @@ fieldset.choix-point { margin-top: 12px; }
       });
       corps.appendChild(deplier);
       pts.forEach(function (p, i) {
-        var d = h('details', { class: 'section point' }), titre = h('span', { class: 'titre-point', text: p.id + ' : ' + p.intitule }), et = h('span', { class: 'etat-point' });
+        var d = h('details', { class: 'section point' }), titre = h('span', { class: 'titre-point', text: nomCode(p.id) + ' : ' + p.intitule }), et = h('span', { class: 'etat-point' });
         var resume = h('summary', { class: 'section-titre' }, [titre, et]), suivant = pts[i + 1];
         d.appendChild(resume);
         if (detailR[p.id] && detailR[p.id].length) d.appendChild(h('div', { class: 'md' }, detailR[p.id]));
-        var z = zoneTexte({ libelle: 'Votre correction pour ' + p.id + ' (facultatif)', aide: 'Laissez vide si cette rubrique est correcte.', valeur: etat.textes[p.id] });
+        var z = zoneTexte({ libelle: 'Votre correction pour la ' + bas(nomCode(p.id)) + ' (facultatif)', aide: 'Laissez ce champ vide si vous n’avez rien à corriger dans cette rubrique.', valeur: etat.textes[p.id] });
         z.input.addEventListener('input', function () { etat.textes[p.id] = z.input.value; maj(); ctx.change(); });
         zones[p.id] = z; d.appendChild(z.wrap);
         if (parBloc[p.id].length) d.appendChild(fieldsetVerifs(parBloc[p.id]));
-        var passer = h('button', { type: 'button', class: 'btn-lien passer', text: suivant ? 'Passer à la rubrique ' + suivant.id : 'Revenir au tableau' });
+        var passer = h('button', { type: 'button', class: 'btn-lien passer', text: suivant ? 'Passer à la rubrique ' + numeroDe(suivant.id) : 'Revenir au tableau' });
         passer.addEventListener('click', function () {
           if (suivant) { d.open = false; ouvrirPoint(suivant.id); }
           else { try { legende.scrollIntoView({ block: 'start' }); } catch (e) { /* ignoré */ } legende.focus(); }
@@ -1074,11 +1090,11 @@ fieldset.choix-point { margin-top: 12px; }
       ordre.push(AUTRES);
       corps.appendChild(da);
     }
-    // Ouverture initiale : la première rubrique qui a une capitale sans réponse, sinon la première.
-    if (pts.length) {
-      var premiere = pts.filter(function (p) { return resteDe(p.id) > 0; })[0] || pts[0];
-      sections[premiere.id].details.open = true;
-    } else if (autres.length) sections[AUTRES].details.open = true;
+    // Ouverture initiale : tous les blocs (rubriques et « Autres vérifications ») qui ont une capitale sans réponse ; aucun : la première rubrique, ou « Autres » sans rubrique ; pas de déplacement du focus.
+    var aRepondre = blocs.filter(function (id) { return resteDe(id) > 0; });
+    if (aRepondre.length) aRepondre.forEach(function (id) { sections[id].details.open = true; });
+    else if (pts.length) sections[pts[0].id].details.open = true;
+    else if (autres.length) sections[AUTRES].details.open = true;
     var za = zoneTexte({ libelle: 'Autre remarque', aide: 'Pour tout ce que la liste ne couvre pas.', valeur: etat.textes.autre });
     za.input.addEventListener('input', function () { etat.textes.autre = za.input.value; maj(); ctx.change(); });
     zones.autre = za; corps.appendChild(za.wrap);
@@ -1103,7 +1119,7 @@ fieldset.choix-point { margin-top: 12px; }
       return out;
     }
     function avecVerifs(val) { var r = reponsesVerifs(); if (r.length) val.verifications = r; return val; }
-    // ok est déduit : aucune correction (ni rubrique ni remarque) = cadrage correct.
+    // ok est déduit : aucune correction (ni rubrique ni remarque) = cadrage envoyé sans modification.
     function charge() { var c = corrections(); return c.length ? { ok: false, corrections: c } : { ok: true }; }
     return {
       corps: corps,
@@ -1114,7 +1130,7 @@ fieldset.choix-point { margin-top: 12px; }
           if (!sansReponse(x)) return;
           // Rubrique repliée : l'ouvrir, pour que l'erreur en ligne soit visible (comme les points de décision).
           if (sections[blocDe(x)] && sections[blocDe(x)].details) sections[blocDe(x)].details.open = true;
-          err.push({ ctrl: zonesV[x.id].input, msg: 'Répondez à cette vérification, ou cochez « Pas pu vérifier ».', lib: x.id + ' : ' + x.intitule + ', répondez à cette vérification, ou cochez « Pas pu vérifier ».' });
+          err.push({ ctrl: zonesV[x.id].input, msg: 'Répondez à cette vérification, ou cochez « Pas pu vérifier ».', lib: nomCode(x.id) + ' : ' + x.intitule + ', répondez à cette vérification, ou cochez « Pas pu vérifier ».' });
         });
         if (!etat.confirme && !corrections().length) err.push({ ctrl: cbConfirme, msg: 'Cochez cette case pour confirmer que vous avez relu le cadrage.' });
         if (err.length) return { erreurs: err, valeurs: null };
@@ -1131,11 +1147,15 @@ fieldset.choix-point { margin-top: 12px; }
           if (vs.length) val.verifications = vs;
           return enveloppe(onglet, val);
         }, function (lot) {
-          var noms = lot.map(function (it) { return it.k === 'c' ? it.x.point : it.x.id; });
-          if (lot.every(function (it) { return it.k === 'c'; })) return lot.length === 1 ? 'Envoyer la correction ' + noms[0] : 'Envoyer les corrections ' + noms[0] + ' à ' + noms[noms.length - 1];
-          if (lot.every(function (it) { return it.k === 'v'; })) return lot.length === 1 ? 'Envoyer la vérification ' + noms[0] : 'Envoyer les vérifications ' + noms[0] + ' à ' + noms[noms.length - 1];
-          return 'Envoyer ' + noms[0] + ' à ' + noms[noms.length - 1];
-        }, function (it) { return it.k === 'c' ? 'La correction ' + it.x.point : 'La vérification ' + it.x.id; });
+          var noms = lot.map(function (it) { return it.k === 'c' ? it.x.point : it.x.id; }), rub = noms.filter(function (n) { return n !== 'autre'; }), autre = rub.length < noms.length;
+          function cite(it) { return it.k === 'c' && it.x.point === 'autre' ? 'autre remarque' : bas(nomCode(it.k === 'c' ? it.x.point : it.x.id)); }
+          if (lot.every(function (it) { return it.k === 'c'; })) {
+            if (!rub.length) return 'Envoyer la correction : autre remarque';
+            return (rub.length === 1 && !autre ? 'Envoyer la correction de la rubrique ' + numeroDe(rub[0]) : 'Envoyer les corrections ' + (rub.length === 1 ? 'de la rubrique ' + numeroDe(rub[0]) : 'des rubriques ' + numeroDe(rub[0]) + ' à ' + numeroDe(rub[rub.length - 1])) + (autre ? ' et de l’autre remarque' : ''));
+          }
+          if (lot.every(function (it) { return it.k === 'v'; })) return lot.length === 1 ? 'Envoyer la vérification ' + numeroDe(noms[0]) : 'Envoyer les vérifications ' + numeroDe(noms[0]) + ' à ' + numeroDe(noms[noms.length - 1]);
+          return 'Envoyer : ' + cite(lot[0]) + ' à ' + cite(lot[lot.length - 1]);
+        }, function (it) { return it.k === 'c' ? (it.x.point === 'autre' ? 'La correction : autre remarque' : 'La correction de la ' + bas(nomCode(it.x.point))) : 'La ' + bas(nomCode(it.x.id)); });
       },
       compteur: true,
       avantBoutons: aCapitale ? compteurBas : null,
@@ -1169,7 +1189,7 @@ fieldset.choix-point { margin-top: 12px; }
       if (s.option === 'AUTRE') {
         if (!r) return (pre || '') + (pre ? 'autre solution, à décrire' : 'Autre solution : à décrire');
         opt = 'autre solution';
-      } else { opt = 'option ' + s.option; suf = r ? ', avec réserve' : ''; }
+      } else { opt = 'option ' + s.option; suf = r ? ', avec précision' : ''; }
       if (pre) return pre + opt + suf;
       return court ? opt.charAt(0).toUpperCase() + opt.slice(1) + suf : 'Retenu : ' + opt + suf;
     }
@@ -1199,24 +1219,24 @@ fieldset.choix-point { margin-top: 12px; }
 
     // Phrase d'en-tête et bouton d'aller-à : fixés à l'ouverture d'après les points déjà envoyés.
     var dejaEnvoyes = pts.filter(envoye), nouveaux = pts.filter(function (p) { return !envoye(p); }), E = dejaEnvoyes.length, N = nouveaux.length, phrase;
-    if (!E) phrase = 'Le tableau résume vos choix. Ouvrez un point pour lire l’analyse et choisir une option ; vous pouvez ajouter une réserve.';
+    if (!E) phrase = 'Le tableau résume vos choix. Ouvrez un point de décision pour lire l’analyse et choisir une option ; vous pouvez ajouter une précision ou une condition.';
     else if (!N) phrase = 'Tous vos points ont été envoyés. Pour en changer un, ouvrez-le : il sera renvoyé.';
     else phrase = (N === 1 ? '1 nouveau point est à trancher.' : N + ' nouveaux points sont à trancher.')
       + (E === 1 ? ' Le point déjà envoyé est replié, avec votre choix. Pour le changer, ouvrez-le : il sera renvoyé avec ' : ' Les ' + E + ' points déjà envoyés sont repliés, avec votre choix. Pour en changer un, ouvrez-le : il sera renvoyé avec ')
       + (N === 1 ? 'le nouveau.' : 'les nouveaux.');
     corps.appendChild(h('p', { text: phrase }));
-    if (E && N) corps.appendChild(h('button', { type: 'button', class: 'vers-saisie', text: 'Aller au point ' + nouveaux[0].id, onclick: function () { ouvrirPoint(nouveaux[0].id); } }));
+    if (E && N) corps.appendChild(h('button', { type: 'button', class: 'vers-saisie', text: 'Aller au point de décision ' + numeroDe(nouveaux[0].id), onclick: function () { ouvrirPoint(nouveaux[0].id); } }));
     corps.appendChild(avancement);
 
     // Tableau de synthèse, mis à jour en direct ; la question ouvre le point.
     var t = h('table', { class: 'synthese' }), tb = h('tbody'), legende = h('caption', { text: 'Synthèse des points de décision', tabindex: '-1' });
     t.appendChild(legende);
-    t.appendChild(h('thead', {}, [h('tr', {}, ['N°', 'Question', 'Indicateur', 'Proposition de l’IA', 'Votre choix'].map(function (x) { return h('th', { scope: 'col', text: x, class: x === 'Indicateur' ? 'col-indic' : null }); }))]));
+    t.appendChild(h('thead', {}, [h('tr', {}, ['Question', 'Indicateur', 'Proposition de l’IA', 'Votre choix'].map(function (x) { return h('th', { scope: 'col', text: x, class: x === 'Indicateur' ? 'col-indic' : null }); }))]));
     pts.forEach(function (p) {
       var c = h('td', { class: 'votre-choix' }), b = h('button', { type: 'button', class: 'btn-lien lien-point', text: String(p.intitule) });
       b.addEventListener('click', function () { ouvrirPoint(p.id); });
       cellules[p.id] = c;
-      tb.appendChild(h('tr', {}, [h('td', { text: String(p.id) }), h('td', {}, [b]), h('td', { class: 'col-indic' }, [pastille(p.indicateur)]), h('td', { text: p.prop_ia === 'ABSTENTION' ? 'Abstention' : p.prop_ia ? 'Option ' + p.prop_ia : '' }), c]));
+      tb.appendChild(h('tr', {}, [h('td', {}, [numeroDe(p.id) + '. ', b]), h('td', { class: 'col-indic' }, [pastille(p.indicateur)]), h('td', { text: p.prop_ia === 'ABSTENTION' ? 'Abstention' : p.prop_ia ? 'Option ' + p.prop_ia : '' }), c]));
     });
     t.appendChild(tb);
     corps.appendChild(h('div', { class: 'tableau', role: 'region', tabindex: '0', 'aria-label': 'Tableau, défilement horizontal' }, [t]));
@@ -1233,10 +1253,10 @@ fieldset.choix-point { margin-top: 12px; }
 
     function majAideReserve(p) {
       var c = cartes[p.id];
-      c.aide.textContent = pos(p.id).option === 'AUTRE' ? 'Décrivez ici la solution que vous retenez.' : 'Une réserve conditionne votre choix ; Claude la reprendra dans la motivation.';
+      c.aide.textContent = pos(p.id).option === 'AUTRE' ? 'Décrivez ici la solution que vous retenez.' : 'Une précision ou une condition qui accompagne votre choix, par exemple le montant si vous retenez un autre montant. Claude la reprendra dans la motivation.';
     }
     pts.forEach(function (p, i) {
-      var d = h('details', { class: 'section point' }), titre = h('span', { class: 'titre-point', text: 'Point ' + p.id + ' : ' + p.intitule }), et = h('span', { class: 'etat-point' });
+      var d = h('details', { class: 'section point' }), titre = h('span', { class: 'titre-point', text: nomCode(p.id) + ' : ' + p.intitule }), et = h('span', { class: 'etat-point' });
       var resume = h('summary', { class: 'section-titre' }, [titre, et]);
       var fs = h('fieldset', { class: 'choix-point' }), nom = uid('p'), radios = {}, slot = creerSlot(), opts = (p.options || []).map(function (o) { return { code: String(o.code), libelle: String(o.libelle) }; });
       var prop, suivant = pts[i + 1];
@@ -1246,7 +1266,7 @@ fieldset.choix-point { margin-top: 12px; }
       if (INDIC[p.indicateur]) d.appendChild(h('p', {}, [pastille(p.indicateur)]));
       if (p.prop_ia === 'ABSTENTION') d.appendChild(h('p', { text: 'L’IA s’abstient de recommander : appréciation souveraine du juge.' }));
       else if (p.prop_ia) d.appendChild(h('p', { text: 'Proposition de l’IA : option ' + p.prop_ia + '.' }));
-      fs.appendChild(h('legend', { text: 'Votre choix pour le point ' + p.id }));
+      fs.appendChild(h('legend', { text: 'Votre choix pour le ' + bas(nomCode(p.id)) }));
       opts.concat([{ code: 'AUTRE', libelle: 'Autre solution' }]).forEach(function (o) {
         var id = uid('o'), inp = h('input', { type: 'radio', name: nom, id: id, value: o.code });
         prop = o.code === p.prop_ia;
@@ -1255,11 +1275,11 @@ fieldset.choix-point { margin-top: 12px; }
         fs.appendChild(h('label', { class: 'choix', for: id }, [inp, h('span', { class: 'corps' }, [o.code === 'AUTRE' ? o.libelle : o.code + '. ' + o.libelle, prop ? h('span', { class: 'repere', text: 'Proposition de l’IA' }) : null])]));
       });
       fs.appendChild(slot);
-      var z = zoneTexte({ libelle: 'Réserve ou précision (facultatif)', aide: 'Une réserve conditionne votre choix ; Claude la reprendra dans la motivation.', valeur: pos(p.id).reserve });
+      var z = zoneTexte({ libelle: 'Précision ou condition (facultatif)', aide: 'Une précision ou une condition qui accompagne votre choix, par exemple le montant si vous retenez un autre montant. Claude la reprendra dans la motivation.', valeur: pos(p.id).reserve });
       z.input.addEventListener('input', function () { pos(p.id).reserve = z.input.value; maj(); ctx.change(); });
       fs.appendChild(z.wrap);
       d.appendChild(fs);
-      var passer = h('button', { type: 'button', class: 'btn-lien passer', text: suivant ? 'Passer au point ' + suivant.id : 'Revenir au tableau' });
+      var passer = h('button', { type: 'button', class: 'btn-lien passer', text: suivant ? 'Passer au point de décision ' + numeroDe(suivant.id) : 'Revenir au tableau' });
       passer.addEventListener('click', function () {
         if (suivant) { d.open = false; ouvrirPoint(suivant.id); }
         else { try { legende.scrollIntoView({ block: 'start' }); } catch (e) { /* ignoré */ } legende.focus(); }
@@ -1304,17 +1324,17 @@ fieldset.choix-point { margin-top: 12px; }
         var err = [], manquants = [], valeurs;
         pts.forEach(function (p) {
           var s = pos(p.id), c = cartes[p.id], first = Object.keys(c.radios)[0];
-          if (!s.option) { manquants.push(p.id); sections[p.id].details.open = true; err.push({ ctrl: c.radios[first], msg: 'Point ' + p.id + ' : choisissez une option.', ouvre: true }); }
-          else if (s.option === 'AUTRE' && !nettoyer(s.reserve)) { sections[p.id].details.open = true; err.push({ ctrl: c.reserve.input, msg: 'Vous avez choisi « Autre solution » : décrivez-la dans la zone ci-dessous.' }); }
+          if (!s.option) { manquants.push(p.id); sections[p.id].details.open = true; err.push({ ctrl: c.radios[first], msg: nomCode(p.id) + ' : choisissez une option.', ouvre: true }); }
+          else if (s.option === 'AUTRE' && !nettoyer(s.reserve)) { sections[p.id].details.open = true; err.push({ ctrl: c.reserve.input, msg: 'Vous avez choisi « Autre solution » : décrivez-la dans le champ Précision ci-dessous.' }); }
         });
-        if (manquants.length) err.unshift({ resume: 'Il reste ' + manquants.length + ' point' + (manquants.length > 1 ? 's' : '') + ' sans réponse : ' + manquants.join(', ') + '.' });
+        if (manquants.length) err.unshift({ resume: 'Il reste ' + manquants.length + (manquants.length > 1 ? ' points' : ' point') + ' de décision sans réponse : ' + manquants.map(numeroDe).join(', ') + '.' });
         valeurs = { positions: positions() };
         return { erreurs: err, valeurs: valeurs };
       },
       lots: function (v) {
         return decouper(v.positions, function (items) { return enveloppe(onglet, { positions: items }); }, function (items) {
-          return items.length === 1 ? 'Envoyer le point ' + items[0].point : 'Envoyer les points ' + items[0].point + ' à ' + items[items.length - 1].point;
-        }, function (it) { return 'Le point ' + it.point; });
+          return items.length === 1 ? 'Envoyer le point de décision ' + numeroDe(items[0].point) : 'Envoyer les points de décision ' + numeroDe(items[0].point) + ' à ' + numeroDe(items[items.length - 1].point);
+        }, function (it) { return 'Le ' + bas(nomCode(it.point)); });
       },
       compteur: true,
       approx: function () { return { positions: positions() }; }
@@ -1432,7 +1452,7 @@ fieldset.choix-point { margin-top: 12px; }
     else {
       corps.appendChild(h('p', { text: 'Lisez d’abord toute la relecture ci-dessus : les recommandations se répondent entre elles. Cochez ensuite celles que vous voulez voir intégrées dans la version définitive, et précisez chacune par une annotation si besoin.' }));
       corps.appendChild(h('p', { class: 'aide', text: 'Les recommandations critiques sont présentées en premier. Rien n’est coché d’office. Dans une annotation, dites comment intégrer la correction : Claude s’y conformera.' }));
-      if (recos.some(function (r) { return r.touches.length; })) corps.appendChild(h('p', { class: 'aide', text: 'La mention « Touche votre décision » signale une recommandation qui revient sur un point que vous avez déjà tranché : c’est à vous d’en juger.' }));
+      if (recos.some(function (r) { return r.touches.length; })) corps.appendChild(h('p', { class: 'aide', text: 'La mention « Touche votre point de décision » signale une recommandation qui revient sur un point que vous avez déjà tranché : c’est à vous d’en juger.' }));
       corps.appendChild(slotTop);
       if (recos.some(function (r) { return r.gravite === 'critique'; })) {
         corps.appendChild(h('div', {}, [
@@ -1453,15 +1473,15 @@ fieldset.choix-point { margin-top: 12px; }
     affichage.forEach(function (r) {
       var fs = h('fieldset', { class: 'carte' }), slotCase = creerSlot(), cbId = uid('rc'), cb = h('input', { type: 'checkbox', id: cbId }), G = GRAVITES[r.gravite], lab, z;
       cb.checked = !!etat.coches[r.id];
-      lab = h('label', { class: 'choix', for: cbId }, [cb, h('span', { class: 'corps' }, ['Intégrer', h('span', { class: 'sr', text: ' ' + r.id + ' : ' + r.intitule })])]);
+      lab = h('label', { class: 'choix', for: cbId }, [cb, h('span', { class: 'corps' }, ['Intégrer', h('span', { class: 'sr', text: ' ' + bas(nomCode(r.id)) + ' : ' + r.intitule })])]);
       cases[r.id] = cb;
       lierErreur(cb, slotCase, null, lab);
       cb.addEventListener('change', function () { etat.coches[r.id] = cb.checked; majAvancement(); ctx.change(); });
-      fs.appendChild(h('legend', {}, [h('span', { class: 'id', text: r.id }), ' : ', h('span', { text: r.intitule })]));
-      fs.appendChild(h('div', { class: 'reperes' }, [h('span', { class: 'pastille ' + G[2] }, [icone(G[1]), G[0]]), ORIGINES[r.origine] ? h('span', { class: 'repere', text: 'Origine : ' + ORIGINES[r.origine] }) : null, r.touches.length ? h('span', { class: 'repere touche', text: (r.touches.length > 1 ? 'Touche vos décisions ' : 'Touche votre décision ') + r.touches.join(', ') }) : null]));
+      fs.appendChild(h('legend', {}, [h('span', { class: 'id', text: nomCode(r.id) }), ' : ', h('span', { text: r.intitule })]));
+      fs.appendChild(h('div', { class: 'reperes' }, [h('span', { class: 'pastille ' + G[2] }, [icone(G[1]), G[0]]), ORIGINES[r.origine] ? h('span', { class: 'repere', text: 'Origine : ' + ORIGINES[r.origine] }) : null, r.touches.length ? h('span', { class: 'repere touche', text: (r.touches.length > 1 ? 'Touche vos points de décision ' : 'Touche votre point de décision ') + listeNumeros(r.touches) }) : null]));
       fs.appendChild(lab);
       fs.appendChild(slotCase);
-      z = zone('Annotation (facultative)', ' pour ' + r.id, null, etat.annots[r.id], 3, function (v) { etat.annots[r.id] = v; ctx.change(); }, r.id + ' : l’annotation');
+      z = zone('Annotation (facultative)', ' pour la ' + bas(nomCode(r.id)), null, etat.annots[r.id], 3, function (v) { etat.annots[r.id] = v; ctx.change(); }, nomCode(r.id) + ' : l’annotation');
       annots[r.id] = z;
       fs.appendChild(z.wrap);
       corps.appendChild(fs);
@@ -1482,7 +1502,7 @@ fieldset.choix-point { margin-top: 12px; }
     function approx() { return { retenues: retenues(), observations: nettoyer(etat.obs) }; }
     function ordreDom(a, b) { return a.ctrl.compareDocumentPosition(b.ctrl) & 4 ? -1 : 1; }
     function libellerLot(items, avecObs) {
-      var t = items.length === 0 ? 'Envoyer vos corrections du projet' : items.length === 1 ? 'Envoyer la correction ' + items[0].reco : 'Envoyer les corrections ' + items[0].reco + ' à ' + items[items.length - 1].reco;
+      var t = items.length === 0 ? 'Envoyer vos corrections du projet' : items.length === 1 ? 'Envoyer la recommandation ' + numeroDe(items[0].reco) : 'Envoyer les recommandations ' + numeroDe(items[0].reco) + ' à ' + numeroDe(items[items.length - 1].reco);
       return items.length && avecObs ? t + ' et vos corrections du projet' : t;
     }
     return {
@@ -1493,11 +1513,11 @@ fieldset.choix-point { margin-top: 12px; }
         recos.forEach(function (r) {
           var a = nettoyer(etat.annots[r.id]), msg;
           if (a.length > MAX_TEXTE) {
-            msg = r.id + ' : l’annotation dépasse ' + nombre(MAX_TEXTE) + ' caractères (' + nombre(a.length) + '). Raccourcissez-la d’environ ' + nombre(a.length - MAX_TEXTE) + ' caractères.';
+            msg = nomCode(r.id) + ' : l’annotation dépasse ' + nombre(MAX_TEXTE) + ' caractères (' + nombre(a.length) + '). Raccourcissez-la d’environ ' + nombre(a.length - MAX_TEXTE) + ' caractères.';
             err.push({ ctrl: annots[r.id].input, msg: msg, lib: msg });
           }
           if (a && !etat.coches[r.id]) {
-            msg = r.id + ' : vous avez écrit une annotation sans cocher « Intégrer ». Cochez la case, ou effacez l’annotation.';
+            msg = nomCode(r.id) + ' : vous avez écrit une annotation sans cocher « Intégrer ». Cochez la case, ou effacez l’annotation.';
             err.push({ ctrl: cases[r.id], msg: msg, lib: msg });
           }
         });
@@ -1525,7 +1545,7 @@ fieldset.choix-point { margin-top: 12px; }
           val.lot = { n: n, total: total };
           return enveloppe(onglet, val);
         };
-        var r = decouper(v.retenues, function (items) { return fab(items, false, 99, 99); }, function (items) { return libellerLot(items, false); }, function (it) { return 'La recommandation ' + it.reco; });
+        var r = decouper(v.retenues, function (items) { return fab(items, false, 99, 99); }, function (items) { return libellerLot(items, false); }, function (it) { return 'La ' + bas(nomCode(it.reco)); });
         var groupes, total;
         if (r.trop) { r.f = true; return r; }
         groupes = r.lots.map(function (l) { return l.charge.valeurs.retenues; });
@@ -1641,7 +1661,7 @@ fieldset.choix-point { margin-top: 12px; }
 
     affichage.forEach(function (r, i) {
       var d = h('details', { class: 'section point' }), et = h('span', { class: 'etat-point' }), G = GRAVITES[r.gravite], suivant = affichage[i + 1];
-      var resume = h('summary', { class: 'section-titre' }, [h('span', { class: 'titre-point', text: r.id + ' : ' + r.intitule }), et]);
+      var resume = h('summary', { class: 'section-titre' }, [h('span', { class: 'titre-point', text: nomCode(r.id) + ' : ' + r.intitule }), et]);
       var fs = h('fieldset', { class: 'choix-point' }), nom = uid('rr'), radios = {}, slot = creerSlot(), premier = null;
       var champId = uid('t'), aideId = champId + '-aide', slotTxt = creerSlot(), cpt = h('p', { class: 'compteur-zone', 'aria-hidden': 'true' });
       var ta = h('textarea', { id: champId, rows: '6', 'aria-describedby': aideId }), champ;
@@ -1652,7 +1672,7 @@ fieldset.choix-point { margin-top: 12px; }
       d.appendChild(h('blockquote', { class: 'bloc-cite', text: r.citation }));
       d.appendChild(h('p', { class: 'etiq-bloc', text: 'Reformulation proposée' }));
       d.appendChild(h('blockquote', { class: 'bloc-reformule', text: r.reformulation }));
-      fs.appendChild(h('legend', {}, ['Votre choix', h('span', { class: 'sr', text: ' pour ' + r.id })]));
+      fs.appendChild(h('legend', {}, ['Votre choix', h('span', { class: 'sr', text: ' pour la ' + bas(nomCode(r.id)) })]));
       Object.keys(CHOIX_CORR).forEach(function (k) {
         var id = uid('o'), inp = h('input', { type: 'radio', name: nom, id: id, value: k });
         inp.checked = choixDe(r.id) === k;
@@ -1673,7 +1693,7 @@ fieldset.choix-point { margin-top: 12px; }
       lierErreur(ta, slotTxt, aideId);
       ta.addEventListener('input', function () { etat.textes[r.id] = ta.value; majCpt(); maj(); ctx.change(); });
       champ = h('div', { class: 'champ', hidden: choixDe(r.id) !== 'modifier' }, [
-        h('label', { for: champId }, ['Votre texte', h('span', { class: 'sr', text: ' pour ' + r.id })]),
+        h('label', { for: champId }, ['Votre texte', h('span', { class: 'sr', text: ' pour la ' + bas(nomCode(r.id)) })]),
         h('p', { class: 'aide', id: aideId, text: 'Partez de la reformulation proposée et corrigez-la. Ce texte remplacera le passage cité.' }),
         ta, cpt, slotTxt
       ]);
@@ -1689,10 +1709,10 @@ fieldset.choix-point { margin-top: 12px; }
         champ.hidden = ev.target.value !== 'modifier';
         majErreurTous();
         maj(); ctx.change();
-        if (ev.target.value === 'modifier') ctx.dire('Champ de texte affiché pour ' + r.id + ' : vous pouvez corriger la reformulation.');
+        if (ev.target.value === 'modifier') ctx.dire('Champ de texte affiché pour la ' + bas(nomCode(r.id)) + ' : vous pouvez corriger la reformulation.');
       });
       d.appendChild(h('div', { class: 'actions-point' }, [
-        h('button', { type: 'button', class: 'btn-lien passer', text: suivant ? 'Passer à la correction ' + suivant.id : 'Revenir au début de la liste', onclick: function () {
+        h('button', { type: 'button', class: 'btn-lien passer', text: suivant ? 'Passer à la recommandation ' + numeroDe(suivant.id) : 'Revenir au début de la liste', onclick: function () {
           if (suivant) { d.open = false; ouvrirCorr(suivant.id); }
           else { try { ctx.titre.scrollIntoView({ block: 'start' }); } catch (e) { /* ignoré */ } ctx.titre.focus(); }
         } }),
@@ -1729,7 +1749,7 @@ fieldset.choix-point { margin-top: 12px; }
       if (erreurTous && !toutEcarte()) { erreurTous = false; retirerErreur(cartes[affichage[0].id].premier); }
     }
     function libellerLot(items) {
-      return items.length === 1 ? 'Envoyer la correction ' + items[0].reco : 'Envoyer les corrections ' + items[0].reco + ' à ' + items[items.length - 1].reco;
+      return items.length === 1 ? 'Envoyer la recommandation ' + numeroDe(items[0].reco) : 'Envoyer les recommandations ' + numeroDe(items[0].reco) + ' à ' + numeroDe(items[items.length - 1].reco);
     }
     return {
       corps: corps,
@@ -1740,16 +1760,16 @@ fieldset.choix-point { margin-top: 12px; }
           var c = choixDe(r.id), cs = cartes[r.id], p, n, msg;
           if (!c) {
             sections[r.id].details.open = true;
-            msg = r.id + ' : choisissez Retenir, Écarter ou Modifier.';
+            msg = nomCode(r.id) + ' : choisissez Retenir, Écarter ou Modifier.';
             err.push({ ctrl: cs.premier, msg: msg, lib: msg });
           } else if (c === 'modifier') {
             p = problemeTexte(r);
             if (!p) return;
             sections[r.id].details.open = true;
             n = nettoyer(texteDe(r)).length;
-            msg = p === 'vide' ? r.id + ' : écrivez votre texte, ou choisissez Retenir ou Écarter.'
-              : p === 'identique' ? r.id + ' : votre texte est identique à la reformulation proposée. Choisissez « Retenir », ou modifiez le texte.'
-              : r.id + ' : votre texte dépasse ' + nombre(MAX_TEXTE) + ' caractères (' + nombre(n) + '). Raccourcissez-le d’environ ' + nombre(n - MAX_TEXTE) + ' caractères.';
+            msg = p === 'vide' ? nomCode(r.id) + ' : écrivez votre texte, ou choisissez Retenir ou Écarter.'
+              : p === 'identique' ? nomCode(r.id) + ' : votre texte est identique à la reformulation proposée. Choisissez « Retenir », ou modifiez le texte.'
+              : nomCode(r.id) + ' : votre texte dépasse ' + nombre(MAX_TEXTE) + ' caractères (' + nombre(n) + '). Raccourcissez-le d’environ ' + nombre(n - MAX_TEXTE) + ' caractères.';
             err.push({ ctrl: cs.texte, msg: msg, lib: msg });
           }
         });
@@ -1765,7 +1785,7 @@ fieldset.choix-point { margin-top: 12px; }
       },
       lots: function (v) {
         var fab = function (items, n, total) { return enveloppe(onglet, { decisions: items, lot: { n: n, total: total } }); };
-        var r = decouper(v.decisions, function (items) { return fab(items, 99, 99); }, libellerLot, function (it) { return 'La correction ' + it.reco; });
+        var r = decouper(v.decisions, function (items) { return fab(items, 99, 99); }, libellerLot, function (it) { return 'La ' + bas(nomCode(it.reco)); });
         var groupes;
         if (r.trop) { r.f = true; return r; }
         groupes = r.lots.map(function (l) { return l.charge.valeurs.decisions; });
